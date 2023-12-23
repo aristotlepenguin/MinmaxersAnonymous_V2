@@ -1,0 +1,4 @@
+<items gfxroot="gfx/items/" version="1">
+	<passive	id="1"	gfx="Collectibles_1_JungleGym.png" name="Jungle Gym" description="Time to monkey around" />
+    <passive	id="2"	gfx="Collectibles_2_RainBucket.png" name="Rain Bucket" description="Catch the excess!" />
+</items>
