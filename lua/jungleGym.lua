@@ -35,8 +35,6 @@ mod:AddCallback(ModCallbacks.MC_POST_RENDER, mod.DebugText)
 
 local function TabDeepCopy(tbl, secTbl)
         --local t = {}
-        print(type(tbl))
-        print(type(secTbl))
         if type(tbl) ~= "table" or type(secTbl) ~= "table" then error("[1] is not a table",2) end
         for k, v in pairs(tbl) do
             if type(v) == "table" then
@@ -69,7 +67,7 @@ function mod:test_command(cmd, args)
         local roomdesc = game:GetLevel():GetRoomByIdx(tonumber(args))
         if roomdesc and roomdesc.Data and roomdesc.Data.Type then
             print(roomdesc.Data.Type)
-        elsed
+        else
             print("failed")
         end
     end
