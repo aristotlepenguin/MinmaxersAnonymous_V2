@@ -39,7 +39,7 @@ mod:AddCallback(ModCallbacks.MC_POST_PLAYER_RENDER, mod.coinFadeRender)
 
 function mod:collideItemPedestalAbs(pickup, collider, low)
     local player = collider:ToPlayer()
-    if (player:GetPlayerType() == PlayerType.PLAYER_ISAAC_B or player:GetPlayerType() == PlayerType.PLAYER_CAIN_B)
+    if player and (player:GetPlayerType() == PlayerType.PLAYER_ISAAC_B or player:GetPlayerType() == PlayerType.PLAYER_CAIN_B)
     and pickup.SubType == mod.MMATypes.COLLECTIBLE_ABSTINENCE
     and pickup:GetData().MMA_ABS_Touched ~= true then
         local item_obj = {}

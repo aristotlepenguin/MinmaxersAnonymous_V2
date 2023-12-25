@@ -2,5 +2,7 @@
 	<passive	id="1"	gfx="Collectibles_1_JungleGym.png" name="Jungle Gym" description="Time to monkey around" />
     <passive	id="2"	gfx="Collectibles_2_RainBucket.png" name="Rain Bucket" description="Catch the extra!" />
     <passive	id="3"	gfx="Collectibles_3_Abstinence.png" name="Abstinence" description="You're not ready yet..." />
-    <passive    id="4"  gfx="Collectibles_4_Memory_Leak.png" name="Memory Leak" description="Tears up + you feel leaky" cache = "firedelay">
+    <passive    id="4"  gfx="Collectibles_4_Memory_Leak.png" name="Memory Leak" description="Tears up + you feel leaky" cache = "firedelay"/>
+    <passive    id="5"  gfx="Collectibles_5_Hopes_And_Dreams.png" name="Isaac's Hopes and Dreams" description="Yeah, right..."/>
+    <passive    id="6"  gfx="Collectibles_6_Dads_Sneakers.png" name="Dad's Sneakers" description="Don't look back"/>
 </items>

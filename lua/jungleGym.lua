@@ -5,6 +5,10 @@ local grng = RNG()
 local sfx = SFXManager()
 local floorSaves = {}
 
+local pickup_num = 1
+local renderX = 30
+local renderY = 30
+
 local function locateRoom(roomtype)
     local currentLevel = game:GetLevel()
     --local rooms = currentLevel:GetRooms()
@@ -26,7 +30,13 @@ function mod:DebugText()
     local player = Isaac.GetPlayer(0) --this one is OK
     local coords = player.Position
     local debug_str = tostring(coords)
-
+    local hopeSpr = Sprite()
+    hopeSpr:Load("gfx/005.100_collectible.anm2", true)
+    hopeSpr:Play("PlayerPickup")
+    hopeSpr:ReplaceSpritesheet(1, Isaac.GetItemConfig():GetCollectible(pickup_num).GfxFileName)
+    --local pos = Vector(Isaac.GetScreenWidth()-30, Isaac.GetScreenHeight()-45)
+    --local pos = Vector(85, Isaac.GetScreenHeight()-32)
+    --hopeSpr:Render(pos)
     --Isaac.RenderText(debug_str, 100, 60, 1, 1, 1, 255)
 
 end
@@ -98,6 +108,23 @@ function mod:test_command(cmd, args)
     if cmd == "addcoins" then
         local player = Isaac.GetPlayer(0)
         player:AddCoins(1)
+    end
+
+    if cmd == "renderx" then
+        renderX = mod:isNil(math.tointeger(args), 30)
+    end
+
+    if cmd == "rendery" then
+        renderY = mod:isNil(math.tointeger(args), 30)
+    end
+
+    if cmd == "screenwidth" then
+        print(Isaac.GetScreenWidth())
+        print(Isaac.GetScreenHeight())
+    end
+
+    if cmd == "numplayers" then
+        print(Game():GetNumPlayers())
     end
 end
 mod:AddCallback(ModCallbacks.MC_EXECUTE_CMD, mod.test_command)
