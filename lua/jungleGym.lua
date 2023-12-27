@@ -126,5 +126,9 @@ function mod:test_command(cmd, args)
     if cmd == "numplayers" then
         print(Game():GetNumPlayers())
     end
+    if cmd == "printroom" then
+        local player = Isaac.GetPlayer(0)
+        print(Game():GetLevel():GetCurrentRoomIndex())
+    end
 end
 mod:AddCallback(ModCallbacks.MC_EXECUTE_CMD, mod.test_command)
