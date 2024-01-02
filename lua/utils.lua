@@ -1,6 +1,14 @@
 local mod = MMAMod
 local game = Game()
 
+mod.directionToVector = {
+    [Direction.LEFT] = Vector(-1, 0),
+	[Direction.UP] = Vector(0, -1),
+	[Direction.RIGHT] = Vector(1, 0),
+	[Direction.DOWN] = Vector(0, 1),
+    [Direction.NO_DIRECTION] = Vector(0, 1)
+}
+
 function mod:shuffleTable(tbl)
     for i = #tbl, 2, -1 do
       local j = math.random(i)
