@@ -29,7 +29,8 @@ local extrafiles = {
     "lua.abstinence",
     "lua.hopesAndDreams",
     "lua.dadSneakers",
-    "lua.overclockedSinuses"
+    "lua.overclockedSinuses",
+    "lua.eid"
 }
 for i=1,#extrafiles do
     include(extrafiles[i])

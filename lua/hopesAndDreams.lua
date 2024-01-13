@@ -75,50 +75,58 @@ function mod:hopesAward(player)
     player:UseCard(Card.CARD_SOUL_KEEPER, 257)
 end
 
-function mod:hopesRender(player, offset)
-    if player:HasCollectible(mod.MMATypes.COLLECTIBLE_HOPES_AND_DREAMS) then
-        local data = mod:mmaGetPData(player)
-        if data.hopesItems == nil then
-            data.hopesItems = {}
+function mod:hopesRender()
+    local data = mod.MMA_GlobalSaveData
+    if data.hopesItems == nil then
+        data.hopesItems = {}
+    end
+    local totalHopeItems = 0
+    local rng
+    mod:AnyPlayerDo(function(player)
+        totalHopeItems = totalHopeItems + player:GetCollectibleNum(mod.MMATypes.COLLECTIBLE_HOPES_AND_DREAMS)
+        if player:GetCollectibleNum(mod.MMATypes.COLLECTIBLE_HOPES_AND_DREAMS) > 0 then
+            rng = player:GetCollectibleRNG(mod.MMATypes.COLLECTIBLE_HOPES_AND_DREAMS)
         end
-        if #data.hopesItems < player:GetCollectibleNum(mod.MMATypes.COLLECTIBLE_HOPES_AND_DREAMS) then
-            for i=1, player:GetCollectibleNum(mod.MMATypes.COLLECTIBLE_HOPES_AND_DREAMS) - #data.hopesItems, 1 do
-                local tableIn = {}
-                local rng = player:GetCollectibleRNG(mod.MMATypes.COLLECTIBLE_HOPES_AND_DREAMS)
-                local pickup_num
-                for j = 1, 10000 do
-                    pickup_num = rng:RandomInt(itemConfig:GetCollectibles().Size-1)
-                    if itemConfig:GetCollectible(pickup_num)and itemConfig:GetCollectible(pickup_num):IsAvailable()
-                    and not (pickup_num >= 550 and pickup_num <= 552) and pickup_num ~= 714 and pickup_num ~= 715 then
-                        break
-                    end
+        end)
+    if #data.hopesItems < totalHopeItems then
+        for i=1, totalHopeItems - #data.hopesItems, 1 do
+            local tableIn = {}
+            local pickup_num
+            for j = 1, 10000 do
+                pickup_num = rng:RandomInt(itemConfig:GetCollectibles().Size-1)
+                if itemConfig:GetCollectible(pickup_num)and itemConfig:GetCollectible(pickup_num):IsAvailable()
+                and not (pickup_num >= 550 and pickup_num <= 552) and pickup_num ~= 714 and pickup_num ~= 715 then
+                    break
                 end
-                tableIn.subType = pickup_num
-                tableIn.obtained = false
-
-                tableIn.sprite = mod:getHopeSpr(pickup_num)
-                table.insert(data.hopesItems, tableIn)
             end
+            tableIn.subType = pickup_num
+            tableIn.obtained = false
+
+            tableIn.sprite = mod:getHopeSpr(pickup_num)
+            table.insert(data.hopesItems, tableIn)
         end
-        local sequence = 1
-        for i, item in ipairs(data.hopesItems) do
-            if not item.obtained then
+    end
+    local sequence = 1
+    for i, item in ipairs(data.hopesItems) do
+        if not item.obtained then
+            mod:AnyPlayerDo(function(player)
                 if player:HasCollectible(item.subType) or
                 (player:GetOtherTwin() ~= nil and player:GetOtherTwin():HasCollectible(item.subType)) then
                     item.obtained = true
                     mod:hopesAward(player)
                 end
-                local pos = mod:findHopeRenderPos(sequence,  game:GetNumPlayers(), mod:getPlayerIndex(player))
-                if item.sprite == nil then
-                    item.sprite = mod:getHopeSpr(item.subType)
-                end
-                item.sprite:Render(pos)
-                sequence = sequence + 1
+            end)
+            local pos = mod:findHopeRenderPos(sequence,  game:GetNumPlayers())
+            if item.sprite == nil then
+                item.sprite = mod:getHopeSpr(item.subType)
             end
+            item.sprite:Render(pos)
+            sequence = sequence + 1
         end
     end
 end
-mod:AddCallback(ModCallbacks.MC_POST_PLAYER_RENDER, mod.hopesRender)
+mod:AddCallback(ModCallbacks.MC_POST_RENDER, mod.hopesRender)
+--mod:AddCallback(ModCallbacks.MC_POST_PLAYER_RENDER, mod.hopesRender)
 
 --rain bucket already calculates bonus stats, keep this in case items are published individually
 function mod:bonusStatsCache_HAD(player, cache)
