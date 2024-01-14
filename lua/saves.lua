@@ -35,6 +35,8 @@ function mod:loadData(isSave)
             player:AddCacheFlags(CacheFlag.CACHE_ALL)
             player:EvaluateItems()
         end
+    else
+        mod.MMA_GlobalSaveData = {}
     end
 end
 mod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, mod.loadData)
