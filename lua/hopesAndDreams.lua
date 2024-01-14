@@ -18,28 +18,19 @@ function mod:findHopeRenderPos(sequence, numPlayers, current_player_num)
     if sequence > 6 then
         return starting_pos
     end
-    local xoffset = (math.floor(sequence/3)) * 32
+    local xoffset = (math.floor((sequence-1)/3)) * 32
     local yoffset = ((sequence-1) % 3) * 32
     local player = Isaac.GetPlayer(current_player_num)
-    --print(current_player_num)
-    if numPlayers == 1 then
-        --print(Options.ExtraHUDStyle)
-        if Options.ExtraHUDStyle == 1 then
-            xoffset = xoffset+72
-            yoffset = yoffset+28
-        end
-        starting_pos = Vector(Isaac.GetScreenWidth()-(26+xoffset), Isaac.GetScreenHeight()-(45+yoffset))
-    elseif numPlayers == 2 then
-        if Options.ExtraHUDStyle == 1 then
-            xoffset = xoffset+72
-            yoffset = yoffset+28
-        end
-        if player:GetPlayerType() == PlayerType.PLAYER_JACOB then
-            --starting_pos = Vector(85 + xoffset, Isaac.GetScreenHeight()-(26+yoffset))
-            starting_pos = Vector(Isaac.GetScreenWidth()-(30 + xoffset), Isaac.GetScreenHeight()-(77+yoffset))
-        end
-    end
 
+    if Options.ExtraHUDStyle == 1 then
+        xoffset = xoffset+72
+        yoffset = yoffset+28
+    elseif numPlayers == 4 or Isaac.GetPlayer(0):GetPlayerType() == PlayerType.PLAYER_JACOB then
+        xoffset = xoffset + 4
+        yoffset = yoffset + 47
+    end
+    
+    starting_pos = Vector(Isaac.GetScreenWidth()-(26+xoffset), Isaac.GetScreenHeight()-(45+yoffset))
     return starting_pos
 end
 
