@@ -130,5 +130,13 @@ function mod:test_command(cmd, args)
         local player = Isaac.GetPlayer(0)
         print(Game():GetLevel():GetCurrentRoomIndex())
     end
+    if cmd == "currentrange" then
+        local player = Isaac.GetPlayer(0)
+        print(player.TearRange)
+    end
+    if cmd == "firelonglaser" then
+        local player = Isaac.GetPlayer(0)
+        EntityLaser.ShootAngle(1, player.Position, 45, 700, Vector(0, 0), player)
+    end
 end
 mod:AddCallback(ModCallbacks.MC_EXECUTE_CMD, mod.test_command)

@@ -41,3 +41,22 @@ function mod:AnyPlayerDo(foo)
 		foo(player)
 	end
 end
+
+function mod:getPlayerFromKnifeLaser(entity)
+	if entity.SpawnerEntity and entity.SpawnerEntity:ToPlayer() then
+		return entity.SpawnerEntity:ToPlayer()
+	elseif entity.SpawnerEntity and entity.SpawnerEntity:ToFamiliar() and entity.SpawnerEntity:ToFamiliar().Player then
+		local familiar = entity.SpawnerEntity:ToFamiliar()
+
+		if familiar.Variant == FamiliarVariant.INCUBUS or familiar.Variant == FamiliarVariant.SPRINKLER or
+		   familiar.Variant == FamiliarVariant.TWISTED_BABY or familiar.Variant == FamiliarVariant.BLOOD_BABY or
+		   familiar.Variant == FamiliarVariant.UMBILICAL_BABY or familiar.Variant == FamiliarVariant.CAINS_OTHER_EYE
+		then
+			return familiar.Player
+		else
+			return nil
+		end
+	else
+		return nil
+	end
+end
