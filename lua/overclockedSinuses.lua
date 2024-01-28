@@ -72,7 +72,36 @@ function mod:onOverclockFrame(player)
             data.MMA_overclockStarted = nil
         end
 
-        if player:HasCollectible(CollectibleType.COLLECTIBLE_BRIMSTONE) then
+        if player:HasCollectible(CollectibleType.COLLECTIBLE_DR_FETUS) then
+            if frame % 4 == 0 then
+                local bombTier = math.floor((30 / (player.MaxFireDelay + 1))*3)
+                if bombTier >= 3 or frame % 8 == 0 then
+                    local tear = player:FireBomb(firePos, direction, player)
+                    tear = mod:tearModifiers(tear, player, false)
+                end
+                
+                if bombTier >= 4 then
+                    local slantDir
+                    if frame % 8 == 0 then
+                        slantDir = mod.GetLeftDiag[player:GetHeadDirection()]
+                    else
+                        slantDir = mod.GetRightDiag[player:GetHeadDirection()]
+                    end
+                    
+                    for x=4, bombTier, 1 do
+                        local tear = player:FireBomb(firePos, slantDir * tearSpeed, player)
+                        slantDir = (slantDir * mod.TearTierMultiplier[player:GetHeadDirection()]):Normalized()
+                        tear = mod:tearModifiers(tear, player, false)
+                    end
+                end
+
+                if sinusRng:RandomInt(100) <= player.Luck + 5 then
+                    local luckDirection = Vector(sinusRng:RandomInt(100)-50, sinusRng:RandomInt(100)-50):Normalized() * tearSpeed
+                    local lucktear = player:FireBomb(firePos, luckDirection, player)
+                    lucktear = mod:tearModifiers(lucktear, player, false)
+                end
+            end
+        elseif player:HasCollectible(CollectibleType.COLLECTIBLE_BRIMSTONE) then
             if firstFrame then
                 local primeLaser = EntityLaser.ShootAngle(6, player.Position, direction:GetAngleDegrees(), 500, Vector(0, 0), player)
                 primeLaser:GetData().MMA_oSPrimeLaser = true
