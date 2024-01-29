@@ -22,7 +22,23 @@ mod.GetLeftDiag = {
     [Direction.RIGHT] = Vector(0.65, 0.95):Normalized(),
     [Direction.DOWN] = Vector(0.95, 0.65):Normalized()
   }
-  
+
+  local nullVector = Vector.Zero
+
+  function mod:floatToInt(float)
+    return math.floor(float * 10000) --4 digits is enough percision in my books
+  end
+
+function mod:spawnRocket(player, pos, delay, damage)
+    local size = (player.Size * 2) + 65
+    if (player.Position-pos):Length() > size then
+        local rocket = Isaac.Spawn(1000, 31, 0, pos, nullVector, player):ToEffect()
+        rocket:SetTimeout(delay or 10)
+        if damage then rocket.DamageSource = mod:floatToInt(damage) end
+        rocket:Update()
+        return rocket
+    end
+end
 
 function mod:useOverclock(collectible, rng, player, useflags, activeslot, customvardata)
     local tempSaveData = json.decode(mod:LoadData())
@@ -72,7 +88,11 @@ function mod:onOverclockFrame(player)
             data.MMA_overclockStarted = nil
         end
 
-        if player:HasCollectible(CollectibleType.COLLECTIBLE_DR_FETUS) then
+        if player:HasCollectible(CollectibleType.COLLECTIBLE_EPIC_FETUS) then
+            if sinusRng:RandomInt(100) <= player.Luck + 5 then
+                mod:spawnRocket(player, Isaac.GetRandomPosition())
+            end
+        elseif player:HasCollectible(CollectibleType.COLLECTIBLE_DR_FETUS) then
             if frame % 4 == 0 then
                 local bombTier = math.floor((30 / (player.MaxFireDelay + 1))*3)
                 if bombTier >= 3 or frame % 8 == 0 then
@@ -175,3 +195,18 @@ function mod:crashBonus(player, cache)
     end
 end
 mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, mod.crashBonus)
+
+function mod:reticleUpdate(eff)
+    local player = mod:getPlayerFromKnifeLaser(eff)
+    local data = mod:mmaGetPData(player)
+    local frame = game:GetFrameCount()
+    local bombTier = math.floor(30 / (player.MaxFireDelay + 1))
+    if data.MMA_overclockFrame and data.MMA_overclockFrame + 20 <= frame and data.MMA_overclockFrame + 500 > frame then
+        if frame % 4 == 0 and bombTier >= 4 then
+            mod:spawnRocket(player, eff.Position)
+        elseif frame % 8 == 0 then
+            mod:spawnRocket(player, eff.Position)
+        end
+    end
+end
+mod:AddCallback(ModCallbacks.MC_POST_EFFECT_UPDATE, mod.reticleUpdate, EffectVariant.TARGET)
