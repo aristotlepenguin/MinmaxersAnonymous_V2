@@ -138,5 +138,10 @@ function mod:test_command(cmd, args)
         local player = Isaac.GetPlayer(0)
         EntityLaser.ShootAngle(1, player.Position, 45, 700, Vector(0, 0), player)
     end
+
+    if cmd == "fireknife" then
+        local player = Isaac.GetPlayer(0)
+        player:FireKnife(player, 0, false, 1, 0)
+    end
 end
 mod:AddCallback(ModCallbacks.MC_EXECUTE_CMD, mod.test_command)

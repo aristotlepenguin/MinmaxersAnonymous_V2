@@ -54,7 +54,7 @@ function mod:useOverclock(collectible, rng, player, useflags, activeslot, custom
 end
 mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.useOverclock, mod.MMATypes.COLLECTIBLE_OVERCLOCKED_SINUSES)
 
-function mod:tearModifiers(tear, player, isPrimaryTear)
+function mod:tearModifiers(tear, player, isPrimaryTear, isTear)
     
     if isPrimaryTear then
         tear.Scale = tear.Scale * 3.5
@@ -66,6 +66,9 @@ function mod:tearModifiers(tear, player, isPrimaryTear)
         tear:AddTearFlags(TearFlags.TEAR_SPECTRAL)
     end
 
+    if isTear == true and (player:GetPlayerType() == PlayerType.PLAYER_THEFORGOTTEN or player:GetPlayerType() == PlayerType.PLAYER_THEFORGOTTEN_B) then
+        tear:AddTearFlags(TearFlags.TEAR_BONE)
+    end
     return tear
 end
 --mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, mod.saveData)
@@ -178,7 +181,7 @@ function mod:onOverclockFrame(player)
         else
             if tearTier >= 3 or frame % 2 == 0 then
                 local tear = player:FireTear(firePos, direction, true, false, true, player, 1)
-                tear = mod:tearModifiers(tear, player, true)
+                tear = mod:tearModifiers(tear, player, true, true)
             end
             
             if tearTier >= 4 then
@@ -192,14 +195,14 @@ function mod:onOverclockFrame(player)
                 for x=4, tearTier, 1 do
                     local tear = player:FireTear(firePos, slantDir * tearSpeed, true, false, true, player, 1)
                     slantDir = (slantDir * mod.TearTierMultiplier[player:GetHeadDirection()]):Normalized()
-                    tear = mod:tearModifiers(tear, player, false)
+                    tear = mod:tearModifiers(tear, player, false, true)
                 end
             end
 
             if sinusRng:RandomInt(100) <= player.Luck + 5 then
                 local luckDirection = Vector(sinusRng:RandomInt(100)-50, sinusRng:RandomInt(100)-50):Normalized() * tearSpeed
                 local lucktear = player:FireTear(firePos, luckDirection, true, false, true, player, 1)
-                lucktear = mod:tearModifiers(lucktear, player, true)
+                lucktear = mod:tearModifiers(lucktear, player, true, true)
             end
         end
     elseif mod.MMA_GlobalSaveData.MMA_firingOverclock == true and
@@ -244,6 +247,4 @@ end
 mod:AddCallback(ModCallbacks.MC_POST_EFFECT_UPDATE, mod.reticleUpdate, EffectVariant.TARGET)
 
 
---forgotten's bone club
---t. forgotten
 --mom's knife
