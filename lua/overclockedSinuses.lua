@@ -121,16 +121,48 @@ function mod:onOverclockFrame(player)
                     lucktear = mod:tearModifiers(lucktear, player, false)
                 end
             end
-        elseif player:HasCollectible(CollectibleType.COLLECTIBLE_BRIMSTONE) then
+        elseif player:HasCollectible(CollectibleType.COLLECTIBLE_TECH_X) then
+            local defaultRadius = 8 * player.Damage
+            if tearTier >= 3 or frame % 2 == 0 then
+                player:FireTechXLaser(firePos, direction, defaultRadius, player, 1)
+            end
+            
+            if tearTier >= 4 then
+                local slantDir
+                if frame % 2 == 0 then
+                    slantDir = mod.GetLeftDiag[player:GetHeadDirection()]
+                else
+                    slantDir = mod.GetRightDiag[player:GetHeadDirection()]
+                end
+                
+                for x=4, tearTier, 1 do
+                    --local tear = player:FireTear(firePos, slantDir * tearSpeed, true, false, true, player, 1)
+                    local brimball = player:FireTechXLaser(firePos, slantDir * tearSpeed, defaultRadius, player, 1)
+                    slantDir = (slantDir * mod.TearTierMultiplier[player:GetHeadDirection()]):Normalized()
+                end
+            end
+
+            if sinusRng:RandomInt(100) <= player.Luck + 5 then
+                local luckDirection = Vector(sinusRng:RandomInt(100)-50, sinusRng:RandomInt(100)-50):Normalized() * tearSpeed
+                player:FireTechXLaser(firePos, luckDirection, defaultRadius, player, 1)
+            end
+        elseif player:HasCollectible(CollectibleType.COLLECTIBLE_BRIMSTONE) or player:HasCollectible(CollectibleType.COLLECTIBLE_TECHNOLOGY) or player:HasCollectible(CollectibleType.COLLECTIBLE_TECHNOLOGY_2) then
+            local subLaserType = 1
+            if not player:HasCollectible(CollectibleType.COLLECTIBLE_BRIMSTONE) then
+                subLaserType = 2
+            elseif player:HasCollectible(CollectibleType.COLLECTIBLE_TECHNOLOGY) or player:HasCollectible(CollectibleType.COLLECTIBLE_TECHNOLOGY_2) then
+                subLaserType = 9
+            end
             if firstFrame then
                 local primeLaser = EntityLaser.ShootAngle(6, player.Position, direction:GetAngleDegrees(), 500, Vector(0, 0), player)
                 primeLaser:GetData().MMA_oSPrimeLaser = true
                 primeLaser:AddTearFlags(player.TearFlags)
                 primeLaser.Color = player.LaserColor
                 local laserTier = math.floor((30 / (player.MaxFireDelay + 1))*4)
+                
                 for j=1, laserTier, 1 do
                     local directionSub = 0 + j * math.floor(360/laserTier)
-                    local subLaser = EntityLaser.ShootAngle(1, player.Position, directionSub, 500, Vector(0, 0), player)
+                    local subLaser = EntityLaser.ShootAngle(subLaserType, player.Position, directionSub, 500, Vector(0, 0), player)
                     subLaser:GetData().MMA_oSSubLaser = true
                     subLaser:AddTearFlags(player.TearFlags)
                     subLaser.Color = player.LaserColor
@@ -139,7 +171,7 @@ function mod:onOverclockFrame(player)
             end
             if sinusRng:RandomInt(100) <= player.Luck + 5 then
                 local luckDirection = sinusRng:RandomInt(361)
-                local laserluck = EntityLaser.ShootAngle(1, player.Position, luckDirection, 9, Vector(0, 0), player)
+                local laserluck = EntityLaser.ShootAngle(subLaserType, player.Position, luckDirection, 9, Vector(0, 0), player)
                 laserluck:AddTearFlags(player.TearFlags)
                 laserluck.Color = player.LaserColor
             end
@@ -210,3 +242,9 @@ function mod:reticleUpdate(eff)
     end
 end
 mod:AddCallback(ModCallbacks.MC_POST_EFFECT_UPDATE, mod.reticleUpdate, EffectVariant.TARGET)
+
+
+--tech x
+--forgotten's bone club
+--t. forgotten
+--mom's knife
