@@ -244,7 +244,6 @@ end
 mod:AddCallback(ModCallbacks.MC_POST_EFFECT_UPDATE, mod.reticleUpdate, EffectVariant.TARGET)
 
 
---tech x
 --forgotten's bone club
 --t. forgotten
 --mom's knife

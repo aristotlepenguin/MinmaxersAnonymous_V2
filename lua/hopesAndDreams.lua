@@ -140,3 +140,6 @@ function mod:bonusStatsCache_HAD(player, cache)
     end
 end
 --mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, mod.bonusStatsCache_HAD)
+
+
+--star background for items to be attained

@@ -181,3 +181,5 @@ function mod:onNewLevelStart_DS()
     mod.MMA_GlobalSaveData.UnexploredCount = mod:checkFloorRooms_DS(false, -1)
 end
 mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, mod.onNewLevelStart_DS)
+
+--setup for tainted epaphras

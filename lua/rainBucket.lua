@@ -292,3 +292,5 @@ function mod:OnUpdate_RB()
     end
 end
 mod:AddCallback(ModCallbacks.MC_POST_UPDATE, mod.OnUpdate_RB)
+
+--setup for epaphras
