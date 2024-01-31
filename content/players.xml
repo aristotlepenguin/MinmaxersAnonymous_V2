@@ -1,0 +1,8 @@
+<players nameimageroot="gfx/ui/boss/" portraitroot="gfx/ui/stage/" root="gfx/characters/costumes/">
+	<player hp="4" bombs="3" keys = "3" coins = "3" name="Epaphras"
+	nameimage="playername_epaphras.png" portrait="playerportrait_epaphras.png" skin="character_epaphras.png" skinColor="1" birthright="Fill your pockets"
+	/>
+	<player hp="6" bombs="1" name="Tainted Epaphras"
+	nameimage="playername_epaphras_b.png" portrait="playerportrait_epaphras_b.png" skin="character_epaphras_b.png" skinColor="1" birthright="Home renovation" 
+	bSkinParent="Epaphras"/>
+</players>

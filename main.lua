@@ -4,6 +4,9 @@ MMAMod = mod
 
 mod.MMATypes = {}
 
+mod.MMATypes.CHARACTER_EPAPHRAS = Isaac.GetPlayerTypeByName("Epaphras")
+mod.MMATypes.CHARACTER_EPAPHRAS_B = Isaac.GetPlayerTypeByName("Tainted Epaphras")
+
 mod.MMATypes.COLLECTIBLE_JUNGLE_GYM = Isaac.GetItemIdByName("Jungle Gym")
 mod.MMATypes.COLLECTIBLE_RAIN_BUCKET = Isaac.GetItemIdByName("Rain Bucket")
 mod.MMATypes.COLLECTIBLE_ABSTINENCE = Isaac.GetItemIdByName("Abstinence")
