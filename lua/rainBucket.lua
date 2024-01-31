@@ -2,6 +2,8 @@ local mod = MMAMod
 
 local sfx = SFXManager()
 
+local isEph = mod.MMATypes.CHARACTER_EPAPHRAS ~= nil
+
 function mod:findEmptyCharges(player)
     local emptycharges = 0
     if player:GetActiveItem() ~= 0 then
@@ -23,6 +25,7 @@ function mod:bucketIt(player, emptybones, keepercoin)
     local coinmax = 99
     local bombmax = 99
     local keymax = 99
+
     local rng = player:GetCollectibleRNG(mod.MMATypes.COLLECTIBLE_RAIN_BUCKET)
 
     if player:HasCollectible(CollectibleType.COLLECTIBLE_DEEP_POCKETS) then
@@ -98,28 +101,30 @@ function mod:onPickupCollide_RB(pickup, collider, low)
         if playertype == PlayerType.PLAYER_THESOUL_B then
             player = player:GetOtherTwin()
         end
-        local coinmax = 99
-        local bombmax = 99
-        local keymax = 99
-        local emptyredhearts = player:GetEffectiveMaxHearts() - player:GetHearts()
-        local emptysouls = player:GetHeartLimit() - (player:GetEffectiveMaxHearts() + player:GetSoulHearts())
-        local emptybones = nil
-        local keepercoin = nil
+        
+        if (player:HasCollectible(mod.MMATypes.COLLECTIBLE_RAIN_BUCKET) or (isEph and player:GetPlayerType() == mod.MMATypes.CHARACTER_EPAPHRAS)) and pickup:GetData().MMA_HasTouchedRB ~= true then
+            local coinmax = 99
+            local bombmax = 99
+            local keymax = 99
+            local emptyredhearts = player:GetEffectiveMaxHearts() - player:GetHearts()
+            local emptysouls = player:GetHeartLimit() - (player:GetEffectiveMaxHearts() + player:GetSoulHearts())
+            local emptybones = nil
+            local keepercoin = nil
 
-        if playertype == PlayerType.PLAYER_THELOST_B or playertype == PlayerType.PLAYER_THELOST then
-            emptyredhearts = 0
-            emptysouls = 0
-        elseif playertype == PlayerType.PLAYER_BETHANY_B then
-            emptyredhearts = 99 - player:GetBloodCharge()
-        elseif playertype == PlayerType.PLAYER_BETHANY then
-            emptysouls = 99 - player:GetSoulCharge()
-        elseif playertype == PlayerType.PLAYER_THEFORGOTTEN or playertype == PlayerType.PLAYER_THESOUL then
-            emptysouls = 12 - player:GetSoulHearts()
-            emptybones = 6 - (player:GetBoneHearts() + player:GetSubPlayer():GetBoneHearts())
-        end
-        local collectThis = nil
-        local bucketed = 0
-        if player:HasCollectible(mod.MMATypes.COLLECTIBLE_RAIN_BUCKET) and pickup:GetData().MMA_HasTouchedRB ~= true then
+            if playertype == PlayerType.PLAYER_THELOST_B or playertype == PlayerType.PLAYER_THELOST then
+                emptyredhearts = 0
+                emptysouls = 0
+            elseif playertype == PlayerType.PLAYER_BETHANY_B then
+                emptyredhearts = 99 - player:GetBloodCharge()
+            elseif playertype == PlayerType.PLAYER_BETHANY then
+                emptysouls = 99 - player:GetSoulCharge()
+            elseif playertype == PlayerType.PLAYER_THEFORGOTTEN or playertype == PlayerType.PLAYER_THESOUL then
+                emptysouls = 12 - player:GetSoulHearts()
+                emptybones = 6 - (player:GetBoneHearts() + player:GetSubPlayer():GetBoneHearts())
+            end
+
+            local collectThis = nil
+            local bucketed = 0
             pickup:GetData().MMA_HasTouchedRB = true
             if pickup.Variant == PickupVariant.PICKUP_COIN then
                 local value = 0
@@ -293,4 +298,39 @@ function mod:OnUpdate_RB()
 end
 mod:AddCallback(ModCallbacks.MC_POST_UPDATE, mod.OnUpdate_RB)
 
---setup for epaphras
+
+------------------------------------
+--EPAPHRAS STARTS HERE
+------------------------------------
+function mod:onUpdateEpaphras(player)
+    if player:GetPlayerType() ~= mod.MMATypes.CHARACTER_EPAPHRAS then
+        return
+    end
+    local totalToBucket = 0
+    local pocketLimits = 65
+    if player:HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT) then
+        pocketLimits = 45
+    end
+
+    if player:GetNumCoins() > pocketLimits then
+        totalToBucket = totalToBucket + (player:GetNumCoins() - pocketLimits)
+        player:AddCoins(pocketLimits - player:GetNumCoins())
+    end
+    if player:GetNumBombs() > pocketLimits then
+        totalToBucket = totalToBucket + (player:GetNumBombs() - pocketLimits)
+        player:AddBombs(pocketLimits - player:GetNumBombs())
+    end
+    if player:GetNumKeys() > pocketLimits then
+        totalToBucket = totalToBucket + (player:GetNumKeys() - pocketLimits)
+        player:AddKeys(pocketLimits - player:GetNumKeys())
+    end
+    if totalToBucket > 0 then
+        for i=1, totalToBucket, 1 do
+            mod:bucketIt(player, nil, nil)
+        end
+    end
+end
+if isEph then
+    mod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, mod.onUpdateEpaphras)
+end
+--account for skeleton key, pyro, and dollar
