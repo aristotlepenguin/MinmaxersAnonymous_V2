@@ -146,7 +146,7 @@ mod:AddCallback(ModCallbacks.MC_PRE_SPAWN_CLEAN_AWARD, mod.refreshRooms_DS_W)
 
 function mod:onNewLevelStart_DS()
     local hasIt = false
-    local rng = nil
+    local rng = RNG()
     mod:AnyPlayerDo(function(player)
         if player:HasCollectible(mod.MMATypes.COLLECTIBLE_DAD_SNEAKERS) or (tEph and player:GetPlayerType() == mod.MMATypes.CHARACTER_EPAPHRAS_B) then
             hasIt = true
@@ -184,5 +184,3 @@ function mod:onNewLevelStart_DS()
     mod.MMA_GlobalSaveData.UnexploredCount = mod:checkFloorRooms_DS(false, -1)
 end
 mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, mod.onNewLevelStart_DS)
-
---setup for tainted epaphras
