@@ -28,6 +28,18 @@ function mod:bucketIt(player, emptybones, keepercoin)
 
     local rng = player:GetCollectibleRNG(mod.MMATypes.COLLECTIBLE_RAIN_BUCKET)
 
+    if isEph and player:GetPlayerType() == mod.MMATypes.CHARACTER_EPAPHRAS then
+        if player:HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT) then
+            coinmax = 45
+            bombmax = 45
+            keymax = 45
+        else
+            coinmax = 65
+            bombmax = 65
+            keymax = 65
+        end
+    end
+
     if player:HasCollectible(CollectibleType.COLLECTIBLE_DEEP_POCKETS) then
         coinmax = 999
     end
@@ -308,13 +320,19 @@ function mod:onUpdateEpaphras(player)
     end
     local totalToBucket = 0
     local pocketLimits = 65
+    local coinLimits = 65
     if player:HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT) then
         pocketLimits = 45
+        coinLimits = 45
     end
 
-    if player:GetNumCoins() > pocketLimits then
-        totalToBucket = totalToBucket + (player:GetNumCoins() - pocketLimits)
-        player:AddCoins(pocketLimits - player:GetNumCoins())
+    if player:HasCollectible(CollectibleType.COLLECTIBLE_DEEP_POCKETS) then
+        coinLimits = 999
+    end
+
+    if player:GetNumCoins() > coinLimits then
+        totalToBucket = totalToBucket + (player:GetNumCoins() - coinLimits)
+        player:AddCoins(coinLimits - player:GetNumCoins())
     end
     if player:GetNumBombs() > pocketLimits then
         totalToBucket = totalToBucket + (player:GetNumBombs() - pocketLimits)
