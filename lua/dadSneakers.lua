@@ -1,6 +1,9 @@
 local mod = MMAMod
 local game = Game()
 
+
+local tEph = mod.MMATypes.CHARACTER_EPAPHRAS_B ~ nil
+
 --god this function sucks
 function mod:findValidDoors_DS(roomid)
     local roomdesc = Game():GetLevel():GetRoomByIdx(roomid)
@@ -145,7 +148,7 @@ function mod:onNewLevelStart_DS()
     local hasIt = false
     local rng = nil
     mod:AnyPlayerDo(function(player)
-        if player:HasCollectible(mod.MMATypes.COLLECTIBLE_DAD_SNEAKERS) then
+        if player:HasCollectible(mod.MMATypes.COLLECTIBLE_DAD_SNEAKERS) or (tEph and player:GetPlayerType() == mod.MMATypes.CHARACTER_EPAPHRAS_B) then
             hasIt = true
             rng = player:GetCollectibleRNG(mod.MMATypes.COLLECTIBLE_DAD_SNEAKERS)
         end
