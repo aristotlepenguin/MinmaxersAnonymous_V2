@@ -55,7 +55,7 @@ function mod:collideItemPedestalAbs(pickup, collider, low)
         sfx:Play(SoundEffect.SOUND_THUMBS_DOWN, Options.SFXVolume*2)
         Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_TAROTCARD, mod.MMATypes.CARD_CHASTITY, pickup.Position, Vector(0,0), nil)
         Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, pickup.Position, Vector(0,0), nil)
-          
+        
         local data = mod:mmaGetPData(player)
         if data.chastity_items == nil then
             data.chastity_items = {}

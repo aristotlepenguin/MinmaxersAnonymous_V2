@@ -314,6 +314,16 @@ mod:AddCallback(ModCallbacks.MC_POST_UPDATE, mod.OnUpdate_RB)
 ------------------------------------
 --EPAPHRAS STARTS HERE
 ------------------------------------
+
+function mod:ephStatsHandling(player, cache)
+    if cache == CacheFlag.CACHE_SPEED then
+        player.MoveSpeed = player.MoveSpeed - 0.1
+    end
+end
+if isEph then
+    mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, mod.ephStatsHandling)
+end
+
 function mod:onUpdateEpaphras(player)
     if player:GetPlayerType() ~= mod.MMATypes.CHARACTER_EPAPHRAS then
         return

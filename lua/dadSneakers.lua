@@ -185,4 +185,19 @@ function mod:onNewLevelStart_DS()
 end
 mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, mod.onNewLevelStart_DS)
 
+
+------------------------------------
+--T. EPAPHRAS STARTS HERE
+------------------------------------
+
+function mod:tEphStatsHandling(player, cache)
+    if cache == CacheFlag.CACHE_SPEED then
+        player.MoveSpeed = player.MoveSpeed + 0.2
+    end
+end
+if tEph then
+    mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, mod.tEphStatsHandling)
+end
+
+
 --birthright effect for minnie, make rooms more likely to be special

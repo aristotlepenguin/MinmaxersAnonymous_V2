@@ -6,10 +6,22 @@ local greyColor = Color(1, 1, 1, 1, 0, 0, 0)
 greyColor:SetColorize(1, 1, 1, 1)
 greyColor:SetTint(5, 5, 5, 2)
 
+if mod.MMA_GlobalSaveData.droppedEnemies == nil then
+    mod.MMA_GlobalSaveData.droppedEnemies = {}
+end
+
 function mod:dropEnemy(enemy, player)
     local room = game:GetRoom()
     local pos = enemy.Position
     if mod.canGeneratePit(enemy.Position, 0, nil, true, true) then
+        local droppedEnemy = {}
+        droppedEnemy.Type = enemy.Type
+        droppedEnemy.Variant = enemy.Variant
+        droppedEnemy.SubType = enemy.SubType
+        if enemy:IsChampion() then
+            droppedEnemy.ChampionColor = enemy:GetChampionColorIdx()
+        end
+        table.insert(mod.MMA_GlobalSaveData.droppedEnemies, droppedEnemy)
         for i=1, 3 do
             Isaac.Spawn(1000, 4, 0, room:GetGridPosition(room:GetGridIndex(pos)), RandomVector()*math.random()*5, enemy)
         end
@@ -57,3 +69,24 @@ function mod:hitEnemy(tear, collider, low)
     end
 end
 mod:AddCallback(ModCallbacks.MC_PRE_TEAR_COLLISION, mod.hitEnemy)
+
+
+function mod:checkFloorRooms_MS(countAllRooms, returnInt)
+    for i=0, 168, 1 do
+        local roomid = game:GetLevel():GetRoomByIdx(i)
+        if roomid and roomid.Data and 
+        (not roomid.Clear or countAllRooms) and 
+        roomid.Data.Type ~= RoomType.ROOM_ULTRASECRET and 
+        roomid.SafeGridIndex == i and not
+        (roomid.Data.Type >=7 and roomid.Data.Type <=8 and roomid.DisplayFlags == 0) then
+            local jn = 1
+        end
+    end
+end
+
+function mod:onNewFloor()
+    if #mod.MMA_GlobalSaveData.droppedEnemies > 0 then
+        local s = 1
+    end
+end
+mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, mod.onNewFloor)
