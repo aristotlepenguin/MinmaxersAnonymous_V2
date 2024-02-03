@@ -15,7 +15,7 @@ mod.MMATypes.COLLECTIBLE_HOPES_AND_DREAMS = Isaac.GetItemIdByName("Isaac's Hopes
 mod.MMATypes.COLLECTIBLE_DAD_SNEAKERS = Isaac.GetItemIdByName("Dad's Sneakers")
 mod.MMATypes.COLLECTIBLE_OVERCLOCKED_SINUSES = Isaac.GetItemIdByName("Overclocked Sinuses")
 mod.MMATypes.COLLECTIBLE_HYPERFIXATION =  Isaac.GetItemIdByName("Hyperfixation")
-
+mod.MMATypes.COLLECTIBLE_MOMS_SCALE =  Isaac.GetItemIdByName("Mom's Scale")
 
 mod.MMATypes.CARD_CHASTITY = Isaac.GetCardIdByName("ChastityCard")
 
@@ -35,6 +35,7 @@ local extrafiles = {
     "lua.dadSneakers",
     "lua.overclockedSinuses",
     "lua.hyperfixation",
+    "lua.momsScale",
     "lua.eid"
 }
 for i=1,#extrafiles do

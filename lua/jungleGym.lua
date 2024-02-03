@@ -141,7 +141,7 @@ function mod:test_command(cmd, args)
 
     if cmd == "fireknife" then
         local player = Isaac.GetPlayer(0)
-        player:FireKnife(nil, 0, false, 0, 0)
+        player:FireKnife(nil, 0, false, 1, 0)
     end
 end
 mod:AddCallback(ModCallbacks.MC_EXECUTE_CMD, mod.test_command)

@@ -7,4 +7,5 @@
     <passive    id="6"  gfx="Collectibles_6_Dads_Sneakers.png" name="Dad's Sneakers" description="Don't look back"/>
     <active     id="7"  gfx="Collectibles_7_Overclocked.png" name="Overclocked Sinuses" description="One time limiter removal" maxcharges = "0"/>
     <passive    id="8"  gfx="Collectibles_8_Hyperfixation.png" name="Hyperfixation" description="You're so obsessed with that thing!"/>
+    <passive    id="9"  gfx="Collectibles_9_Moms_Scale.png" name="Mom's Scale" description="Heavy tears"/>
 </items>

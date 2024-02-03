@@ -2,7 +2,7 @@ local mod = MMAMod
 local game = Game()
 
 
-local tEph = mod.MMATypes.CHARACTER_EPAPHRAS_B ~ nil
+local tEph = mod.MMATypes.CHARACTER_EPAPHRAS_B ~= nil
 
 --god this function sucks
 function mod:findValidDoors_DS(roomid)
@@ -184,3 +184,5 @@ function mod:onNewLevelStart_DS()
     mod.MMA_GlobalSaveData.UnexploredCount = mod:checkFloorRooms_DS(false, -1)
 end
 mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, mod.onNewLevelStart_DS)
+
+--birthright effect for minnie, make rooms more likely to be special
