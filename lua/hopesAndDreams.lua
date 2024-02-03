@@ -36,7 +36,7 @@ end
 
 function mod:hopesAward(player)
     --sfx:Play(SoundEffect.SOUND_MEGA_TRIPLE_QUESTION_MARK)
-    sfx:Play(SoundEffect.SOUND_BEAST_ANGELIC_BLAST)
+    sfx:Play(SoundEffect.SOUND_BEAST_ANGELIC_BLAST, Options.SFXVolume*4)
     local rng = player:GetCollectibleRNG(mod.MMATypes.COLLECTIBLE_HOPES_AND_DREAMS)
     local pool = ItemPoolType.POOL_ANGEL
     local data = mod:mmaGetPData(player)

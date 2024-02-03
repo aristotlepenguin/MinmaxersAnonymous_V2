@@ -52,7 +52,7 @@ function mod:collideItemPedestalAbs(pickup, collider, low)
         item_obj.charges = mod:isNil(collectConfig.MaxCharges, 0)
         item_obj.touched = false
         
-        sfx:Play(SoundEffect.SOUND_THUMBS_DOWN, 2)
+        sfx:Play(SoundEffect.SOUND_THUMBS_DOWN, Options.SFXVolume*2)
         Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_TAROTCARD, mod.MMATypes.CARD_CHASTITY, pickup.Position, Vector(0,0), nil)
         Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, pickup.Position, Vector(0,0), nil)
           
@@ -90,7 +90,7 @@ function mod:collideItemPedestalAbs(pickup, collider, low)
             item_tbl.price = pickup.Price
         end
 
-        sfx:Play(SoundEffect.SOUND_THUMBS_DOWN, 2)
+        sfx:Play(SoundEffect.SOUND_THUMBS_DOWN, Options.SFXVolume*2)
         Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_TAROTCARD, mod.MMATypes.CARD_CHASTITY, pickup.Position, Vector(0,0), nil)
         Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, pickup.Position, Vector(0,0), nil)
                 
@@ -165,7 +165,7 @@ function mod:useChastityCard(card, player, useflags)
     end
 
     if canGet == false then
-        sfx:Play(SoundEffect.SOUND_BOSS2INTRO_ERRORBUZZ, 2)
+        sfx:Play(SoundEffect.SOUND_BOSS2INTRO_ERRORBUZZ, Options.SFXVolume*2)
         if useflags & 2208 == 0 then
             player:AddCard(mod.MMATypes.CARD_CHASTITY)
         end
@@ -184,7 +184,7 @@ function mod:useChastityCard(card, player, useflags)
         player:AddCollectible(item_obj.subtype, item_obj.charges, not item_obj.touched)
         player:AnimateCollectible(item_obj.subtype)
         hud:ShowItemText(player, itemconfig:GetCollectible(item_obj.subtype))
-        sfx:Play(SoundEffect.SOUND_POWERUP1)
+        sfx:Play(SoundEffect.SOUND_POWERUP1, Options.SFXVolume*2)
     end
 end
 mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.useChastityCard, MMAMod.MMATypes.CARD_CHASTITY)

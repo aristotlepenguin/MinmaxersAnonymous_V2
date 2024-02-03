@@ -263,7 +263,7 @@ function mod:onPickupCollide_RB(pickup, collider, low)
                 end
             end
             if collectThis ~= nil then
-                sfx:Play(collectThis, 2)
+                sfx:Play(collectThis, Options.SFXVolume*2)
                 pickup:GetData().mma_DeletePickup = true
                 pickup:GetSprite():Play("Collect")
                 return true

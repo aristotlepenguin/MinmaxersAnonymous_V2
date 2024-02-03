@@ -15,7 +15,8 @@ function mod:dropEnemy(enemy, player)
         end
         local index = room:GetGridIndex(pos)
         room:SpawnGridEntity(index, 7, 0, 0, 0)
-        sfx:Play(SoundEffect.SOUND_ROCK_CRUMBLE)
+        mod:UpdatePits(index)
+        sfx:Play(SoundEffect.SOUND_ROCK_CRUMBLE, Options.SFXVolume*2)
         enemy:Remove()
     else
         enemy:AddSlowing(nil, 150, 0.5, greyColor)
@@ -24,7 +25,7 @@ end
 
 function mod:MS_onFireTear(tear)
     local player = mod:GetPlayerFromTear(tear)
-    if player and player:HasCollectible(mod.MMATypes.COLLECTIBLE_MOMS_SCALE) or true then
+    if player and player:HasCollectible(mod.MMATypes.COLLECTIBLE_MOMS_SCALE) then
         local rng = player:GetCollectibleRNG(mod.MMATypes.COLLECTIBLE_MOMS_SCALE)
         local chance = player.Luck * 5 + 10
         if player:HasTrinket(TrinketType.TRINKET_TEARDROP_CHARM) then
@@ -32,7 +33,7 @@ function mod:MS_onFireTear(tear)
         end
         local chance_num = rng:RandomInt(100)
 
-        if chance_num < chance or true then
+        if chance_num < chance then
             tear:GetData().MMA_IsPortly = 1
         end
     end
@@ -44,7 +45,6 @@ function mod:MS_onUpdateTear(tear)
         local sprite_tear = tear:GetSprite()
         sprite_tear.Color = greyColor
         tear:GetData().MMA_IsPortly = 2
-        print("ding!")
     end
 end
 mod:AddCallback(ModCallbacks.MC_POST_TEAR_UPDATE, mod.MS_onUpdateTear)

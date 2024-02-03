@@ -221,3 +221,30 @@ function mod.canGeneratePit(pos, breakGrid, gMap, checkPoopsOrBarrels, checkPlay
   
   return (gMap[offsetX][offsetY-1] and gMap[offsetX+1][offsetY] and gMap[offsetX][offsetY+1] and gMap[offsetX-1][offsetY]) == true
 end
+
+function mod:UpdatePits(newIndex)
+	local room = game:GetRoom()
+	local size = room:GetGridSize()
+	for i=0, size do
+		local gridEntity = room:GetGridEntity(i)
+		if gridEntity then
+			if gridEntity.Desc.Type == GridEntityType.GRID_PIT then
+				if newIndex then --For when spawning pits while a room is under progress, this prevents visual oddness with standalone pits changing sprites
+					if mod:IsPitAdjacent(i) or i == newIndex then
+						gridEntity:PostInit()
+					else
+						gridEntity.CollisionClass = GridCollisionClass.COLLISION_PIT
+					end
+				else --Otherwise, just do it as normal
+					gridEntity:PostInit()
+				end
+			end
+		end
+	end
+
+	local roomGfx = mod:getCurrentRoomGfx()
+	if roomGfx then
+		StageAPI.ChangeGrids(roomGfx.Grids)
+	end
+	--room = game:GetRoom()
+end
