@@ -222,6 +222,179 @@ function mod.canGeneratePit(pos, breakGrid, gMap, checkPoopsOrBarrels, checkPlay
   return (gMap[offsetX][offsetY-1] and gMap[offsetX+1][offsetY] and gMap[offsetX][offsetY+1] and gMap[offsetX-1][offsetY]) == true
 end
 
+function mod:getCurrentRoomGfx()
+	if mod.roomBackdrop then
+		if mod.roomBackdrop > 0 and mod.roomBackdropTable[mod.roomBackdrop] then
+			return mod.roomBackdropTable[mod.roomBackdrop]
+		elseif mod.roomBackdrop > 0 and mod.specialRoomBackdropTable[mod.roomBackdrop] then
+			return mod.specialRoomBackdropTable[mod.roomBackdrop]
+		else
+			return mod.HiveBackdrop
+		end
+	else
+		local level = game:GetLevel()
+		local room = game:GetRoom()
+		if level:GetStage() == LevelStage.STAGE7 then
+			-- on void go fucking CRAZY
+			grng:SetSeed(room:GetDecorationSeed(), 0)
+			local gridgfx = StageAPI.GridGfx()
+			gridgfx.Rocks = mod.FloorGrids[grng:RandomInt(#mod.FloorGrids) + 1].Rocks
+			gridgfx.PitFiles = mod.FloorGrids[grng:RandomInt(#mod.FloorGrids) + 1].PitFiles
+			gridgfx.AltPitFiles = mod.FloorGrids[grng:RandomInt(#mod.FloorGrids) + 1].AltPitFiles
+			return StageAPI.RoomGfx(nil, gridgfx, nil, nil)
+		end
+
+		local roomType = room:GetType()
+		local backdropType = game:GetRoom():GetBackdropType()
+		local existingGfx = (StageAPI.GetCurrentRoom() and StageAPI.GetCurrentRoom().Data.RoomGfx)
+		if roomType == RoomType.ROOM_SECRET then
+			return mod.SecretBackdrop
+		elseif roomType == RoomType.ROOM_DUNGEON then
+			return mod.CrawlspaceBackdrop
+		elseif (roomType == RoomType.ROOM_CHALLENGE or roomType == RoomType.ROOM_BOSSRUSH) and not existingGfx  then
+			return mod.ChallengeBackdrop
+		elseif backdropType == 35 then
+			--Requested by gummy
+			return mod.PlanetariumBackdrop
+		elseif not existingGfx then
+			if backdropType == 1 then
+				return mod.BasementBackdrop
+			elseif backdropType == 2 then
+				return mod.CellarBackdrop
+			elseif backdropType == 3 then
+				return mod.BBBackdrop
+			elseif backdropType == 5 then
+				return mod.CataBackdrop
+			elseif backdropType == 6 then
+				return mod.FloodedBackdrop
+			elseif backdropType == 7 and roomType ~= RoomType.ROOM_SACRIFICE then
+				return mod.DepthsBackdrop
+			elseif backdropType == 8 then
+				return mod.NecropolisBackdrop
+			elseif backdropType == 9 then
+				return mod.DankDepthsBackdrop
+			elseif backdropType == 11 then
+				return mod.UteroBackdrop
+			elseif backdropType == 12 then
+				return mod.ScarredWombBackdrop
+			elseif backdropType == 14 and roomType ~= RoomType.ROOM_CHALLENGE and roomType ~= RoomType.ROOM_BOSSRUSH then
+				return mod.SheolBackdrop
+			elseif backdropType == 15 then
+				return mod.CathBackdrop
+			elseif backdropType == 16 then
+				return mod.DarkRoomBackdrop
+			elseif backdropType == 17 then
+				return mod.ChestBackdrop
+			elseif backdropType == 19 then
+				return mod.LibraryBackdrop
+			elseif backdropType == 21 or backdropType == 22 then
+				return mod.CellarBackdrop
+			elseif backdropType == 20 or backdropType == 28 then
+				return mod.ShopBackdrop
+			elseif backdropType == 24 then
+				math.randomseed(game:GetRoom():GetSpawnSeed())
+				if math.random(7) == 7 then
+					return mod.D12BackdropExt
+				else
+					return mod.DiceBackdrop
+				end
+			elseif backdropType == 25 then
+				return mod.ArcadeBackdrop
+			elseif backdropType == 26 then
+				return mod.ErrorBackdrop
+			elseif backdropType == BackdropType.DOWNPOUR or backdropType == BackdropType.DOWNPOUR_ENTRANCE then
+				if room:HasWater() then
+					return mod.DownpourBackdrop
+				else
+					return mod.DownpourEntranceBackdrop
+				end
+			elseif backdropType == BackdropType.MINES_SHAFT or backdropType == BackdropType.ASHPIT_SHAFT then
+				if level:GetStateFlag(LevelStateFlag.STATE_MINESHAFT_ESCAPE) then
+					return mod.MinesChaseBackdrop
+				else
+					return mod.MinesBackdrop
+				end
+			elseif backdropType == BackdropType.MINES or backdropType == BackdropType.MINES_ENTRANCE then
+				return mod.MinesBackdrop
+			elseif backdropType == BackdropType.MAUSOLEUM or backdropType == BackdropType.MAUSOLEUM_ENTRANCE then
+				return mod.MausoleumBackdrop
+			elseif backdropType == BackdropType.CORPSE then
+				return mod.CorpseBackdrop3
+			elseif backdropType == BackdropType.CORPSE2 then
+				return mod.CorpseBackdrop1
+			elseif backdropType == BackdropType.CORPSE3 then
+				return mod.CorpseBackdrop2
+			elseif backdropType == BackdropType.DROSS then
+				return mod.DrossBackdrop
+			elseif backdropType == BackdropType.GEHENNA then
+				return mod.GehennaBackdrop
+			elseif backdropType == BackdropType.ISAACS_BEDROOM or backdropType == BackdropType.HALLWAY then
+				return mod.CellarBackdrop
+			elseif backdropType == BackdropType.MOMS_BEDROOM then
+				return mod.ArcadeBackdrop
+			end
+		end
+	end
+end
+
+function mod:GetAdjacentIndex(index, direction) --Gets a bordering index using directional input, the bread and butter of this entire system
+  local room = game:GetRoom()
+  if index then --Lots of safety measures to make sure you arent getting an index outside of the room boundries (one that doesn't exist lol)
+      if index <= room:GetGridSize() - 1 then
+          if direction == "Left" then
+              if index % room:GetGridWidth() == 0 then
+                  return index
+              else
+                  return index - 1
+              end
+          elseif direction == "Right" then
+              if index % room:GetGridWidth() == room:GetGridWidth() - 1 then
+                  return index
+              else
+                  return index + 1
+              end
+          elseif direction == "Up" then
+              if index < room:GetGridWidth() then
+                  return index
+              else
+                  return index - room:GetGridWidth()
+              end
+          elseif direction == "Down" then
+              if index > room:GetGridSize() - room:GetGridWidth() then
+                  return index
+              else
+                  return index + room:GetGridWidth()
+              end
+          else
+              error("Invalid direction input in GetAdjacentIndex")
+          end
+      else
+          return index --You fucked up i guess? lol?
+      end
+  end
+end
+
+
+local guwahDirections = {"Left", "Right", "Up", "Down"}
+function mod:IsValidIndex(index)
+	local room = game:GetRoom()
+	return (index >= 0 and index <= room:GetGridSize() - 1)
+end
+
+function mod:IsPitAdjacent(index)
+	local room = game:GetRoom()
+	--Isaac.DebugString(index)
+	if index and mod:IsValidIndex(index) then
+		for _, dir in pairs(guwahDirections) do
+			local adjindex = mod:GetAdjacentIndex(index, dir)
+			local grid = room:GetGridEntity(adjindex)
+			if grid and grid:GetType() == GridEntityType.GRID_PIT and room:GetGridCollision(adjindex) == GridCollisionClass.COLLISION_PIT then
+				return true
+			end
+		end
+	end
+end
+
 function mod:UpdatePits(newIndex)
 	local room = game:GetRoom()
 	local size = room:GetGridSize()
@@ -243,8 +416,8 @@ function mod:UpdatePits(newIndex)
 	end
 
 	local roomGfx = mod:getCurrentRoomGfx()
-	if roomGfx then
-		StageAPI.ChangeGrids(roomGfx.Grids)
-	end
+	--if StageAPI and roomGfx then
+	--	StageAPI.ChangeGrids(roomGfx.Grids)
+	--end
 	--room = game:GetRoom()
 end

@@ -141,7 +141,13 @@ function mod:test_command(cmd, args)
 
     if cmd == "fireknife" then
         local player = Isaac.GetPlayer(0)
-        player:FireKnife(nil, 0, false, 1, 0)
+        local knife = player:FireKnife(nil, 0, false, 1, 0)
+        
+        knife.CollisionDamage = knife.CollisionDamage * 0.3
+		knife.Rotation = 45
+        knife.Velocity = Vector(20, 0)
+        knife:Shoot(300, player.TearRange)
+        knife:Update()
     end
 end
 mod:AddCallback(ModCallbacks.MC_EXECUTE_CMD, mod.test_command)
