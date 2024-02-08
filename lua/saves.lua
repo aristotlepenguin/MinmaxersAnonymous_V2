@@ -2,11 +2,16 @@ local json = require("json")
 local mod = MMAMod
 
 local game = Game()
+local hiddenItemManager = require("lib.hidden_item_manager")
 
 function mod:saveData()
     mod.MMA_GlobalSaveData.MMA_firingOverclock = nil
     local numPlayers = game:GetNumPlayers()
     mod.MMA_GlobalSaveData.PlayerData = {}
+
+    local hiddenItemData = hiddenItemManager:GetSaveData()
+    mod.MMA_GlobalSaveData.HIDDEN_ITEM_DATA = hiddenItemData
+
     for i=0, numPlayers-1, 1 do
         local player = Isaac.GetPlayer(i)
         mod.MMA_GlobalSaveData.PlayerData[tostring(player:GetCollectibleRNG(1):GetSeed())] = player:GetData().mmaSaveData
@@ -35,6 +40,7 @@ function mod:loadData(isSave)
             player:AddCacheFlags(CacheFlag.CACHE_ALL)
             player:EvaluateItems()
         end
+        hiddenItemManager:LoadData(mod.MMA_GlobalSaveData.HIDDEN_ITEM_DATA)
     else
         mod.MMA_GlobalSaveData = {}
     end

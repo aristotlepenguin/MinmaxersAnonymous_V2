@@ -8,4 +8,5 @@
     <active     id="7"  gfx="Collectibles_7_Overclocked.png" name="Overclocked Sinuses" description="One time limiter removal" maxcharges = "0"/>
     <passive    id="8"  gfx="Collectibles_8_Hyperfixation.png" name="Hyperfixation" description="You're so obsessed with that thing!"/>
     <passive    id="9"  gfx="Collectibles_9_Moms_Scale.png" name="Mom's Scale" description="Heavy tears"/>
+    <passive    id="10"  gfx="Collectibles_10_Jobs_Curse.png" name="Job's Curse" description="All stats down + you feel tested"/>
 </items>

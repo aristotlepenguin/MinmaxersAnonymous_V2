@@ -8,4 +8,5 @@ if EID then
     EID:addCollectible(mod.MMATypes.COLLECTIBLE_MEMORY_LEAK, "#0.3 Tears Up#Items now have a chance to become glitched. The probability increases the lower your floor.", "Memory Leak", "en_us")
     EID:addCollectible(mod.MMATypes.COLLECTIBLE_OVERCLOCKED_SINUSES, "#On use, creates a large, screen-wiping tear blast for 6 seconds.#Gain additional streams of tears based on the Tears stat, and tears also fire in random directions based on the Luck stat.#If you crash the game while the beam is firing, all players gain +3 damage and lose the item upon returning to the game.", "Overclocked Sinuses", "en_us")
     EID:addCollectible(mod.MMATypes.COLLECTIBLE_HYPERFIXATION, "After taking this item, the next card, pill or rune you take will lock all future cards/pills/runes to be only that one type for the rest of the run.", "Hyperfixation", "en_us")
+    EID:addCollectible(mod.MMATypes.COLLECTIBLE_MOMS_SCALE, "Isaac has a chance to fire heavy tears that scale with Luck.#Heavy tears cause non-boss enemies to fall through the ground, creating a pit and sending the enemy to a random room on the next floor.", "Mom's Scale", "en_us")
 end

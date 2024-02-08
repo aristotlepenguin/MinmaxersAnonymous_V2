@@ -1,6 +1,9 @@
-local mod  = RegisterMod("MinmaxersAnonymous_V2", 1)
+local mod  = RegisterMod("MinmaxersAnonymous_v2", 1)
 
 MMAMod = mod
+
+local hiddenItemManager = require("lib.hidden_item_manager")
+hiddenItemManager:Init(mod)
 
 mod.MMATypes = {}
 
@@ -16,6 +19,7 @@ mod.MMATypes.COLLECTIBLE_DAD_SNEAKERS = Isaac.GetItemIdByName("Dad's Sneakers")
 mod.MMATypes.COLLECTIBLE_OVERCLOCKED_SINUSES = Isaac.GetItemIdByName("Overclocked Sinuses")
 mod.MMATypes.COLLECTIBLE_HYPERFIXATION =  Isaac.GetItemIdByName("Hyperfixation")
 mod.MMATypes.COLLECTIBLE_MOMS_SCALE =  Isaac.GetItemIdByName("Mom's Scale")
+mod.MMATypes.COLLECTIBLE_JOBS_CURSE =  Isaac.GetItemIdByName("Job's Curse")
 
 mod.MMATypes.CARD_CHASTITY = Isaac.GetCardIdByName("ChastityCard")
 
@@ -36,6 +40,7 @@ local extrafiles = {
     "lua.overclockedSinuses",
     "lua.hyperfixation",
     "lua.momsScale",
+    "lua.jobsCurse",
     "lua.eid"
 }
 for i=1,#extrafiles do

@@ -120,7 +120,7 @@ mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, mod.onNewFloor_MS)
 function mod:onNewRoom_MS()
     local currentroomindex = game:GetLevel():GetCurrentRoomIndex()
     local bossroomindex = mod:checkFloorRooms_MS(ReturnFlag.RF_BOSS)
-    if mod.MMA_GlobalSaveData.droppedEnemiesDest[bossroomindex] == nil then
+    if mod.MMA_GlobalSaveData.droppedEnemiesDest and mod.MMA_GlobalSaveData.droppedEnemiesDest[bossroomindex] == nil then
         mod.MMA_GlobalSaveData.droppedEnemiesDest[bossroomindex] = {}
     end
     local room = game:GetRoom()
