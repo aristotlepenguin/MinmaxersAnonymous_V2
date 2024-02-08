@@ -27,14 +27,6 @@ function mod:tearsUp(firedelay, val)
 	return math.max((30 / newTears) - 1, -0.99)
 end
 
-function mod:isNil(value, replacement)
-    if value == nil then
-        return replacement
-    else
-        return value
-    end
-end
-
 function mod:AnyPlayerDo(foo)
 	for i = 0, game:GetNumPlayers() - 1 do
 		local player = Isaac.GetPlayer(i)

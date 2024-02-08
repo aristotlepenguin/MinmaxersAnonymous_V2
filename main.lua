@@ -3,6 +3,8 @@ local mod  = RegisterMod("MinmaxersAnonymous_v2", 1)
 MMAMod = mod
 
 local hiddenItemManager = require("lib.hidden_item_manager")
+mod.ItemGrabCallback = include("lua.inventory_callbacks")
+
 hiddenItemManager:Init(mod)
 
 mod.MMATypes = {}
@@ -41,6 +43,7 @@ local extrafiles = {
     "lua.hyperfixation",
     "lua.momsScale",
     "lua.jobsCurse",
+    --"lua.inventory_callbacks",
     "lua.eid"
 }
 for i=1,#extrafiles do

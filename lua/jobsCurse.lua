@@ -22,3 +22,18 @@ function mod:checkDeath_JC(player)
     end
 end
 mod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, mod.checkDeath_JC)
+
+
+
+mod.ItemGrabCallback:AddCallback(mod.ItemGrabCallback.InventoryCallback.POST_ADD_ITEM, function(player, item, count, touched, fromQueue)
+    print(player)
+    print(item)
+    print(count)
+    print(touched)
+    print(fromQueue)
+    if not touched or not fromQueue then
+        hiddenItemManager:Add(player, CollectibleType.COLLECTIBLE_ONE_UP)
+        print("goob")
+    end
+
+end, MMAMod.MMATypes.COLLECTIBLE_JOBS_CURSE)
