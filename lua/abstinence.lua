@@ -49,7 +49,7 @@ function mod:collideItemPedestalAbs(pickup, collider, low)
         item_obj.subtype = itemPool:GetCollectible(ranPool, true, rng:RandomInt(100000)+1)
         
         local collectConfig = itemconfig:GetCollectible(item_obj.subtype)
-        item_obj.charges = mod:isNil(collectConfig.MaxCharges, 0)
+        item_obj.charges = collectConfig.MaxCharges or 0
         item_obj.touched = false
         
         sfx:Play(SoundEffect.SOUND_THUMBS_DOWN, Options.SFXVolume*2)
@@ -130,7 +130,7 @@ function mod:useChastityCard(card, player, useflags)
         item_obj.subtype = itemPool:GetCollectible(ranPool, true, rng:RandomInt(100000)+1)
         
         local collectConfig = itemconfig:GetCollectible(item_obj.subtype)
-        item_obj.charges = mod:isNil(collectConfig.MaxCharges, 0)
+        item_obj.charges = collectConfig.MaxCharges or 0
         item_obj.touched = false
     else
         item_obj = table.remove(data.chastity_items, 1)

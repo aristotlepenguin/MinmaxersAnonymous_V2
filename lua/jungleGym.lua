@@ -9,6 +9,9 @@ local pickup_num = 1
 local renderX = 30
 local renderY = 30
 
+local hiddenItemManager = require("lib.hidden_item_manager")
+
+
 local function locateRoom(roomtype)
     local currentLevel = game:GetLevel()
     --local rooms = currentLevel:GetRooms()
@@ -111,11 +114,11 @@ function mod:test_command(cmd, args)
     end
 
     if cmd == "renderx" then
-        renderX = mod:isNil(math.tointeger(args), 30)
+        renderX = math.tointeger(args) or 30
     end
 
     if cmd == "rendery" then
-        renderY = mod:isNil(math.tointeger(args), 30)
+        renderY = math.tointeger(args) or 30
     end
 
     if cmd == "screenwidth" then
@@ -148,6 +151,21 @@ function mod:test_command(cmd, args)
         knife.Velocity = Vector(20, 0)
         knife:Shoot(300, player.TearRange)
         knife:Update()
+    end
+    if cmd == "giveone" then
+        local player = Isaac.GetPlayer(0)
+        hiddenItemManager:Add(player, CollectibleType.COLLECTIBLE_ONE_UP)
+    end
+    if cmd == "checkone" then
+        local player = Isaac.GetPlayer(0)
+        local count = hiddenItemManager:CountStack(player, CollectibleType.COLLECTIBLE_ONE_UP, hiddenItemManager.kDefaultGroup)
+        print(count)
+    end
+
+    if cmd == "freemans" then
+        local player = Isaac.GetPlayer(0)
+        local count = player:GetCollectibleNum(CollectibleType.COLLECTIBLE_ONE_UP)
+        print(count)
     end
 end
 mod:AddCallback(ModCallbacks.MC_EXECUTE_CMD, mod.test_command)

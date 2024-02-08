@@ -43,11 +43,11 @@ function mod:hopesAward(player)
 
     player:AnimateCollectible(mod.MMATypes.COLLECTIBLE_HOPES_AND_DREAMS)
 
-    data.bonusDamage = mod:isNil(data.bonusDamage, 0) + .5
-    data.bonusLuck = mod:isNil(data.bonusLuck, 0) + 5
-    data.bonusRange = mod:isNil(data.bonusRange, 0) + 100
-    data.bonusFireDelay = mod:isNil(data.bonusFireDelay, 0) + .5
-    data.bonusSpeed = mod:isNil(data.bonusSpeed, 0) + .2
+    data.bonusDamage = (data.bonusDamage or 0) + .5
+    data.bonusLuck = (data.bonusLuck or 0) + 5
+    data.bonusRange = (data.bonusRange or 0) + 100
+    data.bonusFireDelay = (data.bonusFireDelay or 0) + .5
+    data.bonusSpeed = (data.bonusSpeed or 0) + .2
     player:AddMaxHearts(2)
     player:AddHearts(2)
     player:AddCacheFlags(CacheFlag.CACHE_ALL)
@@ -123,19 +123,19 @@ mod:AddCallback(ModCallbacks.MC_POST_RENDER, mod.hopesRender)
 function mod:bonusStatsCache_HAD(player, cache)
     local data = mod:mmaGetPData(player)
     if cache == CacheFlag.CACHE_DAMAGE then
-        player.Damage = player.Damage + mod:isNil(data.bonusDamage, 0)
+        player.Damage = player.Damage + (data.bonusDamage or 0)
     end
     if cache == CacheFlag.CACHE_RANGE then
-        player.TearRange = player.TearRange + mod:isNil(data.bonusRange, 0)
+        player.TearRange = player.TearRange + (data.bonusRange or 0)
     end
     if cache == CacheFlag.CACHE_LUCK then
-        player.Luck = player.Luck + mod:isNil(data.bonusLuck, 0)
+        player.Luck = player.Luck + (data.bonusLuck or 0)
     end
     if cache == CacheFlag.CACHE_SPEED then
-        player.MoveSpeed = player.MoveSpeed + mod:isNil(data.bonusSpeed, 0)
+        player.MoveSpeed = player.MoveSpeed + (data.bonusSpeed or 0)
     end
     if cache == CacheFlag.CACHE_FIREDELAY then
-        local teartoadd = mod:isNil(data.bonusFireDelay, 0)
+        local teartoadd = (data.bonusFireDelay or 0)
         player.MaxFireDelay = mod:tearsUp(player.MaxFireDelay, teartoadd)
     end
 end

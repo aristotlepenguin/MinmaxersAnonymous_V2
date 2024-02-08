@@ -84,19 +84,19 @@ function mod:bucketIt(player, emptybones, keepercoin)
         local data = mod:mmaGetPData(player)
         local chosenStat = rng:RandomInt(5)
             if chosenStat == 0 then
-                data.bonusRange = mod:isNil(data.bonusRange, 0) + 20
+                data.bonusRange = (data.bonusRange or 0) + 20
                 player:AddCacheFlags(CacheFlag.CACHE_RANGE)
             elseif chosenStat == 1 then
-                data.bonusDamage = mod:isNil(data.bonusDamage, 0) + .1
+                data.bonusDamage = (data.bonusDamage or 0) + .1
                 player:AddCacheFlags(CacheFlag.CACHE_DAMAGE)
             elseif chosenStat == 2 then
-                data.bonusLuck = mod:isNil(data.bonusLuck, 0) + .1
+                data.bonusLuck = (data.bonusLuck or 0) + .1
                 player:AddCacheFlags(CacheFlag.CACHE_LUCK)
             elseif chosenStat == 3 then
-                data.bonusSpeed = mod:isNil(data.bonusSpeed, 0) + .02
+                data.bonusSpeed = (data.bonusSpeed or 0) + .02
                 player:AddCacheFlags(CacheFlag.CACHE_SPEED)
             elseif chosenStat == 4 then
-                data.bonusFireDelay = mod:isNil(data.bonusFireDelay, 0) + .1
+                data.bonusFireDelay = (data.bonusFireDelay or 0) + .1
                 player:AddCacheFlags(CacheFlag.CACHE_FIREDELAY)
             end
         player:EvaluateItems()
@@ -279,19 +279,19 @@ mod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, mod.onPickupCollide_RB)
 function mod:bonusStatsCache_RB(player, cache)
     local data = mod:mmaGetPData(player)
     if cache == CacheFlag.CACHE_DAMAGE then
-        player.Damage = player.Damage + mod:isNil(data.bonusDamage, 0)
+        player.Damage = player.Damage + (data.bonusDamage or 0)
     end
     if cache == CacheFlag.CACHE_RANGE then
-        player.TearRange = player.TearRange + mod:isNil(data.bonusRange, 0)
+        player.TearRange = player.TearRange + (data.bonusRange or 0)
     end
     if cache == CacheFlag.CACHE_LUCK then
-        player.Luck = player.Luck + mod:isNil(data.bonusLuck, 0)
+        player.Luck = player.Luck + (data.bonusLuck or 0)
     end
     if cache == CacheFlag.CACHE_SPEED then
-        player.MoveSpeed = player.MoveSpeed + mod:isNil(data.bonusSpeed, 0)
+        player.MoveSpeed = player.MoveSpeed + (data.bonusSpeed or 0)
     end
     if cache == CacheFlag.CACHE_FIREDELAY then
-        local teartoadd = mod:isNil(data.bonusFireDelay, 0)
+        local teartoadd = (data.bonusFireDelay or 0)
         player.MaxFireDelay = mod:tearsUp(player.MaxFireDelay, teartoadd)
     end
 end
