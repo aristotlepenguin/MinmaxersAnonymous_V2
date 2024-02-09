@@ -15,25 +15,65 @@ mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, mod.recacheFamiliars_JC)
 
 function mod:checkDeath_JC(player)
     local pdata = mod:mmaGetPData(player)
+    local oneUpCount = hiddenItemManager:CountStack(player, CollectibleType.COLLECTIBLE_ONE_UP, hiddenItemManager.kDefaultGroup)
     if player:IsDead() then
         pdata.MMA_Died = true
-    elseif pdata.MMA_Died == true and hiddenItemManager:CountStack(player, CollectibleType.COLLECTIBLE_ONE_UP, hiddenItemManager.kDefaultGroup) >= 1 then
+    elseif pdata.MMA_Died == true  and not player:IsDead() and oneUpCount >= 1 then
+        pdata.MMA_Died = false
         hiddenItemManager:Remove(player, CollectibleType.COLLECTIBLE_ONE_UP, hiddenItemManager.kDefaultGroup)
+        pdata.MMA_JobBlessLevel = (pdata.MMA_JobBlessLevel or 0) + pdata.MMA_JobCurseLevel
+        pdata.MMA_JobCurseLevel = 0
+        if oneUpCount == 1 then
+            pdata.MMA_JobCurseStatus = false
+        end
+        player:AddCacheFlags(CacheFlag.CACHE_ALL)
+        player:EvaluateItems()
     end
 end
 mod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, mod.checkDeath_JC)
 
-
-
 mod.ItemGrabCallback:AddCallback(mod.ItemGrabCallback.InventoryCallback.POST_ADD_ITEM, function(player, item, count, touched, fromQueue)
-    print(player)
-    print(item)
-    print(count)
-    print(touched)
-    print(fromQueue)
     if not touched or not fromQueue then
-        hiddenItemManager:Add(player, CollectibleType.COLLECTIBLE_ONE_UP)
         print("goob")
+        hiddenItemManager:Add(player, CollectibleType.COLLECTIBLE_ONE_UP)
+        player:AddCacheFlags(CacheFlag.CACHE_FAMILIARS)
+        player:EvaluateItems()
+        local pdata = mod:mmaGetPData(player)
+        pdata.MMA_JobCurseStatus = true
     end
-
 end, MMAMod.MMATypes.COLLECTIBLE_JOBS_CURSE)
+
+function mod:ClearRoom_JC(rng, spawnPosition)
+    mod:AnyPlayerDo(function(player)
+        if player:HasCollectible(mod.MMATypes.COLLECTIBLE_JOBS_CURSE) then
+            local pdata = mod:mmaGetPData(player)
+            local isActive = pdata.MMA_JobCurseStatus
+            if isActive then
+                pdata.MMA_JobCurseLevel = (pdata.MMA_JobCurseLevel or 0) + 1
+                player:AddCacheFlags(CacheFlag.CACHE_ALL)
+                player:EvaluateItems()
+            end
+        end
+    end
+    )
+end
+mod:AddCallback(ModCallbacks.MC_PRE_SPAWN_CLEAN_AWARD, mod.ClearRoom_JC)
+
+function mod:Cache_JC(player, cache)
+    local sign = 0.125
+    local pdata = mod:mmaGetPData(player)
+    local jobMultiplier = ((pdata.MMA_JobBlessLevel or 0) - (pdata.MMA_JobCurseLevel or 0)) * sign
+    
+    if cache == CacheFlag.CACHE_DAMAGE then
+        player.Damage = math.max(player.Damage + jobMultiplier, 0.5)
+    elseif cache == CacheFlag.CACHE_FIREDELAY then
+        player.MaxFireDelay = math.max(mod:tearsUp(player.MaxFireDelay, jobMultiplier * 0.2), 0.5)
+    elseif cache == CacheFlag.CACHE_SPEED then
+        player.MoveSpeed = math.max(player.MoveSpeed + (jobMultiplier * .2), 0.45)
+    elseif cache == CacheFlag.CACHE_RANGE then
+        player.TearRange = math.max(player.TearRange + (jobMultiplier * 20), 0.5)
+    elseif cache == CacheFlag.CACHE_LUCK then
+        player.Luck = player.Luck + jobMultiplier
+    end
+end
+mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, mod.Cache_JC)

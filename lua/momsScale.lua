@@ -145,7 +145,7 @@ mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, mod.onNewRoom_MS)
 
 function mod:OnRoomClear_MS(rng, spawnposition)
     local currentroomindex = game:GetLevel():GetCurrentRoomIndex()
-    if mod.MMA_GlobalSaveData.droppedEnemiesDest[currentroomindex] ~= nil then
+    if mod.MMA_GlobalSaveData.droppedEnemiesDest and mod.MMA_GlobalSaveData.droppedEnemiesDest[currentroomindex] ~= nil then
         for u=1, #mod.MMA_GlobalSaveData.droppedEnemiesDest[currentroomindex] do
             table.remove(mod.MMA_GlobalSaveData.droppedEnemiesDest[currentroomindex])
         end
