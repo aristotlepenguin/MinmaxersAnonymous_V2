@@ -10,4 +10,9 @@ if EID then
     EID:addCollectible(mod.MMATypes.COLLECTIBLE_HYPERFIXATION, "After taking this item, the next card, pill or rune you take will lock all future cards/pills/runes to be only that one type for the rest of the run.", "Hyperfixation", "en_us")
     EID:addCollectible(mod.MMATypes.COLLECTIBLE_MOMS_SCALE, "Isaac has a chance to fire heavy tears that scale with Luck.#Heavy tears cause non-boss enemies to fall through the ground, creating a pit and sending the enemy to a random room on the next floor.", "Mom's Scale", "en_us")
     EID:addCollectible(mod.MMATypes.COLLECTIBLE_JOBS_CURSE, "Gain an extra life. Each time a room is cleared, all stats are reduced by a small amount.#After revival, your stats are restored, and increased further based on how long you survived.", "Job's Curse", "en_us")
+
+    EID:addCard(mod.MMATypes.CARD_CHASTITY, "Use this card to gain one of the item pedestals you touched while holding Abstinence. The last item pedestal you touched is the first item out.", "Chastity Card", "en_us")
+    local chasteHud = Sprite()
+    chasteHud:Load("gfx/cards_1_chastity.anm2", true)
+    EID:addIcon("Card" .. tostring(mod.MMATypes.CARD_CHASTITY), "HUDSmall", 0, 16, 16, 6, 6, chasteHud)
 end
