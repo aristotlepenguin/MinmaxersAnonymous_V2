@@ -110,7 +110,7 @@ function mod:onNewFloor_MS()
             newTab.ChampionColor = oldTab.ChampionColor
 
             table.insert(mod.MMA_GlobalSaveData.droppedEnemiesDest[newRoom], newTab)
-            print(newRoom)
+            --print(newRoom)
         end
     end
 end

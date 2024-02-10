@@ -170,7 +170,7 @@ function mod:onNewLevelStart_DS()
                     game:GetLevel():MakeRedRoomDoor(roomIdToExpand, door) then
                         isOpened = true
                         triedCombos[tostring(roomIdToExpand) .. tostring(door)] = true
-                        print("opened " .. tostring(roomIdToExpand) .. "on door" .. tostring(door))
+                        --print("opened " .. tostring(roomIdToExpand) .. "on door" .. tostring(door))
                         --print("opened "..tostring(roomIdToExpand))
                         break
                     end

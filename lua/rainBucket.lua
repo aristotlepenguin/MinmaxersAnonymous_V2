@@ -1,7 +1,7 @@
 local mod = MMAMod
 local game = Game()
 local sfx = SFXManager()
-
+local itemconfig = Isaac.GetItemConfig()
 local isEph = mod.MMATypes.CHARACTER_EPAPHRAS ~= nil
 
 function mod:findEmptyCharges(player)
@@ -152,7 +152,6 @@ function mod:onPickupCollide_RB(pickup, collider, low)
                     value = 10
                 end
                 if playertype == PlayerType.PLAYER_KEEPER or playertype == PlayerType.PLAYER_KEEPER_B then
-                    print(emptyredhearts)
                     value = math.max(0, value-(emptyredhearts/2))
                     if value > 0 then
                         keepercoin = true
@@ -311,12 +310,70 @@ end
 mod:AddCallback(ModCallbacks.MC_POST_UPDATE, mod.OnUpdate_RB)
 
 
+function mod:RBOnPlayerUpdate(player)
+    local pdata = mod:mmaGetPData(player)
+    if pdata.RB_JustReceived ~= nil then
+        print("one")
+        local config = itemconfig:GetCollectible(pdata.RB_JustReceived)
+        local bombs = config.AddBombs
+        local keys = config.AddKeys
+        local coins = config.AddCoins
+
+        local coinLimit = 99
+        if player:HasCollectible(CollectibleType.COLLECTIBLE_DEEP_POCKETS) then
+            coinLimit = 999
+        end
+        
+        local totalbucket = 0
+        totalbucket = totalbucket + math.max((pdata.bombsRec3 + bombs) - 99, 0)
+        totalbucket = totalbucket + math.max((pdata.coinsRec3 + coins) - coinLimit, 0)
+        totalbucket = totalbucket + math.max((pdata.keysRec3 + keys) - 99, 0)
+
+        local keepercoin = nil
+        local emptybones = nil
+        if player:GetPlayerType() == PlayerType.PLAYER_KEEPER or player:GetPlayerType() == PlayerType.PLAYER_KEEPER_B then
+            if math.max(0, totalbucket-(player:GetEffectiveMaxHearts() - player:GetHearts()/2)) > 0 then
+                keepercoin = true
+            end
+        elseif player:GetPlayerType() == PlayerType.PLAYER_THEFORGOTTEN or player:GetPlayerType() == PlayerType.PLAYER_THESOUL then
+            emptybones = 6 - (player:GetBoneHearts() + player:GetSubPlayer():GetBoneHearts())
+        end
+
+        for i=1, totalbucket, 1 do
+            mod:bucketIt(player, emptybones, keepercoin)
+        end
+
+        pdata.RB_JustReceived = nil
+    end
+    
+    --i really hate this solution but it's the easiest one. the frame i want to track is two frames before this callback
+    pdata.coinsRec3 = pdata.coinsRec2
+    pdata.bombsRec3 = pdata.bombsRec2
+    pdata.keysRec3 = pdata.keysRec2
+    
+    pdata.coinsRec2 = pdata.coinsRec1
+    pdata.bombsRec2 = pdata.bombsRec1
+    pdata.keysRec2 = pdata.keysRec1
+    
+    pdata.coinsRec1 = player:GetNumCoins()
+    pdata.bombsRec1 = player:GetNumBombs()
+    pdata.keysRec1 = player:GetNumKeys()
+end
+mod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, mod.RBOnPlayerUpdate)
 
 local bucketNineNine = function(player, item, count, touched, fromQueue)
-    print(player:GetNumCoins())
+    if not fromQueue or not touched then
+        local pdata = mod:mmaGetPData(player)
+        pdata.RB_JustReceived = item
+    end
 end
-mod.ItemGrabCallback:AddCallback(mod.ItemGrabCallback.InventoryCallback.POST_ADD_ITEM, bucketNineNine, CollectibleType.COLLECTIBLE_DOLLAR)
 
+for itemID=1, itemconfig:GetCollectibles().Size-1 do
+    local item = itemconfig:GetCollectible(itemID)
+    if item and item.AddCoins + item.AddBombs + item.AddKeys > 0 then
+        mod.ItemGrabCallback:AddCallback(mod.ItemGrabCallback.InventoryCallback.POST_ADD_ITEM, bucketNineNine, itemID)
+    end
+end
 ------------------------------------
 --EPAPHRAS STARTS HERE
 ------------------------------------
