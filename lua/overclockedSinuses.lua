@@ -43,6 +43,9 @@ end
 function mod:useOverclock(collectible, rng, player, useflags, activeslot, customvardata)
     local tempSaveData = json.decode(mod:LoadData())
     tempSaveData.MMA_firingOverclock = true
+    local jsonString = json.encode(tempSaveData)
+    mod:SaveData(jsonString)
+
     mod.MMA_GlobalSaveData.MMA_firingOverclock = true
     local data = mod:mmaGetPData(player)
     data.MMA_overclockFrame = game:GetFrameCount()
@@ -208,6 +211,10 @@ function mod:onOverclockFrame(player)
     elseif mod.MMA_GlobalSaveData.MMA_firingOverclock == true and
     data.MMA_overclockFrame and data.MMA_overclockFrame + 500 <= game:GetFrameCount() then
         mod.MMA_GlobalSaveData.MMA_firingOverclock = nil
+        local tempSaveData = json.decode(mod:LoadData())
+        tempSaveData.MMA_firingOverclock = nil
+        local jsonString = json.encode(tempSaveData)
+        mod:SaveData(jsonString)
         player:TryRemoveNullCostume(mod.MMATypes.COSTUME_FIRE_OVERCLOCK)
     end
 end

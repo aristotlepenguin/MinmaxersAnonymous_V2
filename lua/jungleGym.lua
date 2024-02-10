@@ -169,3 +169,9 @@ function mod:test_command(cmd, args)
     end
 end
 mod:AddCallback(ModCallbacks.MC_EXECUTE_CMD, mod.test_command)
+
+
+function mod:crashGame(card, player, useflags)
+    local knife = player:FireKnife(player, 0, false, 1, 0)
+end
+mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.crashGame, Card.CARD_EMPRESS)

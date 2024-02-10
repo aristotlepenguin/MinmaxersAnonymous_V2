@@ -379,7 +379,7 @@ function mod:BossRushImmunity_RB(rng, spawnPosition)
     end
     end)
 
-    if room:GetType() == RoomType.ROOM_BOSS and (room:IsClear() or rng ~= nil) and isMaxie then
+    if room:GetType() == RoomType.ROOM_BOSS and (room:IsClear() or rng ~= nil) and isMaxie and not game:IsGreedMode() then
         if game:GetLevel():GetStage() == LevelStage.STAGE3_2 then
             room:TrySpawnBossRushDoor()
         elseif game:GetLevel():GetStage() == LevelStage.STAGE4_2 and game:GetLevel():GetStageType() < 3 then

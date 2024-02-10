@@ -43,6 +43,10 @@ function mod:loadData(isSave)
         hiddenItemManager:LoadData(mod.MMA_GlobalSaveData.HIDDEN_ITEM_DATA)
     else
         mod.MMA_GlobalSaveData = {}
+        mod:AnyPlayerDo(function(player)
+        player:AddCacheFlags(CacheFlag.CACHE_ALL)
+        player:EvaluateItems()
+        end)
     end
 end
 mod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, mod.loadData)
