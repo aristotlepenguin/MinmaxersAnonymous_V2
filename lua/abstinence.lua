@@ -171,7 +171,7 @@ function mod:useChastityCard(card, player, useflags)
         end
         table.insert(data.chastity_items, 1, item_obj)
     else
-        if player:GetActiveItem(ActiveSlot.SLOT_PRIMARY) ~= 0 and itemconfig:GetCollectible(item_obj.subtype).Type == ItemType.ITEM_ACTIVE then
+        if (player:GetActiveItem(ActiveSlot.SLOT_PRIMARY) ~= 0 and player:GetActiveItem(ActiveSlot.SLOT_PRIMARY) ~= 584) and itemconfig:GetCollectible(item_obj.subtype).Type == ItemType.ITEM_ACTIVE then
             local charges = player:GetActiveCharge()
             local activetype = player:GetActiveItem()
             if not player:HasCollectible(CollectibleType.COLLECTIBLE_SCHOOLBAG) or player:GetActiveItem(ActiveSlot.SLOT_SECONDARY) ~= 0 then
