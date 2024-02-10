@@ -312,8 +312,7 @@ mod:AddCallback(ModCallbacks.MC_POST_UPDATE, mod.OnUpdate_RB)
 
 function mod:RBOnPlayerUpdate(player)
     local pdata = mod:mmaGetPData(player)
-    if pdata.RB_JustReceived ~= nil then
-        print("one")
+    if pdata.RB_JustReceived ~= nil and (player:HasCollectible(mod.MMATypes.COLLECTIBLE_RAIN_BUCKET) or (isEph and player:GetPlayerType() == mod.MMATypes.CHARACTER_EPAPHRAS)) then
         local config = itemconfig:GetCollectible(pdata.RB_JustReceived)
         local bombs = config.AddBombs
         local keys = config.AddKeys
