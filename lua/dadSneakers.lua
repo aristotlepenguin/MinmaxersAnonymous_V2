@@ -148,7 +148,7 @@ function mod:onNewLevelStart_DS()
     local hasIt = false
     local rng = RNG()
     mod:AnyPlayerDo(function(player)
-        if player:HasCollectible(mod.MMATypes.COLLECTIBLE_DAD_SNEAKERS) or (tEph and player:GetPlayerType() == mod.MMATypes.CHARACTER_EPAPHRAS_B) then
+        if player:HasCollectible(mod.MMATypes.COLLECTIBLE_DAD_SNEAKERS) or (tEph and player:GetPlayerType() == mod.MMATypes.CHARACTER_EPAPHRAS_B and not game:IsGreedMode()) then
             hasIt = true
             rng = player:GetCollectibleRNG(mod.MMATypes.COLLECTIBLE_DAD_SNEAKERS)
         end
@@ -163,7 +163,7 @@ function mod:onNewLevelStart_DS()
             for j=1, 10000, 1 do
                 local roomIdToExpand = mod:checkFloorRooms_DS(true, rng:RandomInt(numOfOldRooms)+1)
                 local doorTable = mod:findValidDoors_DS(roomIdToExpand)
-                local roomdesc = Game():GetLevel():GetRoomByIdx(roomIdToExpand)
+                --local roomdesc = Game():GetLevel():GetRoomByIdx(roomIdToExpand)
                 for i, door in ipairs(doorTable) do
                     if mod:findValidDoors_Edges(door, roomIdToExpand) and
                     triedCombos[tostring(roomIdToExpand) .. tostring(door)] == nil and 
