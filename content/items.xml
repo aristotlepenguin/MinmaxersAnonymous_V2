@@ -1,12 +1,12 @@
 <items gfxroot="gfx/items/" version="1">
-	<passive	id="1"	gfx="Collectibles_1_JungleGym.png" name="Jungle Gym" description="Time to monkey around" />
-    <passive	id="2"	gfx="Collectibles_2_RainBucket.png" name="Rain Bucket" description="Catch the extra!" tags = "offensive"/>
-    <passive	id="3"	gfx="Collectibles_3_Abstinence.png" name="Abstinence" description="You're not ready yet..." tags = "offensive"/>
-    <passive    id="4"  gfx="Collectibles_4_Memory_Leak.png" name="Memory Leak" description="Tears up + you feel leaky" cache = "firedelay" tags = "tearsup offensive"/>
-    <passive    id="5"  gfx="Collectibles_5_Hopes_And_Dreams.png" name="Isaac's Hopes and Dreams" description="Yeah, right..." tags = "angel offensive stars lazarusshared"/>
-    <passive    id="6"  gfx="Collectibles_6_Dads_Sneakers.png" name="Dad's Sneakers" description="Don't look back" tags = "nogreed offensive lazarusshared"/>
-    <active     id="7"  gfx="Collectibles_7_Overclocked.png" name="Overclocked Sinuses" description="One time limiter removal" maxcharges = "0" tags = "offensive nocantrip"/>
-    <passive    id="8"  gfx="Collectibles_8_Hyperfixation.png" name="Hyperfixation" description="You're so obsessed with that thing!" tags = "offensive nochallenge"/>
-    <passive    id="9"  gfx="Collectibles_9_Moms_Scale.png" name="Mom's Scale" description="Heavy tears" tags = "mom offensive"/>
-    <passive    id="10"  gfx="Collectibles_10_Jobs_Curse.png" name="Job's Curse" description="All stats down + you feel tested" tags = "offensive"/>
+	<passive	id="1"	gfx="Collectibles_1_JungleGym.png" name="Jungle Gym" description="Time to monkey around" quality = "0" craftquality = "-1"/>
+    <passive	id="2"	gfx="Collectibles_2_RainBucket.png" name="Rain Bucket" description="Catch the extra!" tags = "offensive" quality = "4" craftquality = "4"/>
+    <passive	id="3"	gfx="Collectibles_3_Abstinence.png" name="Abstinence" description="You're not ready yet..." tags = "offensive" quality="2" craftquality = "-1"/>
+    <passive    id="4"  gfx="Collectibles_4_Memory_Leak.png" name="Memory Leak" description="Tears up + you feel leaky" cache = "firedelay" tags = "tearsup offensive" quality = "2" craftquality = "-1"/>
+    <passive    id="5"  gfx="Collectibles_5_Hopes_And_Dreams.png" name="Isaac's Hopes and Dreams" description="Yeah, right..." tags = "angel offensive stars lazarusshared" quality = "0" craftquality = "2"/>
+    <passive    id="6"  gfx="Collectibles_6_Dads_Sneakers.png" name="Dad's Sneakers" description="Don't look back" tags = "nogreed offensive lazarusshared" quality = "3" craftquality = "3"/>
+    <active     id="7"  gfx="Collectibles_7_Overclocked.png" name="Overclocked Sinuses" description="One time limiter removal" maxcharges = "0" tags = "offensive nocantrip" quality = "3" craftquality = "3"/>
+    <passive    id="8"  gfx="Collectibles_8_Hyperfixation.png" name="Hyperfixation" description="You're so obsessed with that thing!" tags = "offensive nochallenge" quality = "2" craftquality = "2"/>
+    <passive    id="9"  gfx="Collectibles_9_Moms_Scale.png" name="Mom's Scale" description="Heavy tears" tags = "mom offensive" quality = "1" craftquality = "1"/>
+    <passive    id="10"  gfx="Collectibles_10_Jobs_Curse.png" name="Job's Curse" description="All stats down + you feel tested" tags = "offensive" quality = "3" craftquality = "3"/>
 </items>
