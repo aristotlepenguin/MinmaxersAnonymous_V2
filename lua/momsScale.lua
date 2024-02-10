@@ -97,7 +97,6 @@ end
 
 function mod:onNewFloor_MS()
     if mod.MMA_GlobalSaveData.droppedEnemies and #mod.MMA_GlobalSaveData.droppedEnemies > 0 then
-
         for i=1, #mod.MMA_GlobalSaveData.droppedEnemies, 1 do
             local newRoom = mod:checkFloorRooms_MS(ReturnFlag.RF_RANDOM_EMPTY)
             if mod.MMA_GlobalSaveData.droppedEnemiesDest[newRoom] == nil then

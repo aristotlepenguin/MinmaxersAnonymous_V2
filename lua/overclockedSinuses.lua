@@ -42,12 +42,18 @@ end
 
 function mod:useOverclock(collectible, rng, player, useflags, activeslot, customvardata)
     local tempSaveData = json.decode(mod:LoadData())
-    tempSaveData.MMA_firingOverclock = true
+    if not tempSaveData.PlayerData then
+        tempSaveData.PlayerData = {}
+    end
+    if not tempSaveData.PlayerData[tostring(player:GetCollectibleRNG(1):GetSeed())] then
+        tempSaveData.PlayerData[tostring(player:GetCollectibleRNG(1):GetSeed())] = {}
+    end
+    tempSaveData.PlayerData[tostring(player:GetCollectibleRNG(1):GetSeed())].MMA_firingOverclock = true
     local jsonString = json.encode(tempSaveData)
     mod:SaveData(jsonString)
 
-    mod.MMA_GlobalSaveData.MMA_firingOverclock = true
     local data = mod:mmaGetPData(player)
+    data.MMA_firingOverclock = true
     data.MMA_overclockFrame = game:GetFrameCount()
     return {
         Discharge = false,
@@ -232,7 +238,8 @@ end
 mod:AddCallback(ModCallbacks.MC_POST_LASER_UPDATE, mod.onLaserUpdate)
 
 function mod:crashBonus(player, cache)
-    if cache == CacheFlag.CACHE_DAMAGE and mod.MMA_GlobalSaveData.crashBonus == true then
+    local data = mod:mmaGetPData(player)
+    if cache == CacheFlag.CACHE_DAMAGE and data.crashBonus == true then
         player.Damage = player.Damage + 3
     end
 end
