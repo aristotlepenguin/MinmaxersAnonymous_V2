@@ -311,12 +311,18 @@ end
 mod:AddCallback(ModCallbacks.MC_POST_UPDATE, mod.OnUpdate_RB)
 
 
+
+local bucketNineNine = function(player, item, count, touched, fromQueue)
+    print(player:GetNumCoins())
+end
+mod.ItemGrabCallback:AddCallback(mod.ItemGrabCallback.InventoryCallback.POST_ADD_ITEM, bucketNineNine, CollectibleType.COLLECTIBLE_DOLLAR)
+
 ------------------------------------
 --EPAPHRAS STARTS HERE
 ------------------------------------
 
 function mod:ephStatsHandling(player, cache)
-    if cache == CacheFlag.CACHE_SPEED then
+    if cache == CacheFlag.CACHE_SPEED and player:GetPlayerType() == mod.MMATypes.CHARACTER_EPAPHRAS then
         player.MoveSpeed = player.MoveSpeed - 0.1
     end
 end

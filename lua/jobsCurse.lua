@@ -32,14 +32,24 @@ function mod:checkDeath_JC(player)
 end
 mod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, mod.checkDeath_JC)
 
+function mod:onGreedUpdate()
+    if game:IsGreedMode() and mod.MMA_GlobalSaveData.MMA_GreedWave ~= game:GetLevel().GreedModeWave then
+        mod:ClearRoom_JC(nil, nil)
+        mod.MMA_GlobalSaveData.MMA_GreedWave = game:GetLevel().GreedModeWave
+    end
+end
+mod:AddCallback(ModCallbacks.MC_POST_UPDATE, mod.onGreedUpdate)
+
 mod.ItemGrabCallback:AddCallback(mod.ItemGrabCallback.InventoryCallback.POST_ADD_ITEM, function(player, item, count, touched, fromQueue)
     if not touched or not fromQueue then
-        print("goob")
         hiddenItemManager:Add(player, CollectibleType.COLLECTIBLE_ONE_UP)
         player:AddCacheFlags(CacheFlag.CACHE_FAMILIARS)
         player:EvaluateItems()
         local pdata = mod:mmaGetPData(player)
         pdata.MMA_JobCurseStatus = true
+        if game:IsGreedMode() then
+            mod.MMA_GlobalSaveData.MMA_GreedWave = game:GetLevel().GreedModeWave
+        end
     end
 end, MMAMod.MMATypes.COLLECTIBLE_JOBS_CURSE)
 
