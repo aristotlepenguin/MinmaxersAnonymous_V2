@@ -1,5 +1,5 @@
 local mod = MMAMod
-
+local game = Game()
 local sfx = SFXManager()
 
 local isEph = mod.MMATypes.CHARACTER_EPAPHRAS ~= nil
@@ -362,3 +362,24 @@ if isEph then
     mod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, mod.onUpdateEpaphras)
 end
 --account for skeleton key, pyro, and dollar
+
+function mod:BossRushImmunity_RB(rng, spawnPosition)
+    local room = Game():GetRoom()
+    local isMaxie = false
+
+    mod:AnyPlayerDo(function(player)
+    if isEph and player:GetPlayerType() ~= mod.MMATypes.CHARACTER_EPAPHRAS then
+        isMaxie = true
+    end
+    end)
+
+    if room:GetType() == RoomType.ROOM_BOSS and (room:IsClear() or rng ~= nil) and isMaxie then
+        if game:GetLevel():GetStage() == LevelStage.STAGE3_2 then
+            room:TrySpawnBossRushDoor()
+        elseif game:GetLevel():GetStage() == LevelStage.STAGE4_2 and game:GetLevel():GetStageType() < 3 then
+            room:TrySpawnBlueWombDoor()
+        end
+    end
+end
+mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, mod.BossRushImmunity_RB)
+mod:AddCallback(ModCallbacks.MC_PRE_SPAWN_CLEAN_AWARD, mod.BossRushImmunity_RB)
