@@ -6,13 +6,19 @@
         <Item Name="Memory Leak" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
         <Item Name="Isaac's Hopes and Dreams" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
         <Item Name="Overclocked Sinuses" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+        <Item Name="Mom's Scale" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+        <Item Name="Hyperfixation" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+        <Item Name="Job's Curse" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
     </Pool>
 	<Pool Name="curse">
         <Item Name="Memory Leak" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+        <Item Name="Hyperfixation" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+        <Item Name="Job's Curse" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
     </Pool>
 	<Pool Name="secret">
         <Item Name="Memory Leak" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
         <Item Name="Overclocked Sinuses" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+        <Item Name="Hyperfixation" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
 	</Pool>
 	<Pool Name="greedTreasure">
         <Item Name="Rain Bucket" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
@@ -20,19 +26,27 @@
         <Item Name="Abstinence" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
         <Item Name="Overclocked Sinuses" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
         <Item Name="Isaac's Hopes and Dreams" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+        <Item Name="Mom's Scale" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+        <Item Name="Hyperfixation" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+        <Item Name="Job's Curse" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
     </Pool>
 	<Pool Name="greedCurse">
         <Item Name="Memory Leak" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+        <Item Name="Hyperfixation" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+        <Item Name="Job's Curse" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
     </Pool>
 	<Pool Name="greedSecret">
         <Item Name="Memory Leak" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
         <Item Name="Overclocked Sinuses" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+        <Item Name="Hyperfixation" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
     </Pool>
     <Pool Name="shop">
         <Item Name="Isaac's Hopes and Dreams" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
     </Pool>
     <Pool Name="greedShop">
         <Item Name="Isaac's Hopes and Dreams" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+        <Item Name="Mom's Scale" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+        <Item Name="Hyperfixation" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
     </Pool>
     <Pool Name="angel">
         <Item Name="Abstinence" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
@@ -56,5 +70,12 @@
     </Pool>
     <Pool Name="oldChest">
         <Item Name="Dad's Sneakers" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+        <Item Name="Mom's Scale" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+    </Pool>
+    <Pool Name="momsChest">
+        <Item Name="Mom's Scale" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+    </Pool>
+    <Pool Name="redChest">
+        <Item Name="Job's Curse" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
     </Pool>
 </ItemPools>
