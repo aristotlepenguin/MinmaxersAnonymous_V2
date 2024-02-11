@@ -1,3 +1,4 @@
 <costumes anm2root = "gfx/characters/">
     <costume anm2path = "tantrum_face.anm2" hasSkinAlt = "true" type = "none" priority = "99"/>
+    <costume id = "2"  anm2path = "rain_bucket.anm2" type = "passive"/>
 </costumes>
