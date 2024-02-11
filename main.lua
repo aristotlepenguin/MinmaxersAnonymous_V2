@@ -43,6 +43,7 @@ local extrafiles = {
     "lua.hyperfixation",
     "lua.momsScale",
     "lua.jobsCurse",
+    "lua.memoryLeak",
     "lua.eid"
 }
 for i=1,#extrafiles do

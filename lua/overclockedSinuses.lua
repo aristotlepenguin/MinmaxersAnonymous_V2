@@ -85,7 +85,18 @@ end
 function mod:onOverclockFrame(player)
     local data = mod:mmaGetPData(player)
     local frame = game:GetFrameCount()
-    if data.MMA_overclockFrame and data.MMA_overclockFrame + 20 <= frame and data.MMA_overclockFrame + 500 > frame then
+    if data.MMA_overclockFrame == -1 then
+        data.MMA_firingOverclock = nil
+        local tempSaveData = json.decode(mod:LoadData())
+        if not tempSaveData.PlayerData[tostring(player:GetCollectibleRNG(1):GetSeed())] then
+            tempSaveData.PlayerData[tostring(player:GetCollectibleRNG(1):GetSeed())] = {}
+        end
+        tempSaveData.PlayerData[tostring(player:GetCollectibleRNG(1):GetSeed())].MMA_firingOverclock = nil
+        local jsonString = json.encode(tempSaveData)
+        mod:SaveData(jsonString)
+        player:TryRemoveNullCostume(mod.MMATypes.COSTUME_FIRE_OVERCLOCK)
+        data.MMA_overclockFrame = nil
+    elseif data.MMA_overclockFrame and data.MMA_overclockFrame + 20 <= frame and data.MMA_overclockFrame + 500 > frame then
         local tearTier = math.floor(30 / (player.MaxFireDelay + 1))
         local sinusRng = player:GetCollectibleRNG(mod.MMATypes.COLLECTIBLE_OVERCLOCKED_SINUSES)
         local tearSpeed = 25 * player.ShotSpeed
@@ -95,9 +106,14 @@ function mod:onOverclockFrame(player)
         if data.MMA_overclockFrame + 20 == game:GetFrameCount() and data.MMA_overclockStarted == nil then
             player:AddNullCostume(mod.MMATypes.COSTUME_FIRE_OVERCLOCK)
             data.MMA_overclockStarted = true
+            data.MMA_overclockRoom = game:GetLevel():GetCurrentRoomIndex()
             firstFrame = true
         elseif data.MMA_overclockFrame + 21 == game:GetFrameCount() and data.MMA_overclockStarted == true then
             data.MMA_overclockStarted = nil
+        end
+
+        if data.MMA_overclockRoom ~= game:GetLevel():GetCurrentRoomIndex() then
+            data.MMA_overclockFrame = -1
         end
 
         if player:HasCollectible(CollectibleType.COLLECTIBLE_EPIC_FETUS) then
@@ -214,11 +230,11 @@ function mod:onOverclockFrame(player)
                 lucktear = mod:tearModifiers(lucktear, player, true, true)
             end
         end
-    elseif mod.MMA_GlobalSaveData.MMA_firingOverclock == true and
+    elseif data.MMA_firingOverclock == true and
     data.MMA_overclockFrame and data.MMA_overclockFrame + 500 <= game:GetFrameCount() then
-        mod.MMA_GlobalSaveData.MMA_firingOverclock = nil
+        data.MMA_firingOverclock = nil
         local tempSaveData = json.decode(mod:LoadData())
-        tempSaveData.MMA_firingOverclock = nil
+        tempSaveData.PlayerData[tostring(player:GetCollectibleRNG(1):GetSeed())].MMA_firingOverclock = nil
         local jsonString = json.encode(tempSaveData)
         mod:SaveData(jsonString)
         player:TryRemoveNullCostume(mod.MMATypes.COSTUME_FIRE_OVERCLOCK)

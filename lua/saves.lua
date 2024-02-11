@@ -36,7 +36,7 @@ function mod:loadData(isSave)
             local player = Isaac.GetPlayer(i)
             if mod.MMA_GlobalSaveData.PlayerData[tostring(player:GetCollectibleRNG(1):GetSeed())] then
                 player:GetData().mmaSaveData = mod.MMA_GlobalSaveData.PlayerData[tostring(player:GetCollectibleRNG(1):GetSeed())]
-                player:GetData().mmaSaveData.MMA_overclockFrame = nil
+                player:GetData().mmaSaveData.MMA_overclockFrame = -1
                 if player:GetData().mmaSaveData.MMA_firingOverclock == true then
                     player:GetData().mmaSaveData.crashBonus = true
                     player:GetData().mmaSaveData.MMA_firingOverclock = nil
