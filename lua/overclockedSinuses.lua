@@ -57,7 +57,9 @@ function mod:useOverclock(collectible, rng, player, useflags, activeslot, custom
     data.MMA_overclockFrame = game:GetFrameCount()
     
     if player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
-        player:AddWisp(mod.MMATypes.COLLECTIBLE_OVERCLOCKED_SINUSES, player.Position)
+        for i=1, 8, 1 do
+            player:AddWisp(mod.MMATypes.COLLECTIBLE_OVERCLOCKED_SINUSES, player.Position)
+        end
     end
 
     return {
@@ -281,5 +283,21 @@ function mod:reticleUpdate(eff)
 end
 mod:AddCallback(ModCallbacks.MC_POST_EFFECT_UPDATE, mod.reticleUpdate, EffectVariant.TARGET)
 
+function mod:overclockedWispUpdate(wisp)
+    if wisp.SubType == mod.MMATypes.COLLECTIBLE_OVERCLOCKED_SINUSES then
+        local player = wisp.SpawnerEntity
+        if player then
+            if game:GetFrameCount() % 2 == 0 then
+                local direction = (wisp.Position - player.Position):Normalized()
+                wisp:FireProjectile(direction)
+            end
+            local data = mod:mmaGetPData(player)
+            if data.MMA_firingOverclock == nil then
+                wisp:TakeDamage(13, 0, EntityRef(player), 1)
+            end
+        end
+    end
+end
+mod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, mod.overclockedWispUpdate, FamiliarVariant.WISP)
 
 --mom's knife
