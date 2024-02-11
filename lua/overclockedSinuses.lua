@@ -55,6 +55,11 @@ function mod:useOverclock(collectible, rng, player, useflags, activeslot, custom
     local data = mod:mmaGetPData(player)
     data.MMA_firingOverclock = true
     data.MMA_overclockFrame = game:GetFrameCount()
+    
+    if player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
+        player:AddWisp(mod.MMATypes.COLLECTIBLE_OVERCLOCKED_SINUSES, player.Position)
+    end
+
     return {
         Discharge = false,
         Remove = false,

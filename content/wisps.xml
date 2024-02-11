@@ -1,0 +1,8 @@
+<wisps gfxroot="gfx/wisps/">
+    <color name="flame_green" r="160" g="300" b="50"/>
+    <color name="core_green" r="80" g="300" b="80"/>
+    <color name="tear_green" r="180" g="320" b="30"/>
+
+    <wisp id="7" hp="12" layer="1" damage="3" flameColor="flame_green" coreColor="core_green" tearColor="tear_green" count="0" />
+
+</wisps>
