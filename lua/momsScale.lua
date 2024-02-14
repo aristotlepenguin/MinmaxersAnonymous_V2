@@ -157,8 +157,25 @@ function mod:LaserEnemyHit_MS(entity, amount, damageflags, source, countdownfram
 end
 mod:AddCallback(ModCallbacks.MC_ENTITY_TAKE_DMG, mod.LaserEnemyHit_MS)
 
----------------------------------------------------------------------------
 
+function mod:OnKnifeCollide_MS(knife, collider, low)
+    local player = mod:getPlayerFromKnifeLaser(knife)
+    if player and player:HasCollectible(mod.MMATypes.COLLECTIBLE_MOMS_SCALE) and collider:IsVulnerableEnemy() and not collider:IsBoss() then
+        local chance = player.Luck * 5 + 10
+        local rng = player:GetCollectibleRNG(mod.MMATypes.COLLECTIBLE_MOMS_SCALE)
+        if player:HasTrinket(TrinketType.TRINKET_TEARDROP_CHARM) then
+            chance = chance + 20
+        end
+        local chance_num = rng:RandomInt(100)
+        if chance_num < chance then
+            mod:dropEnemy(collider, player)
+        end
+    end
+end
+mod:AddCallback(ModCallbacks.MC_PRE_KNIFE_COLLISION, mod.OnKnifeCollide_MS)
+
+
+---------------------------------------------------------------------------
 local ReturnFlag = {}
 ReturnFlag.RF_RANDOM_EMPTY = 0
 ReturnFlag.RF_BOSS = 1
