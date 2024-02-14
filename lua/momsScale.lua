@@ -73,6 +73,92 @@ function mod:hitEnemy(tear, collider, low)
 end
 mod:AddCallback(ModCallbacks.MC_PRE_TEAR_COLLISION, mod.hitEnemy)
 
+---------------------------------------------------------------------------
+function mod:checkLaser_MS(laser)
+    local player = mod:getPlayerFromKnifeLaser(laser)
+    local pdata = player and mod:mmaGetPData(player)
+    local data = laser:GetData()
+    local var = laser.Variant
+    local subt = laser.SubType
+    local ignoreLaserVar = ((var == 1 and subt == 3) or var == 5 or var == 12)
+
+    if laser.Type == EntityType.ENTITY_EFFECT then
+        ignoreLaserVar = false
+    end
+    data.WZ_Player = player
+
+    if player and not ignoreLaserVar then
+        if player:HasCollectible(mod.MMATypes.COLLECTIBLE_MOMS_SCALE) then
+            local rng = player:GetCollectibleRNG(mod.MMATypes.COLLECTIBLE_MOMS_SCALE)
+
+            if laser.Type == EntityType.ENTITY_EFFECT and laser.Variant == EffectVariant.BRIMSTONE_SWIRL then
+                rng = RNG()
+                rng:SetSeed(rng:GetSeed(), 35)
+            end
+
+            local chance = player.Luck * 5 + 10
+            if player:HasTrinket(TrinketType.TRINKET_TEARDROP_CHARM) then
+                chance = chance + 20
+            end
+            local chance_num = rng:RandomInt(100)
+            if chance_num < chance then
+                data.Laser_Heavy = true
+                pdata.LaserHeavy = true
+            end
+        end
+    end
+end
+mod:AddCallback(ModCallbacks.MC_POST_LASER_INIT, mod.checkLaser_MS)
+mod:AddCallback(ModCallbacks.MC_POST_EFFECT_INIT, mod.checkLaser_MS, EffectVariant.BRIMSTONE_BALL)
+mod:AddCallback(ModCallbacks.MC_POST_EFFECT_INIT, mod.checkLaser_MS, EffectVariant.BRIMSTONE_SWIRL)
+
+function mod:updateLasersPlayer_MS(player)
+    local lasers = Isaac.FindByType(EntityType.ENTITY_LASER)
+    for i=1, #lasers do
+        local laser = lasers[i]
+        if laser:GetData().Laser_Heavy == true then
+            laser:GetData().Laser_Heavy = false
+            laser.Color = greyColor
+        end
+    end
+
+    local brimballs = Isaac.FindByType(EntityType.ENTITY_EFFECT, EffectVariant.BRIMSTONE_BALL)
+    for i=1, #brimballs do
+        local brimball = brimballs[i]
+        if brimball:GetData().Laser_Heavy == true then
+            brimball:GetData().Laser_Heavy = false
+            brimball.Color = greyColor
+        end
+    end
+
+    local brimswirls = Isaac.FindByType(EntityType.ENTITY_EFFECT, EffectVariant.BRIMSTONE_SWIRL)
+    for i=1, #brimswirls do
+        local brimswirl = brimswirls[i]
+        if brimswirl:GetData().Laser_Heavy == true then
+            brimswirl:GetData().Laser_Heavy = false
+            brimswirl.Color = greyColor
+        end
+    end
+
+end
+
+function mod:LaserEnemyHit_MS(entity, amount, damageflags, source, countdownframes)
+    if entity:IsVulnerableEnemy() and not entity:IsBoss() then
+        local player = source.Entity:ToPlayer()
+        local pdata
+        if player then
+            pdata = mod:mmaGetPData(player)
+        end
+        if pdata and pdata.LaserHeavy == true then
+            player:GetData().LaserHeavy = false
+            mod:dropEnemy(entity, player)
+        end
+    end
+end
+mod:AddCallback(ModCallbacks.MC_ENTITY_TAKE_DMG, mod.LaserEnemyHit_MS)
+
+---------------------------------------------------------------------------
+
 local ReturnFlag = {}
 ReturnFlag.RF_RANDOM_EMPTY = 0
 ReturnFlag.RF_BOSS = 1
