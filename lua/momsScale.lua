@@ -81,7 +81,6 @@ function mod:checkLaser_MS(laser)
     local var = laser.Variant
     local subt = laser.SubType
     local ignoreLaserVar = ((var == 1 and subt == 3) or var == 5 or var == 12)
-
     if laser.Type == EntityType.ENTITY_EFFECT then
         ignoreLaserVar = false
     end
@@ -141,6 +140,7 @@ function mod:updateLasersPlayer_MS(player)
     end
 
 end
+mod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, mod.updateLasersPlayer_MS)
 
 function mod:LaserEnemyHit_MS(entity, amount, damageflags, source, countdownframes)
     if entity:IsVulnerableEnemy() and not entity:IsBoss() then
