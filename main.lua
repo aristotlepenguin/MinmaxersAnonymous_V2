@@ -44,6 +44,7 @@ local extrafiles = {
     "lua.momsScale",
     "lua.jobsCurse",
     "lua.memoryLeak",
+    "lua.scoreAssaultChallenge",
     "lua.eid"
 }
 for i=1,#extrafiles do
