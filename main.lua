@@ -27,6 +27,8 @@ mod.MMATypes.CARD_CHASTITY = Isaac.GetCardIdByName("ChastityCard")
 
 mod.MMATypes.COSTUME_FIRE_OVERCLOCK = Isaac.GetCostumeIdByPath("gfx/characters/tantrum_face.anm2")
 
+mod.MMATypes.CHALLENGE_SCORE_ASSAULT = Isaac.GetChallengeIdByName("Score Assault")
+
 mod.FloorSaves = {}
 mod.MMA_GlobalSaveData = {}
 
