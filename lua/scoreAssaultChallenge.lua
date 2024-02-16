@@ -74,3 +74,39 @@ function mod:refreshStats_SA(_player, cacheflag)
     mod.MMA_GlobalSaveData.TotalStatScore = statScore
 end
 mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, mod.refreshStats_SA)
+
+local masterPickupScoreList = {}
+masterPickupScoreList[PickupVariant.PICKUP_COIN] = {}
+masterPickupScoreList[PickupVariant.PICKUP_KEY] = {}
+masterPickupScoreList[PickupVariant.PICKUP_BOMB] = {}
+masterPickupScoreList[PickupVariant.PICKUP_HEART] = {}
+masterPickupScoreList[PickupVariant.PICKUP_POOP] = {}
+masterPickupScoreList[PickupVariant.PICKUP_LIL_BATTERY] = {}
+
+local backupPickups = {
+    [PickupVariant.PICKUP_COIN] = 0,
+    [PickupVariant.PICKUP_KEY] = 0,
+    [PickupVariant.PICKUP_BOMB] = 0,
+    [PickupVariant.PICKUP_POOP] = 0,
+    [PickupVariant.PICKUP_HEART] = 0,
+    [PickupVariant.PICKUP_POOP] = 0,
+    [PickupVariant.PICKUP_LIL_BATTERY] = 0
+}
+
+function mod:trackPickups_SA(pickup, collider, low)
+    if pickup:GetSprite():GetAnimation() == "Collect" and not pickup:GetData().MMA_ItemTouched then
+        local scoreIt = 0
+        if pickup.Variant == PickupVariant.PICKUP_COIN or
+        pickup.Variant == PickupVariant.PICKUP_KEY or
+        pickup.Variant == PickupVariant.PICKUP_BOMB or
+        pickup.Variant == PickupVariant.PICKUP_HEART or
+        pickup.Variant == PickupVariant.PICKUP_POOP or
+        pickup.Variant == PickupVariant.PICKUP_LIL_BATTERY then
+            pickup:GetData().MMA_ItemTouched = true
+            scoreIt = masterPickupScoreList[pickup.Variant][pickup.SubType] or backupPickups[pickup.Variant] or 50
+        end
+        mod.MMA_GlobalSaveData.TotalBonusScore = (mod.MMA_GlobalSaveData.TotalBonusScore or 0) + scoreIt
+        mod:refreshTotalScore_SA()
+    end
+end
+mod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, mod.trackPickups_SA)
