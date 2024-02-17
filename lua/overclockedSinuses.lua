@@ -89,6 +89,8 @@ function mod:tearModifiers(tear, player, isPrimaryTear, isTear)
 end
 --mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, mod.saveData)
 
+local screenShaking = false
+
 function mod:onOverclockFrame(player)
     local data = mod:mmaGetPData(player)
     local frame = game:GetFrameCount()
@@ -121,6 +123,12 @@ function mod:onOverclockFrame(player)
 
         if data.MMA_overclockRoom ~= game:GetLevel():GetCurrentRoomIndex() then
             data.MMA_overclockFrame = -1
+        end
+
+        if not (player:HasCollectible(CollectibleType.COLLECTIBLE_BRIMSTONE) or player:HasCollectible(CollectibleType.COLLECTIBLE_TECHNOLOGY) or player:HasCollectible(CollectibleType.COLLECTIBLE_TECHNOLOGY_2)) and not screenShaking then
+            screenShaking = true
+            local framesRemaining = data.MMA_overclockFrame + 500 - frame
+            game:ShakeScreen(framesRemaining)
         end
 
         if player:HasCollectible(CollectibleType.COLLECTIBLE_EPIC_FETUS) then
@@ -245,6 +253,7 @@ function mod:onOverclockFrame(player)
         local jsonString = json.encode(tempSaveData)
         mod:SaveData(jsonString)
         player:TryRemoveNullCostume(mod.MMATypes.COSTUME_FIRE_OVERCLOCK)
+        screenShaking = false
     end
 end
 mod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, mod.onOverclockFrame)

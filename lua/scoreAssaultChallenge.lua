@@ -176,7 +176,7 @@ local backupPickups = {
 
 function mod:trackPickups_SA(pickup, collider, low)
     if Isaac.GetChallenge() == mod.MMATypes.CHALLENGE_SCORE_ASSAULT then
-        if pickup:GetSprite():GetAnimation() == "Collect" and not pickup:GetData().MMA_ItemTouched then
+        if not pickup:GetData().MMA_ItemTouched then --pickup:GetSprite():GetAnimation() == "Collect" and
             local scoreIt = 0
             if pickup.Variant == PickupVariant.PICKUP_COIN or
             pickup.Variant == PickupVariant.PICKUP_KEY or

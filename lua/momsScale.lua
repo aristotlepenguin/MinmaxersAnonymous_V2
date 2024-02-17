@@ -144,8 +144,11 @@ mod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, mod.updateLasersPlayer_MS)
 
 function mod:LaserEnemyHit_MS(entity, amount, damageflags, source, countdownframes)
     if entity:IsVulnerableEnemy() and not entity:IsBoss() then
-        local player = source.Entity:ToPlayer()
+        local player
         local pdata
+        if source and source.Entity then
+            player = source.Entity:ToPlayer()
+        end
         if player then
             pdata = mod:mmaGetPData(player)
         end
