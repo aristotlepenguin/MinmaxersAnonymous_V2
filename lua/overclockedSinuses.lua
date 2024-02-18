@@ -62,11 +62,19 @@ function mod:useOverclock(collectible, rng, player, useflags, activeslot, custom
         end
     end
 
-    return {
-        Discharge = false,
-        Remove = false,
-        ShowAnim = true
-    }
+    if mod.DEBUG then
+        return {
+            Discharge = false,
+            Remove = false,
+            ShowAnim = true
+        }
+    else
+        return {
+            Discharge = false,
+            Remove = true,
+            ShowAnim = true
+        }
+    end
 end
 mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.useOverclock, mod.MMATypes.COLLECTIBLE_OVERCLOCKED_SINUSES)
 

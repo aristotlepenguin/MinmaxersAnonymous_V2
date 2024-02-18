@@ -167,6 +167,17 @@ function mod:test_command(cmd, args)
         local count = player:GetCollectibleNum(CollectibleType.COLLECTIBLE_ONE_UP)
         print(count)
     end
+
+    if cmd == "minmaxdebug" then
+        if mod.DEBUG then
+            mod.DEBUG = false
+            print("MMA Debug is off.")
+        else
+            mod.DEBUG = true
+            print("MMA Debug is on.")
+        end
+        
+    end
 end
 mod:AddCallback(ModCallbacks.MC_EXECUTE_CMD, mod.test_command)
 
