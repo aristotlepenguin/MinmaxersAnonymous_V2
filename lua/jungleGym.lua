@@ -178,6 +178,16 @@ function mod:test_command(cmd, args)
         end
         
     end
+
+    if cmd == "printallstats" then
+        local player = Isaac.GetPlayer(0)
+        print("range " .. tostring(player.TearRange))
+        print("luck " .. tostring(player.Luck))
+        print("tears " .. tostring(player.MaxFireDelay))
+        print("damage " .. tostring(player.Damage))
+        print("speed " .. tostring(player.MoveSpeed))
+    end
+
 end
 mod:AddCallback(ModCallbacks.MC_EXECUTE_CMD, mod.test_command)
 

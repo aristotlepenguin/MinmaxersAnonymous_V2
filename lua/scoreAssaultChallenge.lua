@@ -38,11 +38,11 @@ mod:AddCallback(ModCallbacks.MC_POST_RENDER, mod.renderScore)
 
 
 local qualTable = {
-    [0] = 1000,
-    [1] = 3000,
-    [2] = 5000,
-    [3] = 7000,
-    [4] = 10000
+    [0] = 5000,
+    [1] = 7000,
+    [2] = 15000,
+    [3] = 25000,
+    [4] = 50000
 }
 
 function mod:refreshItems_SA()
@@ -86,18 +86,18 @@ end
 mod:AddCallback(ModCallbacks.MC_POST_UPDATE, mod.refreshItems_SA)
 
 local baseStats = {
-    Range = 0,
-    FireDelay = 0,
-    Damage = 0,
-    Speed = 0,
+    Range = 200,
+    FireDelay = 10,
+    Damage = 3.5,
+    Speed = 1.1,
     Luck = 0
 }
 
-local tearMultiplier = 1
-local damageMultiplier = 1
-local speedMultiplier = 1
-local luckMultiplier = 1
-local rangeMultiplier = 1
+local tearMultiplier = 10000
+local damageMultiplier = 7690
+local speedMultiplier = 55555
+local luckMultiplier = 10000
+local rangeMultiplier = 139
 
 function mod:refreshStats_SA(_player, cacheflag)
     if Isaac.GetChallenge() == mod.MMATypes.CHALLENGE_SCORE_ASSAULT then
@@ -115,63 +115,63 @@ end
 mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, mod.refreshStats_SA)
 
 local masterPickupScoreList = {}
+local bps = 100 --base pickup score
 masterPickupScoreList[PickupVariant.PICKUP_COIN] = {
-    [CoinSubType.COIN_PENNY] = 5,
-    [CoinSubType.COIN_NICKEL] = 5,
-    [CoinSubType.COIN_DIME] = 5,
-    [CoinSubType.COIN_DOUBLEPACK] = 5,
-    [CoinSubType.COIN_LUCKYPENNY] = 5,
-    [CoinSubType.COIN_STICKYNICKEL] = 5,
-    [CoinSubType.COIN_GOLDEN] = 5
+    [CoinSubType.COIN_PENNY] = bps,
+    [CoinSubType.COIN_NICKEL] = bps * 5,
+    [CoinSubType.COIN_DIME] = bps * 10,
+    [CoinSubType.COIN_DOUBLEPACK] = bps * 2,
+    [CoinSubType.COIN_LUCKYPENNY] = bps,
+    [CoinSubType.COIN_STICKYNICKEL] = bps * 5,
+    [CoinSubType.COIN_GOLDEN] = bps * 2
 }
 masterPickupScoreList[PickupVariant.PICKUP_KEY] = {
-    [KeySubType.KEY_NORMAL] = 5,
-    [KeySubType.KEY_DOUBLEPACK] = 5,
-    [KeySubType.KEY_CHARGED] = 5,
-    [KeySubType.KEY_GOLDEN] = 5
+    [KeySubType.KEY_NORMAL] = bps * 2,
+    [KeySubType.KEY_DOUBLEPACK] = bps * 4,
+    [KeySubType.KEY_CHARGED] = bps * 4,
+    [KeySubType.KEY_GOLDEN] = bps * 35
 }
 masterPickupScoreList[PickupVariant.PICKUP_BOMB] = {
-    [BombSubType.BOMB_NORMAL] = 5,
-    [BombSubType.BOMB_DOUBLEPACK] = 5,
-    [BombSubType.BOMB_GOLDEN] = 5,
-    [BombSubType.BOMB_SUPERTROLL] = 5,
-    [BombSubType.BOMB_GOLDENTROLL] = 5,
-    [BombSubType.BOMB_GIGA] = 5,
-    [BombSubType.BOMB_TROLL] = 5
+    [BombSubType.BOMB_NORMAL] = bps * 2,
+    [BombSubType.BOMB_DOUBLEPACK] = bps * 4,
+    [BombSubType.BOMB_GOLDEN] = bps * 35,
+    [BombSubType.BOMB_SUPERTROLL] = 0,
+    [BombSubType.BOMB_GOLDENTROLL] = 0,
+    [BombSubType.BOMB_GIGA] = bps * 5,
+    [BombSubType.BOMB_TROLL] = 0
 }
 masterPickupScoreList[PickupVariant.PICKUP_HEART] = {
-    [HeartSubType.HEART_FULL] = 5,
-    [HeartSubType.HEART_HALF] = 5,
-    [HeartSubType.HEART_SOUL] = 5,
-    [HeartSubType.HEART_ROTTEN] = 5,
-    [HeartSubType.HEART_BONE] = 5,
-    [HeartSubType.HEART_DOUBLEPACK] = 5,
-    [HeartSubType.HEART_GOLDEN] = 5,
-    [HeartSubType.HEART_BLACK] = 5,
-    [HeartSubType.HEART_HALF_SOUL] = 5,
-    [HeartSubType.HEART_SCARED] = 5,
-    [HeartSubType.HEART_BLENDED] = 5,
-    [HeartSubType.HEART_ETERNAL] = 5
+    [HeartSubType.HEART_FULL] = bps * 2,
+    [HeartSubType.HEART_HALF] = bps,
+    [HeartSubType.HEART_SOUL] = bps * 2,
+    [HeartSubType.HEART_ROTTEN] = bps,
+    [HeartSubType.HEART_BONE] = bps * 5,
+    [HeartSubType.HEART_DOUBLEPACK] = bps * 4,
+    [HeartSubType.HEART_GOLDEN] = bps * 5,
+    [HeartSubType.HEART_BLACK] = bps * 4,
+    [HeartSubType.HEART_HALF_SOUL] = bps,
+    [HeartSubType.HEART_SCARED] = bps * 2,
+    [HeartSubType.HEART_BLENDED] = bps * 2,
+    [HeartSubType.HEART_ETERNAL] = bps * 5
 }
 masterPickupScoreList[PickupVariant.PICKUP_POOP] = {
-    [PoopPickupSubType.POOP_SMALL] = 5,
-    [PoopPickupSubType.POOP_BIG] = 5
+    [PoopPickupSubType.POOP_SMALL] = bps,
+    [PoopPickupSubType.POOP_BIG] = bps * 4
 }
 masterPickupScoreList[PickupVariant.PICKUP_LIL_BATTERY] = {
-    [BatterySubType.BATTERY_NORMAL] = 5,
-    [BatterySubType.BATTERY_MICRO] = 5,
-    [BatterySubType.BATTERY_MEGA] = 5,
-    [BatterySubType.BATTERY_GOLDEN] = 5
+    [BatterySubType.BATTERY_NORMAL] = bps * 3,
+    [BatterySubType.BATTERY_MICRO] = bps,
+    [BatterySubType.BATTERY_MEGA] = bps * 10,
+    [BatterySubType.BATTERY_GOLDEN] = bps * 5
 }
 
 local backupPickups = {
-    [PickupVariant.PICKUP_COIN] = 0,
-    [PickupVariant.PICKUP_KEY] = 0,
-    [PickupVariant.PICKUP_BOMB] = 0,
-    [PickupVariant.PICKUP_POOP] = 0,
-    [PickupVariant.PICKUP_HEART] = 0,
-    [PickupVariant.PICKUP_POOP] = 0,
-    [PickupVariant.PICKUP_LIL_BATTERY] = 0
+    [PickupVariant.PICKUP_COIN] = 1,
+    [PickupVariant.PICKUP_KEY] = 2,
+    [PickupVariant.PICKUP_BOMB] = 2,
+    [PickupVariant.PICKUP_POOP] = 1,
+    [PickupVariant.PICKUP_HEART] = 1,
+    [PickupVariant.PICKUP_LIL_BATTERY] = 1
 }
 
 function mod:trackPickups_SA(pickup, collider, low)
