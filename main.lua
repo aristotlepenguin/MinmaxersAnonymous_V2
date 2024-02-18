@@ -28,6 +28,7 @@ mod.MMATypes.COLLECTIBLE_JOBS_CURSE =  Isaac.GetItemIdByName("Job's Curse")
 mod.MMATypes.CARD_CHASTITY = Isaac.GetCardIdByName("ChastityCard")
 
 mod.MMATypes.COSTUME_FIRE_OVERCLOCK = Isaac.GetCostumeIdByPath("gfx/characters/tantrum_face.anm2")
+mod.MMATypes.COSTUME_HYPERFIXATION = Isaac.GetCostumeIdByPath("gfx/characters/hyperfixation_costume.anm2")
 
 mod.MMATypes.CHALLENGE_SCORE_ASSAULT = Isaac.GetChallengeIdByName("Score Assault")
 
