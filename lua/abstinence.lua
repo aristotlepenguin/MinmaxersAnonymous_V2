@@ -5,6 +5,8 @@ local itemPool = game:GetItemPool()
 local itemconfig = Isaac.GetItemConfig()
 local hud = game:GetHUD()
 
+local REPENTOGON = REPENTOGON
+
 local p2f = {[-1] = 0,
             [-2] = 1,
             [-3] = 2,
@@ -39,7 +41,7 @@ mod:AddCallback(ModCallbacks.MC_POST_PLAYER_RENDER, mod.coinFadeRender)
 
 function mod:collideItemPedestalAbs(pickup, collider, low)
     local player = collider:ToPlayer()
-    if player and (player:GetPlayerType() == PlayerType.PLAYER_ISAAC_B or player:GetPlayerType() == PlayerType.PLAYER_CAIN_B)
+    if player and (player:GetPlayerType() == PlayerType.PLAYER_ISAAC_B or (player:GetPlayerType() == PlayerType.PLAYER_CAIN_B and not REPENTOGON))
     and pickup.SubType == mod.MMATypes.COLLECTIBLE_ABSTINENCE
     and pickup:GetData().MMA_ABS_Touched ~= true then
         local item_obj = {}
@@ -85,6 +87,7 @@ function mod:collideItemPedestalAbs(pickup, collider, low)
         item_tbl.price = 0
         item_tbl.charges = pickup.Charge
         item_tbl.touched = pickup.Touched
+        item_tbl.itemPool = itemPool:GetPoolForRoom(game:GetRoom():GetType(), Random())
         
         if pickup:IsShopItem() then
             item_tbl.price = pickup.Price
@@ -98,6 +101,7 @@ function mod:collideItemPedestalAbs(pickup, collider, low)
         if data.chastity_items == nil then
             data.chastity_items = {}
         end
+
         table.insert(data.chastity_items, 1, item_tbl)
 
         local pickupindex = pickup.OptionsPickupIndex
@@ -118,17 +122,17 @@ mod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, mod.collideItemPedestalAbs
 function mod:useChastityCard(card, player, useflags)
     local data = mod:mmaGetPData(player)
     local item_obj
-    
+    local rng = player:GetCollectibleRNG(mod.MMATypes.COLLECTIBLE_ABSTINENCE)
+
     if data.chastity_items == nil then
         data.chastity_items = {}
     end
     if #data.chastity_items == 0 then
         item_obj = {}
         item_obj.price = 0
-        local rng = player:GetCollectibleRNG(mod.MMATypes.COLLECTIBLE_ABSTINENCE)
+        
         local ranPool = rng:RandomInt(ItemPoolType.NUM_ITEMPOOLS)
         item_obj.subtype = itemPool:GetCollectible(ranPool, true, rng:RandomInt(100000)+1)
-        
         local collectConfig = itemconfig:GetCollectible(item_obj.subtype)
         item_obj.charges = collectConfig.MaxCharges or 0
         item_obj.touched = false
@@ -170,6 +174,9 @@ function mod:useChastityCard(card, player, useflags)
             player:AddCard(mod.MMATypes.CARD_CHASTITY)
         end
         table.insert(data.chastity_items, 1, item_obj)
+    elseif REPENTOGON and player:GetPlayerType() == PlayerType.PLAYER_CAIN_B then
+        sfx:Play(SoundEffect.SOUND_THUMBS_DOWN, Options.SFXVolume*2)
+        player:SalvageCollectible(item_obj.subtype, player.Position, rng, item_obj.itemPool)
     else
         if (player:GetActiveItem(ActiveSlot.SLOT_PRIMARY) ~= 0 and player:GetActiveItem(ActiveSlot.SLOT_PRIMARY) ~= 584) and itemconfig:GetCollectible(item_obj.subtype).Type == ItemType.ITEM_ACTIVE then
             local charges = player:GetActiveCharge()
