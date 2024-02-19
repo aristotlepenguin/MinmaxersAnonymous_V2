@@ -18,6 +18,11 @@ end
 
 function mod:dropEnemy(enemy, player)
     local room = game:GetRoom()
+
+    if mod:isBasegameSegmented(enemy) then
+        enemy = enemy:GetLastParent() or enemy
+    end
+
     local pos = enemy.Position
     if mod.canGeneratePit(enemy.Position, 0, nil, true, true) then
         local droppedEnemy = {}
@@ -51,7 +56,7 @@ function mod:MS_onFireTear(tear)
         end
         local chance_num = rng:RandomInt(100)
 
-        if chance_num < chance or true then
+        if chance_num < chance or mod.DEBUG then
             tear:GetData().MMA_IsPortly = 1
         end
     end

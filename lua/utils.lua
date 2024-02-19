@@ -292,3 +292,48 @@ function mod:UpdatePits(newIndex)
 		end
 	end
 end
+
+local BasegameSegmentedEnemies = {
+	[35 .. " " .. 0] = true, -- Mr. Maw (body)
+	[35 .. " " .. 1] = true, -- Mr. Maw (head)
+	[35 .. " " .. 2] = true, -- Mr. Red Maw (body)
+	[35 .. " " .. 3] = true, -- Mr. Red Maw (head)
+	[89] = true, -- Buttlicker
+	[216 .. " " .. 0] = true, -- Swinger (body)
+	[216 .. " " .. 1] = true, -- Swinger (head)
+	[239] = true, -- Grub
+	[244 .. " " .. 2] = true, -- Tainted Round Worm
+
+	[19 .. " " .. 0] = true, -- Larry Jr.
+	[19 .. " " .. 1] = true, -- The Hollow
+	[19 .. " " .. 2] = true, -- Tuff Twins
+	[19 .. " " .. 3] = true, -- The Shell
+	[28 .. " " .. 0] = true, -- Chub
+	[28 .. " " .. 1] = true, -- C.H.A.D.
+	[28 .. " " .. 2] = true, -- The Carrion Queen
+	[62 .. " " .. 0] = true, -- Pin
+	[62 .. " " .. 1] = true, -- Scolex
+	[62 .. " " .. 2] = true, -- The Frail
+	[62 .. " " .. 3] = true, -- Wormwood
+	[79 .. " " .. 0] = true, -- Gemini
+	[79 .. " " .. 1] = true, -- Steven
+	[79 .. " " .. 10] = true, -- Gemini (baby)
+	[79 .. " " .. 11] = true, -- Steven (baby)
+	[92 .. " " .. 0] = true, -- Heart
+	[92 .. " " .. 1] = true, -- 1/2 Heart
+	[93 .. " " .. 0] = true, -- Mask
+	[93 .. " " .. 1] = true, -- Mask II
+	[97] = true, -- Mask of Infamy
+	[98] = true, -- Heart of Infamy
+	[266] = true, -- Mama Gurdy
+	[912 .. " " .. 0 .. " " .. 0] = true, -- Mother (phase one)
+	[912 .. " " .. 0 .. " " .. 2] = true, -- Mother (left arm)
+	[912 .. " " .. 0 .. " " .. 3] = true, -- Mother (right arm)
+	[918 .. " " .. 0] = true, -- Turdlet
+}
+
+function mod:isBasegameSegmented(entity)
+	return mod.BasegameSegmentedEnemies[entity.Type] or
+		   mod.BasegameSegmentedEnemies[entity.Type .. " " .. entity.Variant] or
+		   mod.BasegameSegmentedEnemies[entity.Type .. " " .. entity.Variant .. " " .. entity.SubType]
+end
