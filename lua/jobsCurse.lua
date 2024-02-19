@@ -32,13 +32,16 @@ function mod:checkDeath_JC(player)
 end
 mod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, mod.checkDeath_JC)
 
-function mod:onGreedUpdate()
+function mod:onGreedUpdate_JC()
     if game:IsGreedMode() and mod.MMA_GlobalSaveData.MMA_GreedWave ~= game:GetLevel().GreedModeWave then
         mod:ClearRoom_JC(nil, nil)
+        if not mod.SINGLE_ITEM then
+            mod:onNewRoom_MS(true)
+        end
         mod.MMA_GlobalSaveData.MMA_GreedWave = game:GetLevel().GreedModeWave
     end
 end
-mod:AddCallback(ModCallbacks.MC_POST_UPDATE, mod.onGreedUpdate)
+mod:AddCallback(ModCallbacks.MC_POST_UPDATE, mod.onGreedUpdate_JC)
 
 mod.ItemGrabCallback:AddCallback(mod.ItemGrabCallback.InventoryCallback.POST_ADD_ITEM, function(player, item, count, touched, fromQueue)
     if not touched or not fromQueue then

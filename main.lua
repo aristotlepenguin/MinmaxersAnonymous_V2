@@ -3,6 +3,7 @@ local mod  = RegisterMod("MinmaxersAnonymous_v2", 1)
 MMAMod = mod
 
 mod.DEBUG = true
+mod.SINGLE_ITEM = false
 
 local hiddenItemManager = require("lib.hidden_item_manager")
 mod.ItemGrabCallback = include("lua.inventory_callbacks")

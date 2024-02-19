@@ -77,7 +77,8 @@ function mod:collideItemPedestalAbs(pickup, collider, low)
 
     if player == nil or not player:HasCollectible(mod.MMATypes.COLLECTIBLE_ABSTINENCE) or
     pickup:GetData().MMA_ABS_Touched == true or pickup.SubType == 0 or
-    itemconfig:GetCollectible(pickup.SubType):HasTags(ItemConfig.TAG_QUEST) then
+    itemconfig:GetCollectible(pickup.SubType):HasTags(ItemConfig.TAG_QUEST) or
+    (player:GetPlayerType() == PlayerType.PLAYER_ISAAC_B or (player:GetPlayerType() == PlayerType.PLAYER_CAIN_B and not REPENTOGON)) then
         return nil
     else
         pickup:GetData().MMA_ABS_Touched = true
@@ -229,6 +230,3 @@ function mod:removeDevilPrice(player, price)
         return false
     end
 end
-
---set up conditons for book of virtues
---consider a UI for the next available item when holding tab when you have a chastity card

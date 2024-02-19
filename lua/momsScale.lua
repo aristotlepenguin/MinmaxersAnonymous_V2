@@ -2,6 +2,9 @@ local mod = MMAMod
 local game = Game()
 local sfx = SFXManager()
 
+local rng = RNG()
+rng:SetSeed(rng:GetSeed(), 35)
+
 local greyColor = Color(1, 1, 1, 1, 0, 0, 0)
 greyColor:SetColorize(1, 1, 1, 1)
 greyColor:SetTint(5, 5, 5, 2)
@@ -91,8 +94,7 @@ function mod:checkLaser_MS(laser)
             local rng = player:GetCollectibleRNG(mod.MMATypes.COLLECTIBLE_MOMS_SCALE)
 
             if laser.Type == EntityType.ENTITY_EFFECT and laser.Variant == EffectVariant.BRIMSTONE_SWIRL then
-                rng = RNG()
-                rng:SetSeed(rng:GetSeed(), 35)
+                
             end
 
             local chance = player.Luck * 5 + 10
@@ -204,7 +206,17 @@ end
 function mod:onNewFloor_MS()
     if mod.MMA_GlobalSaveData.droppedEnemies and #mod.MMA_GlobalSaveData.droppedEnemies > 0 then
         for i=1, #mod.MMA_GlobalSaveData.droppedEnemies, 1 do
-            local newRoom = mod:checkFloorRooms_MS(ReturnFlag.RF_RANDOM_EMPTY)
+            local newRoom
+            if game:IsGreedMode() then
+                local totalWaves = 11
+                if game.Difficulty == Difficulty.DIFFICULTY_GREEDIER then
+                    totalWaves = 12
+                end
+                newRoom = rng:RandomInt(totalWaves) + 1
+            else
+                newRoom = mod:checkFloorRooms_MS(ReturnFlag.RF_RANDOM_EMPTY)
+            end
+            
             if mod.MMA_GlobalSaveData.droppedEnemiesDest[newRoom] == nil then
                 mod.MMA_GlobalSaveData.droppedEnemiesDest[newRoom] = {}
             end
@@ -222,19 +234,27 @@ function mod:onNewFloor_MS()
 end
 mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, mod.onNewFloor_MS)
 
-function mod:onNewRoom_MS()
+function mod:onNewRoom_MS(isGreedWave)
     local currentroomindex = game:GetLevel():GetCurrentRoomIndex()
+    if game:IsGreedMode() then
+        if not isGreedWave then
+            return
+        end
+        currentroomindex = mod.MMA_GlobalSaveData.MMA_GreedWave
+    end
     local bossroomindex = mod:checkFloorRooms_MS(ReturnFlag.RF_BOSS)
     if mod.MMA_GlobalSaveData.droppedEnemiesDest and mod.MMA_GlobalSaveData.droppedEnemiesDest[bossroomindex] == nil then
         mod.MMA_GlobalSaveData.droppedEnemiesDest[bossroomindex] = {}
     end
     local room = game:GetRoom()
-    local cleared = room:IsClear()
+    local cleared = room:IsClear() and not isGreedWave
     if mod.MMA_GlobalSaveData.droppedEnemiesDest and mod.MMA_GlobalSaveData.droppedEnemiesDest[currentroomindex] ~= nil then
         for u=1, #mod.MMA_GlobalSaveData.droppedEnemiesDest[currentroomindex] do
             local profile = mod.MMA_GlobalSaveData.droppedEnemiesDest[currentroomindex][u]
             if cleared then
                 table.insert(mod.MMA_GlobalSaveData.droppedEnemiesDest[bossroomindex], profile)
+                mod:OnRoomClear_MS(nil, nil)
+            elseif game:IsGreedMode() then
                 mod:OnRoomClear_MS(nil, nil)
             else
                 local position = room:GetRandomPosition(40)
@@ -250,6 +270,9 @@ mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, mod.onNewRoom_MS)
 
 function mod:OnRoomClear_MS(rng, spawnposition)
     local currentroomindex = game:GetLevel():GetCurrentRoomIndex()
+    if game:IsGreedMode() then
+        currentroomindex = mod.MMA_GlobalSaveData.MMA_GreedWave
+    end
     if mod.MMA_GlobalSaveData.droppedEnemiesDest and mod.MMA_GlobalSaveData.droppedEnemiesDest[currentroomindex] ~= nil then
         for u=1, #mod.MMA_GlobalSaveData.droppedEnemiesDest[currentroomindex] do
             table.remove(mod.MMA_GlobalSaveData.droppedEnemiesDest[currentroomindex])
@@ -257,6 +280,16 @@ function mod:OnRoomClear_MS(rng, spawnposition)
     end
 end
 mod:AddCallback(ModCallbacks.MC_PRE_SPAWN_CLEAN_AWARD, mod.OnRoomClear_MS)
+
+function mod:onGreedUpdate_MS()
+    if game:IsGreedMode() and mod.MMA_GlobalSaveData.MMA_GreedWave ~= game:GetLevel().GreedModeWave then
+        mod:onNewRoom_MS(true)
+        mod.MMA_GlobalSaveData.MMA_GreedWave = game:GetLevel().GreedModeWave
+    end
+end
+if mod.SINGLE_ITEM then
+    mod:AddCallback(ModCallbacks.MC_POST_UPDATE, mod.onGreedUpdate_MS)
+end
 
 --if it gets bad, account for spawning enemies randomly on top of the player
 --we'll also need to make sure segmented enemy spawns are accounted for
