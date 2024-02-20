@@ -78,10 +78,15 @@ function mod:useOverclock(collectible, rng, player, useflags, activeslot, custom
 end
 mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.useOverclock, mod.MMATypes.COLLECTIBLE_OVERCLOCKED_SINUSES)
 
-function mod:tearModifiers(tear, player, isPrimaryTear, isTear)
+function mod:tearModifiers(tear, player, isPrimaryTear, isTear, familiar)
     
     if isPrimaryTear then
-        tear.Scale = tear.Scale * 3.5
+        
+        if not familiar then
+            tear.Scale = tear.Scale * 3.5
+        else
+            tear.Scale = tear.Scale * 2
+        end
         tear:ResetSpriteScale()
     end
 
@@ -99,9 +104,141 @@ end
 
 local screenShaking = false
 
+function mod:handleTearsOut_OS(player, firstFrame, familiar)
+    local tearTier = math.floor(30 / (player.MaxFireDelay + 1))
+    local sinusRng = player:GetCollectibleRNG(mod.MMATypes.COLLECTIBLE_OVERCLOCKED_SINUSES)
+    local tearSpeed = 25 * player.ShotSpeed
+    local firePos = player.Position + Vector(0, 1)
+    if familiar then
+        firePos = familiar.Position + Vector(0, 1)
+    end
+
+    local direction = mod.directionToVector[player:GetHeadDirection()] * tearSpeed
+    local frame = game:GetFrameCount()
+
+    if player:HasCollectible(CollectibleType.COLLECTIBLE_EPIC_FETUS) then
+        if familiar then
+            return
+        end
+        if sinusRng:RandomInt(100) <= player.Luck + 5 then
+            mod:spawnRocket(player, Isaac.GetRandomPosition())
+        end
+    elseif player:HasCollectible(CollectibleType.COLLECTIBLE_DR_FETUS) then
+        if frame % 4 == 0 then
+            local bombTier = math.floor((30 / (player.MaxFireDelay + 1))*3)
+            if bombTier >= 3 or frame % 8 == 0 then
+                local tear = player:FireBomb(firePos, direction, player)
+                tear = mod:tearModifiers(tear, player, false, false, familiar)
+            end
+            
+            if bombTier >= 4 then
+                local slantDir
+                if frame % 8 == 0 then
+                    slantDir = mod.GetLeftDiag[player:GetHeadDirection()]
+                else
+                    slantDir = mod.GetRightDiag[player:GetHeadDirection()]
+                end
+                
+                for x=4, bombTier, 1 do
+                    local tear = player:FireBomb(firePos, slantDir * tearSpeed, player)
+                    slantDir = (slantDir * mod.TearTierMultiplier[player:GetHeadDirection()]):Normalized()
+                    tear = mod:tearModifiers(tear, player, false, false, familiar)
+                end
+            end
+
+            if sinusRng:RandomInt(100) <= player.Luck + 5 then
+                local luckDirection = Vector(sinusRng:RandomInt(100)-50, sinusRng:RandomInt(100)-50):Normalized() * tearSpeed
+                local lucktear = player:FireBomb(firePos, luckDirection, player)
+                lucktear = mod:tearModifiers(lucktear, player, false, false, familiar)
+            end
+        end
+    elseif player:HasCollectible(CollectibleType.COLLECTIBLE_TECH_X) then
+        local defaultRadius = 8 * player.Damage
+        if tearTier >= 3 or frame % 2 == 0 then
+            player:FireTechXLaser(firePos, direction, defaultRadius, player, 1)
+        end
+        
+        if tearTier >= 4 then
+            local slantDir
+            if frame % 2 == 0 then
+                slantDir = mod.GetLeftDiag[player:GetHeadDirection()]
+            else
+                slantDir = mod.GetRightDiag[player:GetHeadDirection()]
+            end
+            
+            for x=4, tearTier, 1 do
+                --local tear = player:FireTear(firePos, slantDir * tearSpeed, true, false, true, player, 1)
+                local brimball = player:FireTechXLaser(firePos, slantDir * tearSpeed, defaultRadius, player, 1)
+                slantDir = (slantDir * mod.TearTierMultiplier[player:GetHeadDirection()]):Normalized()
+            end
+        end
+
+        if sinusRng:RandomInt(100) <= player.Luck + 5 then
+            local luckDirection = Vector(sinusRng:RandomInt(100)-50, sinusRng:RandomInt(100)-50):Normalized() * tearSpeed
+            player:FireTechXLaser(firePos, luckDirection, defaultRadius, player, 1)
+        end
+    elseif player:HasCollectible(CollectibleType.COLLECTIBLE_BRIMSTONE) or player:HasCollectible(CollectibleType.COLLECTIBLE_TECHNOLOGY) or player:HasCollectible(CollectibleType.COLLECTIBLE_TECHNOLOGY_2) then
+        local subLaserType = 1
+        if not player:HasCollectible(CollectibleType.COLLECTIBLE_BRIMSTONE) then
+            subLaserType = 2
+        elseif player:HasCollectible(CollectibleType.COLLECTIBLE_TECHNOLOGY) or player:HasCollectible(CollectibleType.COLLECTIBLE_TECHNOLOGY_2) then
+            subLaserType = 9
+        end
+        if firstFrame then
+            local primeLaser = EntityLaser.ShootAngle(6, firePos, direction:GetAngleDegrees(), 500, Vector(0, 0), player)
+            primeLaser:GetData().MMA_oSPrimeLaser = true
+            primeLaser:AddTearFlags(player.TearFlags)
+            primeLaser.Color = player.LaserColor
+            local laserTier = math.floor((30 / (player.MaxFireDelay + 1))*4)
+            
+            for j=1, laserTier, 1 do
+                local directionSub = 0 + j * math.floor(360/laserTier)
+                local subLaser = EntityLaser.ShootAngle(subLaserType, firePos, directionSub, 500, Vector(0, 0), player)
+                subLaser:GetData().MMA_oSSubLaser = true
+                subLaser:AddTearFlags(player.TearFlags)
+                subLaser.Color = player.LaserColor
+            end
+
+        end
+        if sinusRng:RandomInt(100) <= player.Luck + 5 then
+            local luckDirection = sinusRng:RandomInt(361)
+            local laserluck = EntityLaser.ShootAngle(subLaserType, firePos, luckDirection, 9, Vector(0, 0), player)
+            laserluck:AddTearFlags(player.TearFlags)
+            laserluck.Color = player.LaserColor
+        end
+    else
+        if tearTier >= 3 or frame % 2 == 0 then
+            local tear = player:FireTear(firePos, direction, true, false, true, player, 1)
+            tear = mod:tearModifiers(tear, player, true, true, familiar)
+        end
+        
+        if tearTier >= 4 then
+            local slantDir
+            if frame % 2 == 0 then
+                slantDir = mod.GetLeftDiag[player:GetHeadDirection()]
+            else
+                slantDir = mod.GetRightDiag[player:GetHeadDirection()]
+            end
+            
+            for x=4, tearTier, 1 do
+                local tear = player:FireTear(firePos, slantDir * tearSpeed, true, false, true, player, 1)
+                slantDir = (slantDir * mod.TearTierMultiplier[player:GetHeadDirection()]):Normalized()
+                tear = mod:tearModifiers(tear, player, false, true, familiar)
+            end
+        end
+
+        if sinusRng:RandomInt(100) <= player.Luck + 5 then
+            local luckDirection = Vector(sinusRng:RandomInt(100)-50, sinusRng:RandomInt(100)-50):Normalized() * tearSpeed
+            local lucktear = player:FireTear(firePos, luckDirection, true, false, true, player, 1)
+            lucktear = mod:tearModifiers(lucktear, player, true, true, familiar)
+        end
+    end
+end
+
 function mod:onOverclockFrame(player)
     local data = mod:mmaGetPData(player)
     local frame = game:GetFrameCount()
+    local firstFrame = false
     if data.MMA_overclockFrame == -1 then
         data.MMA_firingOverclock = nil
         local tempSaveData = json.decode(mod:LoadData())
@@ -114,12 +251,7 @@ function mod:onOverclockFrame(player)
         player:TryRemoveNullCostume(mod.MMATypes.COSTUME_FIRE_OVERCLOCK)
         data.MMA_overclockFrame = nil
     elseif data.MMA_overclockFrame and data.MMA_overclockFrame + 20 <= frame and data.MMA_overclockFrame + 500 > frame then
-        local tearTier = math.floor(30 / (player.MaxFireDelay + 1))
-        local sinusRng = player:GetCollectibleRNG(mod.MMATypes.COLLECTIBLE_OVERCLOCKED_SINUSES)
-        local tearSpeed = 25 * player.ShotSpeed
-        local firePos = player.Position + Vector(0, 1)
-        local direction = mod.directionToVector[player:GetHeadDirection()] * tearSpeed
-        local firstFrame = false
+        
         if data.MMA_overclockFrame + 20 == game:GetFrameCount() and data.MMA_overclockStarted == nil then
             player:AddNullCostume(mod.MMATypes.COSTUME_FIRE_OVERCLOCK)
             data.MMA_overclockStarted = true
@@ -139,120 +271,8 @@ function mod:onOverclockFrame(player)
             game:ShakeScreen(framesRemaining)
         end
 
-        if player:HasCollectible(CollectibleType.COLLECTIBLE_EPIC_FETUS) then
-            if sinusRng:RandomInt(100) <= player.Luck + 5 then
-                mod:spawnRocket(player, Isaac.GetRandomPosition())
-            end
-        elseif player:HasCollectible(CollectibleType.COLLECTIBLE_DR_FETUS) then
-            if frame % 4 == 0 then
-                local bombTier = math.floor((30 / (player.MaxFireDelay + 1))*3)
-                if bombTier >= 3 or frame % 8 == 0 then
-                    local tear = player:FireBomb(firePos, direction, player)
-                    tear = mod:tearModifiers(tear, player, false)
-                end
-                
-                if bombTier >= 4 then
-                    local slantDir
-                    if frame % 8 == 0 then
-                        slantDir = mod.GetLeftDiag[player:GetHeadDirection()]
-                    else
-                        slantDir = mod.GetRightDiag[player:GetHeadDirection()]
-                    end
-                    
-                    for x=4, bombTier, 1 do
-                        local tear = player:FireBomb(firePos, slantDir * tearSpeed, player)
-                        slantDir = (slantDir * mod.TearTierMultiplier[player:GetHeadDirection()]):Normalized()
-                        tear = mod:tearModifiers(tear, player, false)
-                    end
-                end
-
-                if sinusRng:RandomInt(100) <= player.Luck + 5 then
-                    local luckDirection = Vector(sinusRng:RandomInt(100)-50, sinusRng:RandomInt(100)-50):Normalized() * tearSpeed
-                    local lucktear = player:FireBomb(firePos, luckDirection, player)
-                    lucktear = mod:tearModifiers(lucktear, player, false)
-                end
-            end
-        elseif player:HasCollectible(CollectibleType.COLLECTIBLE_TECH_X) then
-            local defaultRadius = 8 * player.Damage
-            if tearTier >= 3 or frame % 2 == 0 then
-                player:FireTechXLaser(firePos, direction, defaultRadius, player, 1)
-            end
-            
-            if tearTier >= 4 then
-                local slantDir
-                if frame % 2 == 0 then
-                    slantDir = mod.GetLeftDiag[player:GetHeadDirection()]
-                else
-                    slantDir = mod.GetRightDiag[player:GetHeadDirection()]
-                end
-                
-                for x=4, tearTier, 1 do
-                    --local tear = player:FireTear(firePos, slantDir * tearSpeed, true, false, true, player, 1)
-                    local brimball = player:FireTechXLaser(firePos, slantDir * tearSpeed, defaultRadius, player, 1)
-                    slantDir = (slantDir * mod.TearTierMultiplier[player:GetHeadDirection()]):Normalized()
-                end
-            end
-
-            if sinusRng:RandomInt(100) <= player.Luck + 5 then
-                local luckDirection = Vector(sinusRng:RandomInt(100)-50, sinusRng:RandomInt(100)-50):Normalized() * tearSpeed
-                player:FireTechXLaser(firePos, luckDirection, defaultRadius, player, 1)
-            end
-        elseif player:HasCollectible(CollectibleType.COLLECTIBLE_BRIMSTONE) or player:HasCollectible(CollectibleType.COLLECTIBLE_TECHNOLOGY) or player:HasCollectible(CollectibleType.COLLECTIBLE_TECHNOLOGY_2) then
-            local subLaserType = 1
-            if not player:HasCollectible(CollectibleType.COLLECTIBLE_BRIMSTONE) then
-                subLaserType = 2
-            elseif player:HasCollectible(CollectibleType.COLLECTIBLE_TECHNOLOGY) or player:HasCollectible(CollectibleType.COLLECTIBLE_TECHNOLOGY_2) then
-                subLaserType = 9
-            end
-            if firstFrame then
-                local primeLaser = EntityLaser.ShootAngle(6, player.Position, direction:GetAngleDegrees(), 500, Vector(0, 0), player)
-                primeLaser:GetData().MMA_oSPrimeLaser = true
-                primeLaser:AddTearFlags(player.TearFlags)
-                primeLaser.Color = player.LaserColor
-                local laserTier = math.floor((30 / (player.MaxFireDelay + 1))*4)
-                
-                for j=1, laserTier, 1 do
-                    local directionSub = 0 + j * math.floor(360/laserTier)
-                    local subLaser = EntityLaser.ShootAngle(subLaserType, player.Position, directionSub, 500, Vector(0, 0), player)
-                    subLaser:GetData().MMA_oSSubLaser = true
-                    subLaser:AddTearFlags(player.TearFlags)
-                    subLaser.Color = player.LaserColor
-                end
-
-            end
-            if sinusRng:RandomInt(100) <= player.Luck + 5 then
-                local luckDirection = sinusRng:RandomInt(361)
-                local laserluck = EntityLaser.ShootAngle(subLaserType, player.Position, luckDirection, 9, Vector(0, 0), player)
-                laserluck:AddTearFlags(player.TearFlags)
-                laserluck.Color = player.LaserColor
-            end
-        else
-            if tearTier >= 3 or frame % 2 == 0 then
-                local tear = player:FireTear(firePos, direction, true, false, true, player, 1)
-                tear = mod:tearModifiers(tear, player, true, true)
-            end
-            
-            if tearTier >= 4 then
-                local slantDir
-                if frame % 2 == 0 then
-                    slantDir = mod.GetLeftDiag[player:GetHeadDirection()]
-                else
-                    slantDir = mod.GetRightDiag[player:GetHeadDirection()]
-                end
-                
-                for x=4, tearTier, 1 do
-                    local tear = player:FireTear(firePos, slantDir * tearSpeed, true, false, true, player, 1)
-                    slantDir = (slantDir * mod.TearTierMultiplier[player:GetHeadDirection()]):Normalized()
-                    tear = mod:tearModifiers(tear, player, false, true)
-                end
-            end
-
-            if sinusRng:RandomInt(100) <= player.Luck + 5 then
-                local luckDirection = Vector(sinusRng:RandomInt(100)-50, sinusRng:RandomInt(100)-50):Normalized() * tearSpeed
-                local lucktear = player:FireTear(firePos, luckDirection, true, false, true, player, 1)
-                lucktear = mod:tearModifiers(lucktear, player, true, true)
-            end
-        end
+        mod:handleTearsOut_OS(player, firstFrame, nil)
+        
     elseif data.MMA_firingOverclock == true and
     data.MMA_overclockFrame and data.MMA_overclockFrame + 500 <= game:GetFrameCount() then
         data.MMA_firingOverclock = nil
@@ -318,3 +338,22 @@ end
 mod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, mod.overclockedWispUpdate, FamiliarVariant.WISP)
 
 --mom's knife
+
+function mod:secondaryTearOverclocked(familiar)
+    local player = familiar.Player
+    local firstFrame = false
+    if player then
+        local data = mod:mmaGetPData(player)
+        local frame = game:GetFrameCount()
+        if data.MMA_overclockFrame and data.MMA_overclockFrame + 20 == game:GetFrameCount() and data.MMA_overclockStarted == nil then
+            firstFrame = true
+        end
+        if data.MMA_overclockFrame and data.MMA_overclockFrame + 20 <= frame and data.MMA_overclockFrame + 500 > frame then
+            mod:handleTearsOut_OS(player, firstFrame, familiar)
+        end
+    end
+end
+mod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, mod.secondaryTearOverclocked, FamiliarVariant.INCUBUS)
+mod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, mod.secondaryTearOverclocked, FamiliarVariant.TWISTED_BABY)
+
+
