@@ -16,6 +16,35 @@ if mod.MMA_GlobalSaveData.droppedEnemiesDest == nil then
     mod.MMA_GlobalSaveData.droppedEnemiesDest = {}
 end
 
+function mod:isBottomFloor()
+    local currentFloor = game:GetLevel():GetStage()
+    local currentFloorType = game:GetLevel():GetStageType()
+    local hasPolaroid = false
+    local hasNegative = false
+
+    mod:AnyPlayerDo(function(player)
+        if player:HasCollectible(CollectibleType.COLLECTIBLE_POLAROID) then
+            hasPolaroid = true
+        end
+        if player:HasCollectible(CollectibleType.COLLECTIBLE_NEGATIVE) then
+            hasNegative = true
+        end
+        
+        if game:IsGreedMode() and currentFloor >= 6 then
+            return true
+        end
+
+        if not game:IsGreedMode() and ((currentFloor == LevelStage.STAGE4_2 and currentFloorType >=4) or
+        (not hasPolaroid and currentFloor == LevelStage.STAGE5 and currentFloorType == StageType.STAGETYPE_WOTL) or
+        (not hasNegative and currentFloor == LevelStage.STAGE5 and currentFloorType == StageType.STAGETYPE_ORIGINAL) or
+        currentFloor >= 11)
+        then
+            return true
+        end
+        return false
+    end)
+end
+
 function mod:dropEnemy(enemy, player)
     local room = game:GetRoom()
 
@@ -24,7 +53,7 @@ function mod:dropEnemy(enemy, player)
     end
 
     local pos = enemy.Position
-    if mod.canGeneratePit(enemy.Position, 0, nil, true, true) then
+    if mod.canGeneratePit(enemy.Position, 0, nil, true, true) and not mod:isBottomFloor() and not enemy:IsBoss() then
         local droppedEnemy = {}
         droppedEnemy.Type = enemy.Type
         droppedEnemy.Variant = enemy.Variant
@@ -75,7 +104,7 @@ mod:AddCallback(ModCallbacks.MC_POST_TEAR_UPDATE, mod.MS_onUpdateTear)
 function mod:hitEnemy(tear, collider, low)
     local data = tear:GetData()
     local player = mod:GetPlayerFromTear(tear)
-    if player and data.MMA_IsPortly ~= nil and collider:IsVulnerableEnemy() and not collider:IsBoss() then
+    if player and data.MMA_IsPortly ~= nil and collider:IsVulnerableEnemy() then
         mod:dropEnemy(collider, player)
     end
 end
@@ -150,7 +179,7 @@ end
 mod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, mod.updateLasersPlayer_MS)
 
 function mod:LaserEnemyHit_MS(entity, amount, damageflags, source, countdownframes)
-    if entity:IsVulnerableEnemy() and not entity:IsBoss() then
+    if entity:IsVulnerableEnemy() then
         local player
         local pdata
         if source and source.Entity then
@@ -170,7 +199,7 @@ mod:AddCallback(ModCallbacks.MC_ENTITY_TAKE_DMG, mod.LaserEnemyHit_MS)
 
 function mod:OnKnifeCollide_MS(knife, collider, low)
     local player = mod:getPlayerFromKnifeLaser(knife)
-    if player and player:HasCollectible(mod.MMATypes.COLLECTIBLE_MOMS_SCALE) and collider:IsVulnerableEnemy() and not collider:IsBoss() then
+    if player and player:HasCollectible(mod.MMATypes.COLLECTIBLE_MOMS_SCALE) and collider:IsVulnerableEnemy() then
         local chance = player.Luck * 5 + 10
         local rng = player:GetCollectibleRNG(mod.MMATypes.COLLECTIBLE_MOMS_SCALE)
         if player:HasTrinket(TrinketType.TRINKET_TEARDROP_CHARM) then
