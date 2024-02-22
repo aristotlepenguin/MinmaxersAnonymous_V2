@@ -33,6 +33,8 @@ mod.MMATypes.COSTUME_HYPERFIXATION = Isaac.GetCostumeIdByPath("gfx/characters/hy
 
 mod.MMATypes.CHALLENGE_SCORE_ASSAULT = Isaac.GetChallengeIdByName("Score Assault")
 
+mod.MMATypes.SOUND_CRYBABY = Isaac.GetSoundIdByName("CryBaby")
+
 mod.FloorSaves = {}
 mod.MMA_GlobalSaveData = {}
 

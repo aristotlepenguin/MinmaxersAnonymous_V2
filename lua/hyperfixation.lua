@@ -44,7 +44,6 @@ function mod:FixationPostPickupInit(pickup, itempool, decrease, seed)
             end
         end)
         if hasIt then
-            print("morphed")
             pickup:ToPickup():Morph(EntityType.ENTITY_PICKUP, mod.MMA_GlobalSaveData.fixationVariant, mod.MMA_GlobalSaveData.fixationType, true)
         end
     end

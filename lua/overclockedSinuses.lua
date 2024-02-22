@@ -1,6 +1,7 @@
 local json = require("json")
 local mod = MMAMod
 local game = Game()
+local sfx = SFXManager()
 
 mod.GetLeftDiag = {
     [Direction.LEFT] = Vector(-120, 35):Normalized(),

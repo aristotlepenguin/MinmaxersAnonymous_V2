@@ -1,0 +1,5 @@
+<sounds root="sfx/">
+    <sound name="CryBaby">
+        <sample weight="1" path="have_a_cry.wav" />
+    </sound>
+</sounds>
