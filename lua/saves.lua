@@ -61,6 +61,19 @@ function mod:loadData(isSave)
 end
 mod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, mod.loadData)
 
+function mod.GetMenuSaveData()
+    if not mod.MenuData then
+        if mod:HasData() then
+            mod.MenuData = json.decode(mod:LoadData()).MenuData or {}
+        else
+            mod.MenuData = {}
+        end
+    end
+    return mod.MenuData
+end
+
+
+
 function mod:mmaGetPData(player)
     local data = player:GetData()
     if data.mmaSaveData == nil then

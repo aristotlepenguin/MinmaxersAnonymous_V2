@@ -7,7 +7,6 @@ function mod:recacheFamiliars_JC(player, cache)
         local rng = player:GetCollectibleRNG(CollectibleType.COLLECTIBLE_ONE_UP)
         local itemconfig = Isaac.GetItemConfig()
         local oneUps = player:GetCollectibleNum(CollectibleType.COLLECTIBLE_ONE_UP) - hiddenItemManager:CountStack(player, CollectibleType.COLLECTIBLE_ONE_UP, hiddenItemManager.kDefaultGroup)
-        --print("recharge" .. tostring(oneUps))
         player:CheckFamiliar(FamiliarVariant.ONE_UP, oneUps, rng, itemconfig:GetCollectible(CollectibleType.COLLECTIBLE_ONE_UP), -1)
     end
 end

@@ -10,6 +10,10 @@ mod.ItemGrabCallback = include("lua.inventory_callbacks")
 
 hiddenItemManager:Init(mod)
 
+local DSSInitializerFunction = include("lib.DSSMenu")
+DSSInitializerFunction(mod)
+
+
 mod.MMATypes = {}
 
 mod.MMATypes.CHARACTER_EPAPHRAS = Isaac.GetPlayerTypeByName("Epaphras")

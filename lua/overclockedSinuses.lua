@@ -153,6 +153,17 @@ function mod:handleTearsOut_OS(player, firstFrame, familiar)
                 lucktear = mod:tearModifiers(lucktear, player, false, false, familiar)
             end
         end
+    
+    elseif player:HasCollectible(CollectibleType.COLLECTIBLE_MOMS_KNIFE) then
+        if frame % 2 == 0 then
+            local knife = player:FireKnife(player, 0, false, 2, 0)
+            local knifeSpread = sinusRng:RandomInt(30)-15
+            local spreadDirection = Vector.FromAngle(direction:GetAngleDegrees()+knifeSpread) * (tearSpeed * 1.5)
+            knife.Velocity = spreadDirection
+            knife.Rotation = direction:GetAngleDegrees() - 90
+            knife:GetSprite().Rotation = direction:GetAngleDegrees() - 90
+            knife:GetData().MMA_Overclocked_Knife_Frame = game:GetFrameCount()
+        end
     elseif player:HasCollectible(CollectibleType.COLLECTIBLE_TECH_X) then
         local defaultRadius = 8 * player.Damage
         if tearTier >= 3 or frame % 2 == 0 then
@@ -252,7 +263,6 @@ function mod:onOverclockFrame(player)
         player:TryRemoveNullCostume(mod.MMATypes.COSTUME_FIRE_OVERCLOCK)
         data.MMA_overclockFrame = nil
     elseif data.MMA_overclockFrame and data.MMA_overclockFrame + 20 <= frame and data.MMA_overclockFrame + 500 > frame then
-        
         if data.MMA_overclockFrame + 20 == game:GetFrameCount() and data.MMA_overclockStarted == nil then
             player:AddNullCostume(mod.MMATypes.COSTUME_FIRE_OVERCLOCK)
             data.MMA_overclockStarted = true
@@ -338,7 +348,6 @@ function mod:overclockedWispUpdate(wisp)
 end
 mod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, mod.overclockedWispUpdate, FamiliarVariant.WISP)
 
---mom's knife
 
 function mod:secondaryTearOverclocked(familiar)
     local player = familiar.Player
@@ -358,3 +367,16 @@ mod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, mod.secondaryTearOverclocked, F
 mod:AddCallback(ModCallbacks.MC_FAMILIAR_UPDATE, mod.secondaryTearOverclocked, FamiliarVariant.TWISTED_BABY)
 
 
+function mod:knifeUpdate_OS(knife)
+    if knife:GetData().MMA_Overclocked_Knife_Frame then
+        local player = mod:getPlayerFromKnifeLaser(knife)
+        local speed = 37.5 * player.ShotSpeed
+        knife.Velocity = knife.Velocity:Normalized() * speed
+        knife.Rotation = knife.Velocity:GetAngleDegrees() - 90
+        knife:GetSprite().Rotation = knife.Velocity:GetAngleDegrees() - 90
+        if knife:GetData().MMA_Overclocked_Knife_Frame + 60 < game:GetFrameCount() then
+            knife:Remove()
+        end
+    end
+end
+mod:AddCallback(ModCallbacks.MC_POST_KNIFE_UPDATE, mod.knifeUpdate_OS)
