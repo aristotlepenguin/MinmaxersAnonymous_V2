@@ -22,6 +22,9 @@ function mod:saveData()
 
         mod.MMA_GlobalSaveData.PlayerData[tostring(player:GetCollectibleRNG(1):GetSeed())] = player:GetData().mmaSaveData
     end
+
+    mod.MMA_GlobalSaveData.MenuData = mod.MenuData
+
     local jsonString = json.encode(mod.MMA_GlobalSaveData)
     mod:SaveData(jsonString)
 end
@@ -52,7 +55,12 @@ function mod:loadData(isSave)
         end
         hiddenItemManager:LoadData(mod.MMA_GlobalSaveData.HIDDEN_ITEM_DATA)
     else
+        local persistentData
+        if mod.MMA_GlobalSaveData then
+            persistentData = mod.MMA_GlobalSaveData.MenuData
+        end
         mod.MMA_GlobalSaveData = {}
+        mod.MMA_GlobalSaveData.MenuData = persistentData
         mod:AnyPlayerDo(function(player)
         player:AddCacheFlags(CacheFlag.CACHE_ALL)
         player:EvaluateItems()
@@ -72,7 +80,9 @@ function mod.GetMenuSaveData()
     return mod.MenuData
 end
 
-
+function mod.StoreSaveData()
+    mod.MMA_GlobalSaveData.MenuData = mod.MenuData
+end
 
 function mod:mmaGetPData(player)
     local data = player:GetData()

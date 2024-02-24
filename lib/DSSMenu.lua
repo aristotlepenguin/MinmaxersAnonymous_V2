@@ -7,7 +7,7 @@ local DSSCoreVersion = 6
 local MenuProvider = {}
     
 function MenuProvider.SaveSaveData()
-    return
+    mod.StoreSaveData()
 end
     
 function MenuProvider.GetPaletteSetting()

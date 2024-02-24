@@ -188,6 +188,11 @@ function mod:test_command(cmd, args)
         print("speed " .. tostring(player.MoveSpeed))
     end
 
+
+    if cmd == "printmenuitem" then
+        print(mod.MenuData.MaxieBossRush)
+    end
+
 end
 mod:AddCallback(ModCallbacks.MC_EXECUTE_CMD, mod.test_command)
 
