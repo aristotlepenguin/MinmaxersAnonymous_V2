@@ -118,6 +118,32 @@ local strings = {
 		en = "keep timer",
 		--ru = "бомбы в руки",
 	},
+
+    maxie_pocket = {
+        en = "pocket limits"
+    },
+    pocket1 = {
+        en = "65"
+    },
+    pocket2 = {
+        en = "99"
+    },
+
+    job_curse = {
+        en = "job's curse"
+    },
+    job_stat_payout = {
+        en = "stat payout"
+    },
+    job_1 = {
+        en = "1/4"
+    },
+    job_2 = {
+        en = "1/2"
+    },
+    job_3 = {
+        en = "1"
+    },
 }
 local function GetStr(str)
     return strings[str] and (strings[str][Options.Language] or strings[str].en) or str
@@ -158,12 +184,36 @@ MMAMod.DSSdirectory = {
                         MMAMod.MenuData.MaxieBossRush = var
                     end,
                 },
+                {
+                    str = GetStr('maxie_pocket'),
+                    choices = {GetStr('pocket1'),GetStr('pocket2')}, 
+                    variable = 'MaxiePocketLimits',
+                    setting = 1,
+                    load = function()
+                        return MMAMod.MenuData.MaxiePocketLimits or 1
+                    end,
+                    store = function(var)
+                        MMAMod.MenuData.MaxiePocketLimits = var
+                    end,
+                },
                 {str = '', nosel = true, fsize = 3},
-                
+                {str = GetStr('job_curse'), nosel = true, fsize = 3},
+                {
+                    str = GetStr('job_stat_payout'),
+                    choices = {GetStr('job_1'),GetStr('job_2'),GetStr('job_3')}, 
+                    variable = 'JobStatPayout',
+                    setting = 1,
+                    load = function()
+                        return MMAMod.MenuData.JobStatPayout or 1
+                    end,
+                    store = function(var)
+                        MMAMod.MenuData.JobStatPayout = var
+                    end,
+                },
             },
-            tooltip = GetStr("startTooltip")  
+            tooltip = GetStr("startTooltip")
         },
-        warpzone = {
+        minmaxers = {
             title = GetStr('settings'),
             buttons = {
                 dssmod.gamepadToggleButton,

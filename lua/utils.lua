@@ -63,7 +63,7 @@ function mod:GetPlayerFromTear(tear)
       end
       if check then
           if check.Type == EntityType.ENTITY_PLAYER then
-              return check:ToPlayer()   -- WarpZone:GetPtrHashEntity(check):ToPlayer()
+              return check:ToPlayer()   
           elseif check.Type == EntityType.ENTITY_FAMILIAR and (check.Variant == FamiliarVariant.INCUBUS or check.Variant == FamiliarVariant.TWISTED_BABY) then
               local data = tear:GetData()
               data.IsIncubusTear = true

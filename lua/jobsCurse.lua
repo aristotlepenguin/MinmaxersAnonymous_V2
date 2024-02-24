@@ -75,7 +75,18 @@ function mod:Cache_JC(player, cache)
     local sign = 0.125
     local pdata = mod:mmaGetPData(player)
     local jobMultiplier = ((pdata.MMA_JobBlessLevel or 0) - (pdata.MMA_JobCurseLevel or 0)) * sign
-    
+
+    if jobMultiplier > 0 then
+        if mod.MenuData.JobStatPayout and mod.MenuData.JobStatPayout == 3 then
+            jobMultiplier = jobMultiplier
+        elseif mod.MenuData.JobStatPayout and mod.MenuData.JobStatPayout == 2 then
+            jobMultiplier = jobMultiplier * 0.5
+        else
+            jobMultiplier = jobMultiplier * 0.25
+        end
+    end
+
+
     if cache == CacheFlag.CACHE_DAMAGE then
         player.Damage = math.max(player.Damage + jobMultiplier, 0.5)
     elseif cache == CacheFlag.CACHE_FIREDELAY then

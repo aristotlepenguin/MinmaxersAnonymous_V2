@@ -391,12 +391,23 @@ function mod:onUpdateEpaphras(player)
         return
     end
     local totalToBucket = 0
+    
     local pocketLimits = 65
     local coinLimits = 65
     if player:HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT) then
         pocketLimits = 45
         coinLimits = 45
     end
+
+    if mod.MenuData.MaxiePocketLimits and mod.MenuData.MaxiePocketLimits == 2 then
+        pocketLimits = 99
+        coinLimits = 99
+        if player:HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT) then
+            pocketLimits = 65
+            coinLimits = 65
+        end
+    end
+
 
     if player:HasCollectible(CollectibleType.COLLECTIBLE_DEEP_POCKETS) then
         coinLimits = 999
