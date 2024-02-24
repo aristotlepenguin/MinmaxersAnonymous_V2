@@ -391,7 +391,7 @@ function mod:onUpdateEpaphras(player)
         return
     end
     local totalToBucket = 0
-    
+
     local pocketLimits = 65
     local coinLimits = 65
     if player:HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT) then

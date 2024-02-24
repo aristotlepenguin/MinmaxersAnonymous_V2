@@ -3,5 +3,6 @@
     <costume id = "2"  anm2path = "rain_bucket.anm2" type = "passive"/>
     <costume id = "3"  anm2path = "abstinence_costume.anm2" type = "passive"/>
     <costume id = "6"  anm2path = "dad_sneakers_costume.anm2" type = "passive"/>
+    <costume id = "9"  anm2path = "scale_costume.anm2" type = "passive"/>
     <costume anm2path = "hyperfixation_costume.anm2" type = "none"/>
 </costumes>
