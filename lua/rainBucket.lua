@@ -25,7 +25,10 @@ function mod:bucketIt(player, emptybones, keepercoin)
     local coinmax = 99
     local bombmax = 99
     local keymax = 99
-
+    local poopMax = 9
+    if player:HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT) then
+        poopMax = 29
+    end
     local rng = player:GetCollectibleRNG(mod.MMATypes.COLLECTIBLE_RAIN_BUCKET)
 
     if isEph and player:GetPlayerType() == mod.MMATypes.CHARACTER_EPAPHRAS then
@@ -44,7 +47,9 @@ function mod:bucketIt(player, emptybones, keepercoin)
         coinmax = 999
     end
 
-    if player:GetNumCoins() < coinmax then
+    if player:GetPlayerType() == PlayerType.PLAYER_BLUEBABY_B and player:GetPoopMana() < poopMax then
+        player:AddPoopMana(1)
+    elseif player:GetNumCoins() < coinmax then
         player:AddCoins(1)
     elseif player:GetNumBombs() < bombmax or player:GetNumKeys() < keymax then
         if rng:RandomInt(100) > 50 then
@@ -118,6 +123,10 @@ function mod:onPickupCollide_RB(pickup, collider, low)
             local coinmax = 99
             local bombmax = 99
             local keymax = 99
+            local poopMax = 9
+            if player:HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT) then
+                poopMax = 29
+            end
             local emptyredhearts = player:GetEffectiveMaxHearts() - player:GetHearts()
             local emptysouls = player:GetHeartLimit() - (player:GetEffectiveMaxHearts() + player:GetSoulHearts())
             local emptybones = nil
@@ -255,6 +264,15 @@ function mod:onPickupCollide_RB(pickup, collider, low)
                 if emptycharges <=0 then
                     collectThis = SoundEffect.SOUND_BATTERYCHARGE
                 end
+            elseif pickup.Variant == PickupVariant.PICKUP_POOP then
+                local value = 0
+                local isaacPoop = player:GetPoopMana()
+                if pickup.SubType == PoopPickupSubType.POOP_SMALL then
+                    value = 1
+                else
+                    value = 3
+                end
+                bucketed = math.max(0, (isaacPoop + value) - poopMax)
             end
             if bucketed > 0 then
                 for i=1, bucketed, 1 do
