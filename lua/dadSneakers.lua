@@ -147,15 +147,22 @@ mod:AddCallback(ModCallbacks.MC_PRE_SPAWN_CLEAN_AWARD, mod.refreshRooms_DS_W)
 function mod:onNewLevelStart_DS()
     local hasIt = false
     local rng = RNG()
+    local hasBirthright = false
     mod:AnyPlayerDo(function(player)
         if player:HasCollectible(mod.MMATypes.COLLECTIBLE_DAD_SNEAKERS) or (tEph and player:GetPlayerType() == mod.MMATypes.CHARACTER_EPAPHRAS_B and not game:IsGreedMode()) then
             hasIt = true
+            if tEph and player:GetPlayerType() == mod.MMATypes.CHARACTER_EPAPHRAS_B and player:HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT) then
+                hasBirthright = true
+            end
             rng = player:GetCollectibleRNG(mod.MMATypes.COLLECTIBLE_DAD_SNEAKERS)
         end
     end)
 
     if hasIt and not (game:GetLevel():GetStageType() ~= StageType.STAGETYPE_REPENTANCE_B and game:GetLevel():GetStage() == 1) then
         local numOfNewRooms = mod.MMA_GlobalSaveData.UnexploredCount
+        if hasBirthright and not REPENTOGON then
+            numOfNewRooms = numOfNewRooms + 3
+        end
         local triedCombos = {}
         for i=1, numOfNewRooms, 1 do
             local numOfOldRooms = mod:checkFloorRooms_DS(true, -1)

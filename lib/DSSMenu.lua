@@ -145,7 +145,7 @@ local strings = {
         en = "1"
     },
     hopes_dreams = {
-        en = "hopes & dreams"
+        en = "hopes and dreams"
     },
     hopes_dream_pool = {
         en = "item select"
