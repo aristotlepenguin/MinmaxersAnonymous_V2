@@ -144,6 +144,18 @@ local strings = {
     job_3 = {
         en = "1"
     },
+    hopes_dreams = {
+        en = "hopes & dreams"
+    },
+    hopes_dream_pool = {
+        en = "item select"
+    },
+    hopes_1 = {
+        en = "unobtained items only"
+    },
+    hopes_2 = {
+        en = "all items"
+    },
 }
 local function GetStr(str)
     return strings[str] and (strings[str][Options.Language] or strings[str].en) or str
@@ -209,6 +221,22 @@ MMAMod.DSSdirectory = {
                     store = function(var)
                         MMAMod.MenuData.JobStatPayout = var
                     end,
+                    
+                },
+                {str = '', nosel = true, fsize = 3},
+                {str = GetStr('hopes_dreams'), nosel = true, fsize = 3},
+                {
+                    str = GetStr('hopes_dream_pool'),
+                    choices = {GetStr('hopes_1'),GetStr('hopes_2')}, 
+                    variable = 'HopesItemSelect',
+                    setting = 1,
+                    load = function()
+                        return MMAMod.MenuData.HopesItemSelect or 1
+                    end,
+                    store = function(var)
+                        MMAMod.MenuData.HopesItemSelect = var
+                    end,
+                    
                 },
             },
             tooltip = GetStr("startTooltip")

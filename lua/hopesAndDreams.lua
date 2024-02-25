@@ -85,8 +85,15 @@ function mod:hopesRender()
             local pickup_num
             for j = 1, 10000 do
                 pickup_num = rng:RandomInt(itemConfig:GetCollectibles().Size-1)
+                local alreadyhas = false
+                mod:AnyPlayerDo(function(player)
+                    if player:HasCollectible(pickup_num) then
+                        alreadyhas = true
+                    end
+                end)
                 if itemConfig:GetCollectible(pickup_num)and itemConfig:GetCollectible(pickup_num):IsAvailable()
-                and not (pickup_num >= 550 and pickup_num <= 552) and pickup_num ~= 714 and pickup_num ~= 715 then
+                and not (pickup_num >= 550 and pickup_num <= 552) and pickup_num ~= 714 and pickup_num ~= 715 and
+                (mod.MenuData.HopesItemSelect == 2 or not alreadyhas) then
                     break
                 end
             end
