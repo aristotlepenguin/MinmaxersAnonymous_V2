@@ -2,6 +2,7 @@
     <costume anm2path = "tantrum_face.anm2" hasSkinAlt = "true" type = "none" priority = "99"/>
     <costume id = "2"  anm2path = "rain_bucket.anm2" type = "passive"/>
     <costume id = "3"  anm2path = "abstinence_costume.anm2" type = "passive"/>
+    <costume id = "4"  anm2path = "memory_leak_costume.anm2" type = "passive"/>
     <costume id = "6"  anm2path = "dad_sneakers_costume.anm2" type = "passive"/>
     <costume id = "9"  anm2path = "scale_costume.anm2" type = "passive"/>
     <costume anm2path = "hyperfixation_costume.anm2" type = "none"/>
