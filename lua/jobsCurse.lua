@@ -24,6 +24,8 @@ function mod:checkDeath_JC(player)
         pdata.MMA_JobCurseLevel = 0
         if oneUpCount == 1 then
             pdata.MMA_JobCurseStatus = false
+            player:TryRemoveNullCostume(mod.MMATypes.COSTUME_JOBSCURSE_1)
+            player:TryRemoveNullCostume(mod.MMATypes.COSTUME_JOBSCURSE_2)
         end
         player:AddCacheFlags(CacheFlag.CACHE_ALL)
         player:EvaluateItems()
@@ -45,6 +47,8 @@ mod:AddCallback(ModCallbacks.MC_POST_UPDATE, mod.onGreedUpdate_JC)
 mod.ItemGrabCallback:AddCallback(mod.ItemGrabCallback.InventoryCallback.POST_ADD_ITEM, function(player, item, count, touched, fromQueue)
     if not touched or not fromQueue then
         hiddenItemManager:Add(player, CollectibleType.COLLECTIBLE_ONE_UP)
+        player:AddNullCostume(mod.MMATypes.COSTUME_JOBSCURSE_1)
+        player:AddNullCostume(mod.MMATypes.COSTUME_JOBSCURSE_2)
         player:AddCacheFlags(CacheFlag.CACHE_FAMILIARS)
         player:EvaluateItems()
         local pdata = mod:mmaGetPData(player)

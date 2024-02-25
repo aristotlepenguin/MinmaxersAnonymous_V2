@@ -333,7 +333,7 @@ local BasegameSegmentedEnemies = {
 }
 
 function mod:isBasegameSegmented(entity)
-	return mod.BasegameSegmentedEnemies[entity.Type] or
-		   mod.BasegameSegmentedEnemies[entity.Type .. " " .. entity.Variant] or
-		   mod.BasegameSegmentedEnemies[entity.Type .. " " .. entity.Variant .. " " .. entity.SubType]
+	return BasegameSegmentedEnemies[entity.Type] or
+		   BasegameSegmentedEnemies[entity.Type .. " " .. entity.Variant] or
+		   BasegameSegmentedEnemies[entity.Type .. " " .. entity.Variant .. " " .. entity.SubType]
 end
