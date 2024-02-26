@@ -20,7 +20,7 @@ function mod:checkDeath_JC(player)
     elseif pdata.MMA_Died == true  and not player:IsDead() and oneUpCount >= 1 then
         pdata.MMA_Died = false
         hiddenItemManager:Remove(player, CollectibleType.COLLECTIBLE_ONE_UP, hiddenItemManager.kDefaultGroup)
-        pdata.MMA_JobBlessLevel = (pdata.MMA_JobBlessLevel or 0) + pdata.MMA_JobCurseLevel
+        pdata.MMA_JobBlessLevel = (pdata.MMA_JobBlessLevel or 0) + (pdata.MMA_JobCurseLevel or 0)
         pdata.MMA_JobCurseLevel = 0
         if oneUpCount == 1 then
             pdata.MMA_JobCurseStatus = false
