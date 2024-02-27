@@ -337,3 +337,37 @@ function mod:isBasegameSegmented(entity)
 		   BasegameSegmentedEnemies[entity.Type .. " " .. entity.Variant] or
 		   BasegameSegmentedEnemies[entity.Type .. " " .. entity.Variant .. " " .. entity.SubType]
 end
+
+
+function UpdateAllowedDoorR(room, TargetIndex, createdoor)
+  local level = game:GetLevel()
+  local doorslot = 0
+  local shape = room.Data.Shape
+  local neighs = ShapeToNeighbors[room.Data.Shape]
+  
+  for j = 1, #neighs do
+      local neind = room.GridIndex + neighs[j]
+      
+      if (neind > 0 and neind < (13*13)) 
+      and (not TargetIndex or TargetIndex == neind) then
+          local nroom = level:GetRoomByIdx(neind, 0)
+          
+          if nroom.ListIndex ~= -1 then
+              
+              doorslot = doorslot | sF(ttn(ShapeToNeighborsDoor[shape][j]))
+              local slots = ShapeToNeighborsDoor[shape][j]
+              
+              --if WarpZone.CELESTROOMS_indexs[room.SafeGridIndex] then
+                  if type(slots) == "table" then
+                      for i=1, #slots do
+                          room.Doors[slots[i]] = neind
+                      end
+                  else
+                      room.Doors[slots] = neind
+                  end
+              --end
+          end
+      end
+  end
+  room.AllowedDoors = room.AllowedDoors | doorslot
+end

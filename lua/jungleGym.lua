@@ -197,7 +197,8 @@ function mod:test_command(cmd, args)
 
     if cmd == "addnorthdoor" then
         local currentRoom = game:GetLevel():GetCurrentRoomIndex()
-        mod:openSpecialRedRoom_DS(currentRoom, DoorSlot.UP0, rng)
+        local good = mod:openSpecialRedRoom_DS(currentRoom, DoorSlot.UP0, rng)
+        print(good)
     end
 
 end
