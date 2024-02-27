@@ -144,6 +144,23 @@ function mod:refreshRooms_DS_W(rng, spawnpos)
 end
 mod:AddCallback(ModCallbacks.MC_PRE_SPAWN_CLEAN_AWARD, mod.refreshRooms_DS_W)
 
+local roomDirectionTable = {
+    [DoorSlot.LEFT0] = -1,
+    [DoorSlot.LEFT1] = -1,
+    [DoorSlot.RIGHT0] = 1,
+    [DoorSlot.RIGHT1] = 1,
+    [DoorSlot.UP0] = -13,
+    [DoorSlot.UP1] = -13,
+    [DoorSlot.DOWN0] = 13,
+    [DoorSlot.DOWN1] = 13
+
+}
+
+function mod:isAdjacentDoor(room, door)
+    local spawningRoom = roomDirectionTable[door] + room
+    return spawningRoom == 83 or spawningRoom == 85 or spawningRoom == 71 or spawningRoom == 97
+end
+
 function mod:onNewLevelStart_DS()
     local hasIt = false
     local rng = RNG()
@@ -172,12 +189,23 @@ function mod:onNewLevelStart_DS()
                 local doorTable = mod:findValidDoors_DS(roomIdToExpand)
                 --local roomdesc = Game():GetLevel():GetRoomByIdx(roomIdToExpand)
                 for i, door in ipairs(doorTable) do
-                    if mod:findValidDoors_Edges(door, roomIdToExpand) and
-                    triedCombos[tostring(roomIdToExpand) .. tostring(door)] == nil and 
-                    game:GetLevel():MakeRedRoomDoor(roomIdToExpand, door) then
-                        isOpened = true
-                        triedCombos[tostring(roomIdToExpand) .. tostring(door)] = true
-                        break
+                    local useManualRedRoom = REPENTOGON and hasBirthright and rng:RandomInt(10) == 9 and not mod:isAdjacentDoor(roomIdToExpand, door)
+                    if not useManualRedRoom then
+                        if mod:findValidDoors_Edges(door, roomIdToExpand) and
+                        triedCombos[tostring(roomIdToExpand) .. tostring(door)] == nil and 
+                        game:GetLevel():MakeRedRoomDoor(roomIdToExpand, door) then
+                            isOpened = true
+                            triedCombos[tostring(roomIdToExpand) .. tostring(door)] = true
+                            break
+                        end
+                    else
+                        if mod:findValidDoors_Edges(door, roomIdToExpand) and
+                        triedCombos[tostring(roomIdToExpand) .. tostring(door)] == nil and 
+                        mod:openSpecialRedRoom_DS(roomIdToExpand, door, rng) then
+                            isOpened = true
+                            triedCombos[tostring(roomIdToExpand) .. tostring(door)] = true
+                            break
+                        end
                     end
                 end
                 if isOpened == true then
@@ -204,5 +232,189 @@ if tEph then
     mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, mod.tEphStatsHandling)
 end
 
+local specTable = {
+    [1]=RoomType.ROOM_SHOP,
+    [2]=RoomType.ROOM_TREASURE,
+    [3]=RoomType.ROOM_SECRET,
+    [4]=RoomType.ROOM_ARCADE,
+    [5]=RoomType.ROOM_CURSE,
+    [6]=RoomType.ROOM_LIBRARY,
+    [7]=RoomType.ROOM_SACRIFICE,
+    [8]=RoomType.ROOM_DEVIL,
+    [9]=RoomType.ROOM_ANGEL,
+    [10]=RoomType.ROOM_CHEST,
+    [11]=RoomType.ROOM_DICE,
+    [12]=RoomType.ROOM_ISAACS,
+    [13]=RoomType.ROOM_PLANETARIUM,
+    [14]=RoomType.ROOM_MINIBOSS,
+    [15]=RoomType.ROOM_SUPERSECRET,
+    [16]=RoomType.ROOM_BARREN
+}
+
+
+
+local sF = function (int)
+    return 1 << int
+end
+local alldoor = sF(DoorSlot.DOWN0) | sF(DoorSlot.LEFT0) | sF(DoorSlot.UP0) | sF(DoorSlot.RIGHT0)
+
+local ShapeToNeighbors = {
+    [RoomShape.ROOMSHAPE_1x1] = {-1,-13,1,13},
+    [RoomShape.ROOMSHAPE_IH] = {-1,1},
+    [RoomShape.ROOMSHAPE_IV] = {-13,13},
+    [RoomShape.ROOMSHAPE_1x2] = {-1,-13,1,12,15,26},
+    [RoomShape.ROOMSHAPE_IIV] = {-13,26},
+    [RoomShape.ROOMSHAPE_2x1] = {-1,-13,-12,2,13,14},
+    [RoomShape.ROOMSHAPE_IIH] = {-1,2},
+    [RoomShape.ROOMSHAPE_2x2] = {-1,-13,-12,2,12,15,26,27},
+    [RoomShape.ROOMSHAPE_LTL] = {0,-12,2,12,15,26,27},
+    [RoomShape.ROOMSHAPE_LTR] = {-1,-13,1,12,15,26,27},
+    [RoomShape.ROOMSHAPE_LBL] = {-1,-13,-12,2,13,15,27},
+    [RoomShape.ROOMSHAPE_LBR] = {-1,-13,-12,2,12,14,26},
+}
+local ShapeToNeighborsDoor = {
+    [RoomShape.ROOMSHAPE_1x1] = {DoorSlot.LEFT0,DoorSlot.UP0,DoorSlot.RIGHT0,DoorSlot.DOWN0},
+    [RoomShape.ROOMSHAPE_IH] = {DoorSlot.LEFT0, DoorSlot.RIGHT0},
+    [RoomShape.ROOMSHAPE_IV] = {DoorSlot.UP0, DoorSlot.DOWN0},
+    [RoomShape.ROOMSHAPE_1x2] = {DoorSlot.LEFT0, DoorSlot.UP0, DoorSlot.RIGHT0, DoorSlot.LEFT1, DoorSlot.RIGHT1, DoorSlot.DOWN0},
+    [RoomShape.ROOMSHAPE_IIV] = {DoorSlot.UP0, DoorSlot.DOWN0},
+    [RoomShape.ROOMSHAPE_2x1] = {DoorSlot.LEFT0,DoorSlot.UP0,DoorSlot.UP1,DoorSlot.RIGHT0,DoorSlot.DOWN0, DoorSlot.DOWN1},
+    [RoomShape.ROOMSHAPE_IIH] = {DoorSlot.LEFT0, DoorSlot.RIGHT0},
+    [RoomShape.ROOMSHAPE_2x2] = {DoorSlot.LEFT0,DoorSlot.UP0,DoorSlot.UP1,DoorSlot.RIGHT0,DoorSlot.LEFT1,DoorSlot.RIGHT1,DoorSlot.DOWN0,DoorSlot.DOWN1},
+    [RoomShape.ROOMSHAPE_LTL] = {{DoorSlot.LEFT0, DoorSlot.UP0},DoorSlot.UP1,DoorSlot.RIGHT0,DoorSlot.LEFT1,DoorSlot.RIGHT1,DoorSlot.DOWN0,DoorSlot.DOWN1},
+    [RoomShape.ROOMSHAPE_LTR] = {DoorSlot.LEFT0,DoorSlot.UP0,{DoorSlot.RIGHT0,DoorSlot.UP1},DoorSlot.LEFT1,DoorSlot.RIGHT1,DoorSlot.DOWN0,DoorSlot.DOWN1},
+    [RoomShape.ROOMSHAPE_LBL] = {DoorSlot.LEFT0,DoorSlot.UP0,DoorSlot.UP1,DoorSlot.RIGHT0,{DoorSlot.DOWN0,DoorSlot.LEFT1},DoorSlot.RIGHT1,DoorSlot.DOWN1},
+    [RoomShape.ROOMSHAPE_LBR] = {DoorSlot.LEFT0,DoorSlot.UP0,DoorSlot.UP1,DoorSlot.RIGHT0,DoorSlot.LEFT1,{DoorSlot.RIGHT1,DoorSlot.DOWN1},DoorSlot.DOWN0},
+}
+
+local ttn = function (num)
+    if type(num) == "table" then
+        local a = 0
+        for i=1, #num do
+            a = a | sF(num[i])
+        end
+        return a
+    else
+        return num
+    end
+end
+
+function mod:GetNeighbors(room)
+    local level = game:GetLevel()
+    local tab = {}
+    local neighs = ShapeToNeighbors[room.Data.Shape]
+    for j = 1, #neighs do
+        local neind = room.GridIndex + neighs[j]
+        local nroom = level:GetRoomByIdx(neind, 0)
+        if (neind > 0 and neind < (13*13)) and nroom.ListIndex ~= -1 then
+            tab[#tab+1] = neind
+        end
+    end
+    return tab
+end
+
+function mod:UpdateAllowedDoorR(room, TargetIndex, createdoor)
+    local level = game:GetLevel()
+    local doorslot = 0
+    local shape = room.Data.Shape
+    local neighs = ShapeToNeighbors[room.Data.Shape]
+    
+    for j = 1, #neighs do
+        local neind = room.GridIndex + neighs[j]
+        
+        if (neind > 0 and neind < (13*13)) 
+        and (not TargetIndex or TargetIndex == neind) then
+            local nroom = level:GetRoomByIdx(neind, 0)
+            
+            if nroom.ListIndex ~= -1 then
+                
+                doorslot = doorslot | sF(ttn(ShapeToNeighborsDoor[shape][j]))
+                local slots = ShapeToNeighborsDoor[shape][j]
+                
+                --if WarpZone.CELESTROOMS_indexs[room.SafeGridIndex] then
+                    if type(slots) == "table" then
+                        for i=1, #slots do
+                            room.Doors[slots[i]] = neind
+                        end
+                    else
+                        room.Doors[slots] = neind
+                    end
+                --end
+            end
+        end
+    end
+    room.AllowedDoors = room.AllowedDoors | doorslot
+  end
+
+
+function mod:UpdateAllowedDoor(room, TargetIndex, createdoor)
+    local level = game:GetLevel()
+    local doorslot = 0
+    local shape = room.Data.Shape
+    local neighs = ShapeToNeighbors[room.Data.Shape]
+   
+    for j = 1, #neighs do
+        local neind = room.GridIndex + neighs[j]
+       
+        if (neind > 0 and neind < (13*13)) 
+        and (not TargetIndex or TargetIndex == neind) then
+            local nroom = level:GetRoomByIdx(neind, 0)
+            
+            if nroom.ListIndex ~= -1 then
+               
+                doorslot = doorslot | sF(ttn(ShapeToNeighborsDoor[shape][j]))
+                local slots = ShapeToNeighborsDoor[shape][j]
+                
+                --if WarpZone.CELESTROOMS_indexs[room.SafeGridIndex] then
+                    if type(slots) == "table" then
+                        for i=1, #slots do
+                            room.Doors[slots[i]] = neind
+                        end
+                    else
+                        room.Doors[slots] = neind
+                    end
+                --end
+            end
+        end
+    end
+    room.AllowedDoors = room.AllowedDoors | doorslot
+end
+
+function mod:openSpecialRedRoom_DS(roomIdToExpand, door, rng)
+    if not REPENTOGON then
+        return nil
+    else
+        local specialRoomType = specTable[rng:RandomInt(16)+1]
+        local rConf = RoomConfigHolder.GetRandomRoom(rng:GetSeed(), true, StbType.SPECIAL_ROOMS, specialRoomType, RoomShape.ROOMSHAPE_1x1, -1,-1,nil,nil,15)
+        local moddedID = roomDirectionTable[door] + roomIdToExpand
+        local entry = Isaac.LevelGeneratorEntry()
+        entry:SetAllowedDoors(alldoor)
+        entry:SetColIdx((moddedID-1) % 13 + 1)
+        entry:SetLineIdx(math.floor(moddedID/13))
+        local valid = game:GetLevel():PlaceRoom(entry, rConf, rng:GetSeed())
+        if valid then
+            
+            local roomState = Game():GetLevel():GetRoomByIdx(moddedID)
+            roomState.AllowedDoors = 0
+            roomState.DisplayFlags = 5
+            roomState.Flags = roomState.Flags | RoomDescriptor.FLAG_RED_ROOM
+            game:GetLevel():Update()
+            game:GetHUD():Update()
+            game:GetHUD():PostUpdate()
+
+            mod:UpdateAllowedDoorR(roomState, nil, true)
+            
+            for i, k in pairs(mod:GetNeighbors(roomState)) do
+                local nroom = game:GetLevel():GetRoomByIdx(k)
+                mod:UpdateAllowedDoor(nroom, moddedID)
+            end
+
+        end
+        return valid
+    end
+end
+
 
 --birthright effect for minnie, make rooms more likely to be special
+
+

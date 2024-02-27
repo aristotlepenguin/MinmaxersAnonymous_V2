@@ -5,6 +5,8 @@ local grng = RNG()
 local sfx = SFXManager()
 local floorSaves = {}
 
+local rng = RNG()
+
 local pickup_num = 1
 local renderX = 30
 local renderY = 30
@@ -191,6 +193,11 @@ function mod:test_command(cmd, args)
 
     if cmd == "printmenuitem" then
         print(mod.MenuData.MaxieBossRush)
+    end
+
+    if cmd == "addnorthdoor" then
+        local currentRoom = game:GetLevel():GetCurrentRoomIndex()
+        mod:openSpecialRedRoom_DS(currentRoom, DoorSlot.UP0, rng)
     end
 
 end
