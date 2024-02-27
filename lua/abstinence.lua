@@ -189,6 +189,10 @@ function mod:useChastityCard(card, player, useflags)
                 actitemgen:ToPickup().Touched = true
             end
         end
+        if item_obj.subtype == mod.MMATypes.COLLECTIBLE_HYPERFIXATION then
+            data.BypassLockIn = true
+        end
+
         player:AddCollectible(item_obj.subtype, item_obj.charges, not item_obj.touched)
         player:AnimateCollectible(item_obj.subtype)
         hud:ShowItemText(player, itemconfig:GetCollectible(item_obj.subtype))
