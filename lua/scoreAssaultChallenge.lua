@@ -195,6 +195,7 @@ end
 mod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, mod.trackPickups_SA)
 
 local errorRoomBonus = 50000
+local ultraSecretBonus = 50000
 
 function mod:getRoomBonus()
     if Isaac.GetChallenge() == mod.MMATypes.CHALLENGE_SCORE_ASSAULT then
@@ -202,6 +203,9 @@ function mod:getRoomBonus()
         if room:GetType() == RoomType.ROOM_ERROR and checkIfAchieved("errorRoom") == false then
             mod.MMA_GlobalSaveData.ScoreAssaultAchievements["errorRoom"] = true
             mod.MMA_GlobalSaveData.TotalBonusScore = (mod.MMA_GlobalSaveData.TotalBonusScore or 0) + errorRoomBonus
+        elseif room:GetType() == RoomType.ROOM_ULTRASECRET and checkIfAchieved("ultraSecret") == false then
+            mod.MMA_GlobalSaveData.ScoreAssaultAchievements["ultraSecret"] = true
+            mod.MMA_GlobalSaveData.TotalBonusScore = (mod.MMA_GlobalSaveData.TotalBonusScore or 0) + ultraSecretBonus
         end
     end
     mod:refreshTotalScore_SA()

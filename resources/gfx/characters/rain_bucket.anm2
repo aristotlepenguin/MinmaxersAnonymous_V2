@@ -1,11 +1,11 @@
 <AnimatedActor>
-	<Info CreatedBy="robot" CreatedOn="2/10/2024 10:52:56 PM" Version="107" Fps="30"/>
+	<Info CreatedBy="robot" CreatedOn="2/27/2024 8:47:50 PM" Version="108" Fps="30"/>
 	<Content>
 		<Spritesheets>
 			<Spritesheet Path="costumes\rain_bucket_costume.png" Id="0"/>
 		</Spritesheets>
 		<Layers>
-			<Layer Name="head0" Id="0" SpritesheetId="0"/>
+			<Layer Name="head4" Id="0" SpritesheetId="0"/>
 		</Layers>
 		<Nulls/>
 		<Events/>

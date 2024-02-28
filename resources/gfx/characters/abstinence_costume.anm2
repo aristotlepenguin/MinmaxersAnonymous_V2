@@ -1,11 +1,11 @@
 <AnimatedActor>
-	<Info CreatedBy="robot" CreatedOn="2/19/2024 10:58:46 AM" Version="109" Fps="30"/>
+	<Info CreatedBy="robot" CreatedOn="2/27/2024 8:42:12 PM" Version="110" Fps="30"/>
 	<Content>
 		<Spritesheets>
 			<Spritesheet Path="costumes\abstinence_costume.png" Id="0"/>
 		</Spritesheets>
 		<Layers>
-			<Layer Name="head0" Id="0" SpritesheetId="0"/>
+			<Layer Name="head3" Id="0" SpritesheetId="0"/>
 		</Layers>
 		<Nulls/>
 		<Events/>

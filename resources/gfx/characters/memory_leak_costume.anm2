@@ -1,11 +1,11 @@
 <AnimatedActor>
-	<Info CreatedBy="robot" CreatedOn="2/25/2024 7:50:14 PM" Version="110" Fps="30"/>
+	<Info CreatedBy="robot" CreatedOn="2/27/2024 8:45:53 PM" Version="111" Fps="30"/>
 	<Content>
 		<Spritesheets>
 			<Spritesheet Path="costumes\memleak_costume.png" Id="0"/>
 		</Spritesheets>
 		<Layers>
-			<Layer Name="head4" Id="0" SpritesheetId="0"/>
+			<Layer Name="head" Id="0" SpritesheetId="0"/>
 		</Layers>
 		<Nulls/>
 		<Events/>

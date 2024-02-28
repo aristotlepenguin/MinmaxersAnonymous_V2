@@ -104,7 +104,7 @@ end
 --mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, mod.saveData)
 
 local screenShaking = false
-
+local lastFrame = nil
 function mod:handleTearsOut_OS(player, firstFrame, familiar)
     local tearTier = math.floor(30 / (player.MaxFireDelay + 1))
     local sinusRng = player:GetCollectibleRNG(mod.MMATypes.COLLECTIBLE_OVERCLOCKED_SINUSES)
@@ -155,7 +155,7 @@ function mod:handleTearsOut_OS(player, firstFrame, familiar)
         end
     
     elseif player:HasCollectible(CollectibleType.COLLECTIBLE_MOMS_KNIFE) then
-        if frame % 2 == 0 then
+        if (tearTier > 3 and frame % 2 == 0) or frame % 4 == 0 or tearTier > 4 then
             local knife = player:FireKnife(player, 0, false, 2, 0)
             local knifeSpread = sinusRng:RandomInt(30)-15
             local spreadDirection = Vector.FromAngle(direction:GetAngleDegrees()+knifeSpread) * (tearSpeed * 1.5)
@@ -164,6 +164,17 @@ function mod:handleTearsOut_OS(player, firstFrame, familiar)
             knife:GetSprite().Rotation = direction:GetAngleDegrees() - 90
             knife:GetData().MMA_Overclocked_Knife_Frame = game:GetFrameCount()
         end
+        
+        if sinusRng:RandomInt(100) <= player.Luck + 5 then
+            local knife = player:FireKnife(player, 0, false, 2, 0)
+            local knifeSpread = sinusRng:RandomInt(360)
+            local spreadDirection = Vector.FromAngle(knifeSpread) * (tearSpeed * 1.5)
+            knife.Velocity = spreadDirection
+            knife.Rotation = direction:GetAngleDegrees() - 90
+            knife:GetSprite().Rotation = direction:GetAngleDegrees() - 90
+            knife:GetData().MMA_Overclocked_Knife_Frame = game:GetFrameCount()
+        end
+
     elseif player:HasCollectible(CollectibleType.COLLECTIBLE_TECH_X) then
         local defaultRadius = 8 * player.Damage
         if tearTier >= 3 or frame % 2 == 0 then
