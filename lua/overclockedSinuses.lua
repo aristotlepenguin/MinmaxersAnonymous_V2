@@ -56,7 +56,9 @@ function mod:useOverclock(collectible, rng, player, useflags, activeslot, custom
     local data = mod:mmaGetPData(player)
     data.MMA_firingOverclock = true
     data.MMA_overclockFrame = game:GetFrameCount()
-    
+
+    sfx:Play(SoundEffect.SOUND_DERP, Options.SFXVolume)
+
     if player:HasCollectible(CollectibleType.COLLECTIBLE_BOOK_OF_VIRTUES) then
         for i=1, 8, 1 do
             player:AddWisp(mod.MMATypes.COLLECTIBLE_OVERCLOCKED_SINUSES, player.Position)
@@ -112,6 +114,9 @@ function mod:handleTearsOut_OS(player, firstFrame, familiar)
     local firePos = player.Position + Vector(0, 1)
     if familiar then
         firePos = familiar.Position + Vector(0, 1)
+    end
+    if firstFrame and not familiar then
+        sfx:Play(SoundEffect.SOUND_BLACK_POOF, Options.SFXVolume*2)
     end
 
     local direction = mod.directionToVector[player:GetHeadDirection()] * tearSpeed
