@@ -327,7 +327,7 @@ mod:AddCallback(ModCallbacks.MC_POST_LASER_UPDATE, mod.onLaserUpdate)
 function mod:crashBonus(player, cache)
     local data = mod:mmaGetPData(player)
     if cache == CacheFlag.CACHE_DAMAGE and data.crashBonus == true then
-        player.Damage = player.Damage + 3
+        player.Damage = player.Damage * 2
     end
 end
 mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, mod.crashBonus)
