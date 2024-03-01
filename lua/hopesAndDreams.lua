@@ -6,9 +6,9 @@ local itemPool = game:GetItemPool()
 
 function mod:getHopeSpr(pickup_num)
     local hopeSpr = Sprite()
-    hopeSpr:Load("gfx/005.100_collectible.anm2", true)
+    hopeSpr:Load("gfx/collectible_star.anm2", true)
     hopeSpr:Play("PlayerPickup")
-    hopeSpr:ReplaceSpritesheet(1, Isaac.GetItemConfig():GetCollectible(pickup_num).GfxFileName)
+    hopeSpr:ReplaceSpritesheet(0, Isaac.GetItemConfig():GetCollectible(pickup_num).GfxFileName)
     hopeSpr:LoadGraphics()
     return hopeSpr
 end
