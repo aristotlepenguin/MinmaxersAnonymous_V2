@@ -6,6 +6,6 @@
     <costume id = "6"  anm2path = "dad_sneakers_costume.anm2" type = "passive"/>
     <costume id = "9"  anm2path = "scale_costume.anm2" type = "passive"/>
     <costume anm2path = "hyperfixation_costume.anm2" hasSkinAlt = "true" type = "none"/>
-    <costume anm2path = "job_curse_head.anm2" skinColor = "4" type = "none"/>
+    <costume anm2path = "job_curse_head.anm2" skinColor = "4" type = "none" overwriteColor = "true"/>
     <costume anm2path = "job_curse_foot.anm2" skinColor = "4" type = "none"/>
 </costumes>
