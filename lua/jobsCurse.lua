@@ -1,6 +1,7 @@
 local mod = MMAMod
 local game = Game()
 local hiddenItemManager = require("lib.hidden_item_manager")
+local sfx = SFXManager()
 
 function mod:recacheFamiliars_JC(player, cache)
     if cache == CacheFlag.CACHE_FAMILIARS then
@@ -18,6 +19,7 @@ function mod:checkDeath_JC(player)
     if player:IsDead() then
         pdata.MMA_Died = true
     elseif pdata.MMA_Died == true  and not player:IsDead() and oneUpCount >= 1 then
+        pdata.AnimOverride_JC = true
         pdata.MMA_Died = false
         hiddenItemManager:Remove(player, CollectibleType.COLLECTIBLE_ONE_UP, hiddenItemManager.kDefaultGroup)
         pdata.MMA_JobBlessLevel = (pdata.MMA_JobBlessLevel or 0) + (pdata.MMA_JobCurseLevel or 0)
@@ -29,6 +31,11 @@ function mod:checkDeath_JC(player)
         end
         player:AddCacheFlags(CacheFlag.CACHE_ALL)
         player:EvaluateItems()
+    end
+
+    if string.sub(player:GetSprite():GetAnimation(), 1, 6) == "Pickup" and pdata.AnimOverride_JC == true then
+        pdata.AnimOverride_JC = false
+        player:AnimateCollectible(mod.MMATypes.COLLECTIBLE_JOBS_CURSE)
     end
 end
 mod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, mod.checkDeath_JC)
