@@ -372,8 +372,8 @@ function UpdateAllowedDoorR(room, TargetIndex, createdoor)
   room.AllowedDoors = room.AllowedDoors | doorslot
 end
 
-function mod:onRockBreak(rockType)
-  print("break " .. tostring(rockType))
+function mod:onRockBreak(rockType, position) --probably could make a callback but nah
+  mod.scoreAssaultRockBreak(rockType)
 end
 
 local function rockIsBroken(position)
@@ -414,7 +414,7 @@ function mod:CheckRocksBreak()
       end
     else
       if mod.MMA_GlobalSaveData.scanRockMap[i] ~= nil and rockIsBroken(i) then
-        mod:onRockBreak(mod.MMA_GlobalSaveData.scanRockMap[i])
+        mod:onRockBreak(mod.MMA_GlobalSaveData.scanRockMap[i], i)
         mod.MMA_GlobalSaveData.scanRockMap[i] = nil
       end
     end
