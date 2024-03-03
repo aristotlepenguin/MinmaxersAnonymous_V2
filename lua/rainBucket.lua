@@ -3,6 +3,7 @@ local game = Game()
 local sfx = SFXManager()
 local itemconfig = Isaac.GetItemConfig()
 local isEph = mod.MMATypes.CHARACTER_EPAPHRAS ~= nil
+local bucketRNG = RNG()
 
 function mod:findEmptyCharges(player)
     local emptycharges = 0
@@ -391,6 +392,23 @@ for itemID=1, itemconfig:GetCollectibles().Size-1 do
         mod.ItemGrabCallback:AddCallback(mod.ItemGrabCallback.InventoryCallback.POST_ADD_ITEM, bucketNineNine, itemID)
     end
 end
+
+function mod:rareItemSpawn_RB(rockType, position)
+    local hasBucket = false
+
+    mod:AnyPlayerDo(function(player)
+        if player:HasCollectible(mod.MMATypes.COLLECTIBLE_RAIN_BUCKET) then
+            hasBucket = true
+        end
+    end)
+
+    if bucketRNG:RandomInt(100) == 1 and not hasBucket
+    and rockType == GridEntityType.GRID_ROCK_ALT and game:GetLevel():GetStage() <= 2
+    and game:GetLevel():GetStageType() >= 4 then
+        Isaac.Spawn(5, 100, mod.MMATypes.COLLECTIBLE_RAIN_BUCKET, position, Vector(0, 0), nil)
+    end
+end
+
 ------------------------------------
 --EPAPHRAS STARTS HERE
 ------------------------------------
