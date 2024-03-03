@@ -40,7 +40,8 @@ mod:AddCallback(ModCallbacks.MC_USE_PILL, mod.FixationUsePill)
 function mod:FixationPostPickupInit(pickup, itempool, decrease, seed)
     if mod.MMA_GlobalSaveData.fixationVariant ~= nil and
     (pickup.Variant == PickupVariant.PICKUP_PILL or pickup.Variant == PickupVariant.PICKUP_TAROTCARD) and
-    pickup.SubType ~= mod.MMA_GlobalSaveData.fixationType then
+    pickup.SubType ~= mod.MMA_GlobalSaveData.fixationType and
+    pickup.SubType ~= mod.MMATypes.CARD_CHASTITY then
         local hasIt = false
         mod:AnyPlayerDo(function(player)
             if player:HasCollectible(mod.MMATypes.COLLECTIBLE_HYPERFIXATION) then
@@ -64,3 +65,16 @@ function mod:fixationPillInit(seed)
 end
 mod:AddCallback(ModCallbacks.MC_GET_PILL_COLOR, mod.fixationPillInit)
 
+
+
+function mod:usePillBottleorDeck(collectible, rng, player, useflags, slot, vardata)
+    if collectible == CollectibleType.COLLECTIBLE_MOMS_BOTTLE_OF_PILLS or
+    collectible == CollectibleType.COLLECTIBLE_DECK_OF_CARDS and mod.MMA_GlobalSaveData.fixationVariant ~= nil then
+        if mod.MMA_GlobalSaveData.fixationVariant == PickupVariant.PICKUP_PILL then
+            player:SetPill(0, mod.MMA_GlobalSaveData.fixationType)
+        else
+            player:SetCard(0, mod.MMA_GlobalSaveData.fixationType)
+        end
+    end
+end
+mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.usePillBottleorDeck)
