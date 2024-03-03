@@ -197,6 +197,18 @@ mod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, mod.trackPickups_SA)
 local errorRoomBonus = 50000
 local ultraSecretBonus = 50000
 
+local rockBreakKey = {
+[GridEntityType.GRID_ROCK] = 1,
+[GridEntityType.GRID_ROCKT] = 5000,
+[GridEntityType.GRID_ROCK_BOMB] = 5,
+[GridEntityType.GRID_ROCK_ALT] = 500,
+[GridEntityType.GRID_POOP] = 5,
+[GridEntityType.GRID_ROCK_SS] = 10000,
+[GridEntityType.GRID_ROCK_SPIKED] = 1,
+[GridEntityType.GRID_ROCK_ALT2] = 500,
+[GridEntityType.GRID_ROCK_GOLD] = 500
+}
+
 function mod:getRoomBonus()
     if Isaac.GetChallenge() == mod.MMATypes.CHALLENGE_SCORE_ASSAULT then
         local room = game:GetRoom()
@@ -211,3 +223,15 @@ function mod:getRoomBonus()
     mod:refreshTotalScore_SA()
 end
 mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, mod.getRoomBonus)
+
+function mod:scoreAssaultRockBreak(rocktype)
+    if Isaac.GetChallenge() == mod.MMATypes.CHALLENGE_SCORE_ASSAULT then
+        local score
+        if rockBreakKey[rocktype] == nil then
+            score = 1
+        else
+            score = rockBreakKey[rocktype]
+        end
+        mod.MMA_GlobalSaveData.TotalBonusScore = (mod.MMA_GlobalSaveData.TotalBonusScore or 0) + score
+    end
+end

@@ -371,3 +371,53 @@ function UpdateAllowedDoorR(room, TargetIndex, createdoor)
   end
   room.AllowedDoors = room.AllowedDoors | doorslot
 end
+
+function mod:onRockBreak(rockType)
+  print("break " .. tostring(rockType))
+end
+
+local function rockIsBroken(position)
+  local room = game:GetRoom()
+  local rock = room:GetGridEntity(position)
+  if not rock then
+    return true
+  elseif rock:ToRock() and rock.State == 2 then
+    return true
+  elseif rock:ToPoop() and rock.State == 1000 then
+    return true
+  else
+    return false
+  end
+end
+
+
+function mod:CheckRocksBreak()
+  local room = game:GetRoom()
+  local level = game:GetLevel()
+  local newRoom = false
+  if mod.MMA_GlobalSaveData.scanRockRoom ~= level:GetCurrentRoomIndex() then
+    newRoom = true
+    mod.MMA_GlobalSaveData.scanRockRoom = level:GetCurrentRoomIndex()
+    print("x")
+  end
+  if not mod.MMA_GlobalSaveData.scanRockMap then
+    mod.MMA_GlobalSaveData.scanRockMap = {}
+  end
+
+  for i=1, room:GetGridSize(), 1 do
+    local rock = room:GetGridEntity(i)
+    if newRoom then
+      if rock and not rockIsBroken(i) then
+        mod.MMA_GlobalSaveData.scanRockMap[i] = rock:GetType()
+      else
+        mod.MMA_GlobalSaveData.scanRockMap[i] = nil
+      end
+    else
+      if mod.MMA_GlobalSaveData.scanRockMap[i] ~= nil and rockIsBroken(i) then
+        mod:onRockBreak(mod.MMA_GlobalSaveData.scanRockMap[i])
+        mod.MMA_GlobalSaveData.scanRockMap[i] = nil
+      end
+    end
+  end
+end
+mod:AddCallback(ModCallbacks.MC_POST_UPDATE, mod.CheckRocksBreak)
