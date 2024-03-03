@@ -88,9 +88,9 @@ function mod:Cache_JC(player, cache)
     local jobMultiplier = ((pdata.MMA_JobBlessLevel or 0) - (pdata.MMA_JobCurseLevel or 0)) * sign
 
     if jobMultiplier > 0 then
-        if mod.MenuData.JobStatPayout and mod.MenuData.JobStatPayout == 3 then
+        if mod.MenuData and mod.MenuData.JobStatPayout and mod.MenuData.JobStatPayout == 3 then
             jobMultiplier = jobMultiplier
-        elseif mod.MenuData.JobStatPayout and mod.MenuData.JobStatPayout == 2 then
+        elseif mod.MenuData and mod.MenuData.JobStatPayout and mod.MenuData.JobStatPayout == 2 then
             jobMultiplier = jobMultiplier * 0.5
         else
             jobMultiplier = jobMultiplier * 0.25
