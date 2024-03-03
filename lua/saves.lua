@@ -12,6 +12,10 @@ function mod:saveData()
     local hiddenItemData = hiddenItemManager:GetSaveData()
     mod.MMA_GlobalSaveData.HIDDEN_ITEM_DATA = hiddenItemData
 
+    if Isaac.GetChallenge() == mod.MMATypes.CHALLENGE_SCORE_ASSAULT then
+        mod.MMA_GlobalSaveData.crashWarning = nil
+    end
+
     for i=0, numPlayers-1, 1 do
         local player = Isaac.GetPlayer(i)
 
@@ -54,6 +58,13 @@ function mod:loadData(isSave)
             player:EvaluateItems()
         end
         hiddenItemManager:LoadData(mod.MMA_GlobalSaveData.HIDDEN_ITEM_DATA)
+        if Isaac.GetChallenge() == mod.MMATypes.CHALLENGE_SCORE_ASSAULT then
+            if mod.MMA_GlobalSaveData.crashWarning ~= nil and not mod:checkIfAchieved("crashGame") then
+                mod.MMA_GlobalSaveData.ScoreAssaultAchievements["crashGame"] = true
+                mod.MMA_GlobalSaveData.TotalBonusScore = (mod.MMA_GlobalSaveData.TotalBonusScore or 0) + 70000
+            end
+            mod.MMA_GlobalSaveData.crashWarning = true
+        end
     else
         local persistentData
         if mod.MMA_GlobalSaveData then

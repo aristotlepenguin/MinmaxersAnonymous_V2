@@ -19,7 +19,7 @@ function mod:refreshTotalScore_SA()
     end
 end
 
-local function checkIfAchieved(key)
+function mod:checkIfAchieved(key)
     if mod.MMA_GlobalSaveData.ScoreAssaultAchievements == nil then
         mod.MMA_GlobalSaveData.ScoreAssaultAchievements = {}
     end
@@ -212,10 +212,10 @@ local rockBreakKey = {
 function mod:getRoomBonus()
     if Isaac.GetChallenge() == mod.MMATypes.CHALLENGE_SCORE_ASSAULT then
         local room = game:GetRoom()
-        if room:GetType() == RoomType.ROOM_ERROR and checkIfAchieved("errorRoom") == false then
+        if room:GetType() == RoomType.ROOM_ERROR and mod:checkIfAchieved("errorRoom") == false then
             mod.MMA_GlobalSaveData.ScoreAssaultAchievements["errorRoom"] = true
             mod.MMA_GlobalSaveData.TotalBonusScore = (mod.MMA_GlobalSaveData.TotalBonusScore or 0) + errorRoomBonus
-        elseif room:GetType() == RoomType.ROOM_ULTRASECRET and checkIfAchieved("ultraSecret") == false then
+        elseif room:GetType() == RoomType.ROOM_ULTRASECRET and mod:checkIfAchieved("ultraSecret") == false then
             mod.MMA_GlobalSaveData.ScoreAssaultAchievements["ultraSecret"] = true
             mod.MMA_GlobalSaveData.TotalBonusScore = (mod.MMA_GlobalSaveData.TotalBonusScore or 0) + ultraSecretBonus
         end
