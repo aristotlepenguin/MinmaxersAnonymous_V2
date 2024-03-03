@@ -93,7 +93,7 @@ function mod:hopesRender()
                 end)
                 if itemConfig:GetCollectible(pickup_num)and itemConfig:GetCollectible(pickup_num):IsAvailable()
                 and not (pickup_num >= 550 and pickup_num <= 552) and pickup_num ~= 714 and pickup_num ~= 715 and
-                (mod.MenuData.HopesItemSelect == 2 or not alreadyhas) then
+                ((mod.MenuData and mod.MenuData.HopesItemSelect == 2) or not alreadyhas) then
                     break
                 end
             end
