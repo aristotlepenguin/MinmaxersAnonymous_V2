@@ -110,6 +110,7 @@ function mod:refreshStats_SA(_player, cacheflag)
             statScore = statScore + math.floor((player.MoveSpeed-baseStats.Speed) * speedMultiplier)
         end)
         mod.MMA_GlobalSaveData.TotalStatScore = statScore
+        mod:refreshTotalScore_SA()
     end
 end
 mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, mod.refreshStats_SA)
@@ -215,9 +216,11 @@ function mod:getRoomBonus()
         if room:GetType() == RoomType.ROOM_ERROR and mod:checkIfAchieved("errorRoom") == false then
             mod.MMA_GlobalSaveData.ScoreAssaultAchievements["errorRoom"] = true
             mod.MMA_GlobalSaveData.TotalBonusScore = (mod.MMA_GlobalSaveData.TotalBonusScore or 0) + errorRoomBonus
+            mod:refreshTotalScore_SA()
         elseif room:GetType() == RoomType.ROOM_ULTRASECRET and mod:checkIfAchieved("ultraSecret") == false then
             mod.MMA_GlobalSaveData.ScoreAssaultAchievements["ultraSecret"] = true
             mod.MMA_GlobalSaveData.TotalBonusScore = (mod.MMA_GlobalSaveData.TotalBonusScore or 0) + ultraSecretBonus
+            mod:refreshTotalScore_SA()
         end
     end
     mod:refreshTotalScore_SA()
@@ -233,5 +236,44 @@ function mod:scoreAssaultRockBreak(rocktype)
             score = rockBreakKey[rocktype]
         end
         mod.MMA_GlobalSaveData.TotalBonusScore = (mod.MMA_GlobalSaveData.TotalBonusScore or 0) + score
+        mod:refreshTotalScore_SA()
     end
 end
+
+
+
+
+
+function mod:scoreAssaultPickupCalc()
+    local pickupList = Isaac.FindByType(5)
+    if #pickupList > 250 and mod:checkIfAchieved("maxedPickups") == false then
+        mod.MMA_GlobalSaveData.ScoreAssaultAchievements["maxedPickups"] = true
+        mod.MMA_GlobalSaveData.TotalBonusScore = (mod.MMA_GlobalSaveData.TotalBonusScore or 0) + 70000
+        mod:refreshTotalScore_SA()
+    end
+end
+mod:AddCallback(ModCallbacks.MC_POST_UPDATE, mod.scoreAssaultPickupCalc)
+
+local explorationBonus = 500
+
+function mod:refreshExplorationBonus_SA()
+    local totalRooms = 0
+    if game:GetLevel():GetCurrentRoomIndex() ~= 84 then
+        for i=0, 168, 1 do
+            local room = game:GetLevel():GetRoomByIdx(i)
+            if room and room.VisitedCount >=1 and room.Clear then
+                totalRooms = totalRooms + 1
+            end
+        end
+    end
+    mod.MMA_GlobalSaveData.TotalExploreScore = totalRooms * explorationBonus
+end
+mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, mod.refreshExplorationBonus_SA)
+
+
+function mod:depositExploreScore_SA()
+    mod.MMA_GlobalSaveData.TotalBonusScore = mod.MMA_GlobalSaveData.TotalBonusScore + mod.MMA_GlobalSaveData.TotalExploreScore
+    mod.MMA_GlobalSaveData.TotalExploreScore = 0
+    mod:refreshTotalScore_SA()
+end
+mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, mod.depositExploreScore_SA)

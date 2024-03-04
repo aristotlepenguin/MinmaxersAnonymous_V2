@@ -201,6 +201,11 @@ function mod:test_command(cmd, args)
         print(good)
     end
 
+    if cmd == "pickupcount" then
+        local pickupList = Isaac.FindByType(5)
+        print(#pickupList)
+    end
+
 end
 mod:AddCallback(ModCallbacks.MC_EXECUTE_CMD, mod.test_command)
 
