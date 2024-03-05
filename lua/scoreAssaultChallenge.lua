@@ -1,6 +1,7 @@
 local mod = MMAMod
 local game = Game()
-
+local hud = game:GetHUD()
+local sfx = SFXManager()
 
 function mod:refreshTotalScore_SA()
     local data = mod.MMA_GlobalSaveData
@@ -195,7 +196,17 @@ function mod:trackPickups_SA(pickup, collider, low)
 end
 mod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, mod.trackPickups_SA)
 
-local errorRoomBonus = 50000
+
+function mod:applyAchievement(key, score, name, description)
+    mod.MMA_GlobalSaveData.ScoreAssaultAchievements[key] = true
+    mod.MMA_GlobalSaveData.TotalBonusScore = (mod.MMA_GlobalSaveData.TotalBonusScore or 0) + score
+    local descString = "+" .. tostring(score) .. " " .. description
+    mod:refreshTotalScore_SA()
+    hud:ShowItemText(name, descString, false)
+    sfx:Play(SoundEffect.SOUND_POWERUP_SPEWER, Options.SFXVolume*2)
+end
+
+
 local ultraSecretBonus = 50000
 
 local rockBreakKey = {
@@ -214,13 +225,9 @@ function mod:getRoomBonus()
     if Isaac.GetChallenge() == mod.MMATypes.CHALLENGE_SCORE_ASSAULT then
         local room = game:GetRoom()
         if room:GetType() == RoomType.ROOM_ERROR and mod:checkIfAchieved("errorRoom") == false then
-            mod.MMA_GlobalSaveData.ScoreAssaultAchievements["errorRoom"] = true
-            mod.MMA_GlobalSaveData.TotalBonusScore = (mod.MMA_GlobalSaveData.TotalBonusScore or 0) + errorRoomBonus
-            mod:refreshTotalScore_SA()
+            mod:applyAchievement("errorRoom", 50000, "I am error", "Find an error room")
         elseif room:GetType() == RoomType.ROOM_ULTRASECRET and mod:checkIfAchieved("ultraSecret") == false then
-            mod.MMA_GlobalSaveData.ScoreAssaultAchievements["ultraSecret"] = true
-            mod.MMA_GlobalSaveData.TotalBonusScore = (mod.MMA_GlobalSaveData.TotalBonusScore or 0) + ultraSecretBonus
-            mod:refreshTotalScore_SA()
+            mod:applyAchievement("ultraSecret", 50000, "Ultra secret", "Find an Ultra Secret Room")
         end
         mod:refreshTotalScore_SA()
     end
@@ -245,9 +252,7 @@ function mod:scoreAssaultPickupCalc()
     if Isaac.GetChallenge() == mod.MMATypes.CHALLENGE_SCORE_ASSAULT then
         local pickupList = Isaac.FindByType(5)
         if #pickupList > 250 and mod:checkIfAchieved("maxedPickups") == false then
-            mod.MMA_GlobalSaveData.ScoreAssaultAchievements["maxedPickups"] = true
-            mod.MMA_GlobalSaveData.TotalBonusScore = (mod.MMA_GlobalSaveData.TotalBonusScore or 0) + 70000
-            mod:refreshTotalScore_SA()
+            mod:applyAchievement("maxedPickups", 70000, "Packed Room", "Fill a room with pickups")
         end
     end
 end
