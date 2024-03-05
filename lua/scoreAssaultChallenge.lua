@@ -222,8 +222,8 @@ function mod:getRoomBonus()
             mod.MMA_GlobalSaveData.TotalBonusScore = (mod.MMA_GlobalSaveData.TotalBonusScore or 0) + ultraSecretBonus
             mod:refreshTotalScore_SA()
         end
+        mod:refreshTotalScore_SA()
     end
-    mod:refreshTotalScore_SA()
 end
 mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, mod.getRoomBonus)
 
@@ -241,39 +241,42 @@ function mod:scoreAssaultRockBreak(rocktype)
 end
 
 
-
-
-
 function mod:scoreAssaultPickupCalc()
-    local pickupList = Isaac.FindByType(5)
-    if #pickupList > 250 and mod:checkIfAchieved("maxedPickups") == false then
-        mod.MMA_GlobalSaveData.ScoreAssaultAchievements["maxedPickups"] = true
-        mod.MMA_GlobalSaveData.TotalBonusScore = (mod.MMA_GlobalSaveData.TotalBonusScore or 0) + 70000
-        mod:refreshTotalScore_SA()
+    if Isaac.GetChallenge() == mod.MMATypes.CHALLENGE_SCORE_ASSAULT then
+        local pickupList = Isaac.FindByType(5)
+        if #pickupList > 250 and mod:checkIfAchieved("maxedPickups") == false then
+            mod.MMA_GlobalSaveData.ScoreAssaultAchievements["maxedPickups"] = true
+            mod.MMA_GlobalSaveData.TotalBonusScore = (mod.MMA_GlobalSaveData.TotalBonusScore or 0) + 70000
+            mod:refreshTotalScore_SA()
+        end
     end
 end
 mod:AddCallback(ModCallbacks.MC_POST_UPDATE, mod.scoreAssaultPickupCalc)
 
-local explorationBonus = 500
 
+local explorationBonus = 500
 function mod:refreshExplorationBonus_SA()
-    local totalRooms = 0
-    if game:GetLevel():GetCurrentRoomIndex() ~= 84 then
-        for i=0, 168, 1 do
-            local room = game:GetLevel():GetRoomByIdx(i)
-            if room and room.VisitedCount >=1 and room.Clear then
-                totalRooms = totalRooms + 1
+    if Isaac.GetChallenge() == mod.MMATypes.CHALLENGE_SCORE_ASSAULT then
+        local totalRooms = 0
+        if game:GetLevel():GetCurrentRoomIndex() ~= 84 then
+            for i=0, 168, 1 do
+                local room = game:GetLevel():GetRoomByIdx(i)
+                if room and room.VisitedCount >=1 and room.Clear then
+                    totalRooms = totalRooms + 1
+                end
             end
         end
+        mod.MMA_GlobalSaveData.TotalExploreScore = totalRooms * explorationBonus
     end
-    mod.MMA_GlobalSaveData.TotalExploreScore = totalRooms * explorationBonus
 end
 mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, mod.refreshExplorationBonus_SA)
 
 
 function mod:depositExploreScore_SA()
-    mod.MMA_GlobalSaveData.TotalBonusScore = mod.MMA_GlobalSaveData.TotalBonusScore + mod.MMA_GlobalSaveData.TotalExploreScore
-    mod.MMA_GlobalSaveData.TotalExploreScore = 0
-    mod:refreshTotalScore_SA()
+    if Isaac.GetChallenge() == mod.MMATypes.CHALLENGE_SCORE_ASSAULT then
+        mod.MMA_GlobalSaveData.TotalBonusScore = (mod.MMA_GlobalSaveData.TotalBonusScore or 0) + mod.MMA_GlobalSaveData.TotalExploreScore
+        mod.MMA_GlobalSaveData.TotalExploreScore = 0
+        mod:refreshTotalScore_SA()
+    end
 end
 mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, mod.depositExploreScore_SA)
