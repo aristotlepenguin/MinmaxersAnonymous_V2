@@ -1,8 +1,8 @@
 <AnimatedActor>
-	<Info CreatedBy="robot" CreatedOn="3/5/2024 6:54:10 PM" Version="110" Fps="30"/>
+	<Info CreatedBy="robot" CreatedOn="3/5/2024 6:55:28 PM" Version="112" Fps="30"/>
 	<Content>
 		<Spritesheets>
-			<Spritesheet Path="costumes\job_curse_head.png" Id="0"/>
+			<Spritesheet Path="costumes\hopesDreamsCostume.png" Id="0"/>
 		</Spritesheets>
 		<Layers>
 			<Layer Name="head" Id="0" SpritesheetId="0"/>
