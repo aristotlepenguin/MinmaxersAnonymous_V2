@@ -29,6 +29,7 @@ mod.MMATypes.COLLECTIBLE_OVERCLOCKED_SINUSES = Isaac.GetItemIdByName("Overclocke
 mod.MMATypes.COLLECTIBLE_HYPERFIXATION =  Isaac.GetItemIdByName("Hyperfixation")
 mod.MMATypes.COLLECTIBLE_MOMS_SCALE =  Isaac.GetItemIdByName("Mom's Scale")
 mod.MMATypes.COLLECTIBLE_JOBS_CURSE =  Isaac.GetItemIdByName("Job's Curse")
+mod.MMATypes.COLLECTIBLE_D_SQRT =  Isaac.GetItemIdByName("D-Sqrt(-1)")
 
 mod.MMATypes.CARD_CHASTITY = Isaac.GetCardIdByName("ChastityCard")
 
@@ -59,7 +60,8 @@ local extrafiles = {
     "lua.jobsCurse",
     "lua.memoryLeak",
     "lua.scoreAssaultChallenge",
-    "lua.eid"
+    "lua.eid",
+    "lua.misc"
 }
 for i=1,#extrafiles do
     include(extrafiles[i])

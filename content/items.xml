@@ -9,4 +9,5 @@
     <passive    id="8"  gfx="Collectibles_8_Hyperfixation.png" name="Hyperfixation" description="You're so obsessed with that thing!" tags = "offensive nochallenge" quality = "2" craftquality = "2"/>
     <passive    id="9"  gfx="Collectibles_9_Moms_Scale.png" name="Mom's Scale" description="Heavy tears" tags = "mom offensive" quality = "1" craftquality = "1"/>
     <passive    id="10"  gfx="Collectibles_10_Jobs_Curse.png" name="Job's Curse" description="All stats down + you feel tested" tags = "offensive" quality = "3" craftquality = "3"/>
+    <active    id="11"  gfx="Collectibles_11_D_Sqrt.png" name="D-Sqrt(-1)" description="Reroll your headache" tags = "offensive" quality = "2" craftquality = "2" maxcharges = "1"/>
 </items>
