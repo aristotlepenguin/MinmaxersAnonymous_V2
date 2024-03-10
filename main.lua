@@ -59,6 +59,7 @@ local extrafiles = {
     "lua.momsScale",
     "lua.jobsCurse",
     "lua.memoryLeak",
+    "lua.dsqrroot",
     "lua.scoreAssaultChallenge",
     "lua.eid",
     "lua.misc"
