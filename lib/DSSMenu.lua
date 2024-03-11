@@ -156,6 +156,45 @@ local strings = {
     hopes_2 = {
         en = "all items"
     },
+    itemswitch = {
+        en = "item switch"
+    },
+    itemswitch_on = {
+        en = "on"
+    },
+    itemswitch_off = {
+        en = "off"
+    },
+    itemswitch_hopes_dreams = {
+        en = "hopes and dreams"
+    },
+    itemswitch_rain_bucket = {
+        en = "rain bucket"
+    },
+    itemswitch_dads_sneakers = {
+        en = "dad's sneakers"
+    },
+    itemswitch_d_sqrt = {
+        en = "d-sqrt(-1)"
+    },
+    itemswitch_jobs_curse = {
+        en = "job's curse"
+    },
+    itemswitch_hyperfixation = {
+        en = "hyperfixation"
+    },
+    itemswitch_overclocked = {
+        en = "overclocked sinuses"
+    },
+    itemswitch_memory_leak = {
+        en = "memory leak"
+    },
+    itemswitch_moms_scale = {
+        en = "mom's scale"
+    },
+    itemswitch_abstinence = {
+        en = "abstinence"
+    },
 }
 local function GetStr(str)
     return strings[str] and (strings[str][Options.Language] or strings[str].en) or str
@@ -237,6 +276,187 @@ MMAMod.DSSdirectory = {
                         MMAMod.MenuData.HopesItemSelect = var
                     end,
                     
+                },
+                {str = GetStr('item switch'), nosel = true, fsize = 3},
+                {
+                    str = GetStr('itemswitch_rain_bucket'),
+                    choices = {GetStr('itemswitch_on'),GetStr('itemswitch_off')},
+                    variable = 'RainBucketItemSwitch',
+                    setting = 1,
+                    load = function()
+                        if not MMAMod.MenuData.ItemSwitch then
+                            MMAMod.MenuData.ItemSwitch = {}
+                        end
+                        return MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_RAIN_BUCKET] or 1
+                    end,
+                    store = function(var)
+                        if not MMAMod.MenuData.ItemSwitch then
+                            MMAMod.MenuData.ItemSwitch = {}
+                        end
+                        MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_RAIN_BUCKET] = var
+                    end,
+                },
+                {
+                    str = GetStr('itemswitch_dads_sneakers'),
+                    choices = {GetStr('itemswitch_on'),GetStr('itemswitch_off')},
+                    variable = 'DadSneakersItemSwitch',
+                    setting = 1,
+                    load = function()
+                        if not MMAMod.MenuData.ItemSwitch then
+                            MMAMod.MenuData.ItemSwitch = {}
+                        end
+                        return MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_DAD_SNEAKERS] or 1
+                    end,
+                    store = function(var)
+                        if not MMAMod.MenuData.ItemSwitch then
+                            MMAMod.MenuData.ItemSwitch = {}
+                        end
+                        MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_DAD_SNEAKERS] = var
+                    end,
+                },
+                {
+                    str = GetStr('itemswitch_hopes_dreams'),
+                    choices = {GetStr('itemswitch_on'),GetStr('itemswitch_off')},
+                    variable = 'HopesItemSwitch',
+                    setting = 1,
+                    load = function()
+                        if not MMAMod.MenuData.ItemSwitch then
+                            MMAMod.MenuData.ItemSwitch = {}
+                        end
+                        return MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_HOPES_AND_DREAMS] or 1
+                    end,
+                    store = function(var)
+                        if not MMAMod.MenuData.ItemSwitch then
+                            MMAMod.MenuData.ItemSwitch = {}
+                        end
+                        MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_HOPES_AND_DREAMS] = var
+                    end,
+                },
+                {
+                    str = GetStr('itemswitch_hyperfixation'),
+                    choices = {GetStr('itemswitch_on'),GetStr('itemswitch_off')},
+                    variable = 'HyperfixItemSwitch',
+                    setting = 1,
+                    load = function()
+                        if not MMAMod.MenuData.ItemSwitch then
+                            MMAMod.MenuData.ItemSwitch = {}
+                        end
+                        return MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_HYPERFIXATION] or 1
+                    end,
+                    store = function(var)
+                        if not MMAMod.MenuData.ItemSwitch then
+                            MMAMod.MenuData.ItemSwitch = {}
+                        end
+                        MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_HYPERFIXATION] = var
+                    end,
+                },
+                {
+                    str = GetStr('itemswitch_d_sqrt'),
+                    choices = {GetStr('itemswitch_on'),GetStr('itemswitch_off')},
+                    variable = 'DSqrtItemSwitch',
+                    setting = 1,
+                    load = function()
+                        if not MMAMod.MenuData.ItemSwitch then
+                            MMAMod.MenuData.ItemSwitch = {}
+                        end
+                        return MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_D_SQRT] or 1
+                    end,
+                    store = function(var)
+                        if not MMAMod.MenuData.ItemSwitch then
+                            MMAMod.MenuData.ItemSwitch = {}
+                        end
+                        MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_D_SQRT] = var
+                    end,
+                },
+                {
+                    str = GetStr('itemswitch_jobs_curse'),
+                    choices = {GetStr('itemswitch_on'),GetStr('itemswitch_off')},
+                    variable = 'JobItemSwitch',
+                    setting = 1,
+                    load = function()
+                        if not MMAMod.MenuData.ItemSwitch then
+                            MMAMod.MenuData.ItemSwitch = {}
+                        end
+                        return MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_JOBS_CURSE] or 1
+                    end,
+                    store = function(var)
+                        if not MMAMod.MenuData.ItemSwitch then
+                            MMAMod.MenuData.ItemSwitch = {}
+                        end
+                        MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_JOBS_CURSE] = var
+                    end,
+                },
+                {
+                    str = GetStr('itemswitch_memory_leak'),
+                    choices = {GetStr('itemswitch_on'),GetStr('itemswitch_off')},
+                    variable = 'MemoryLeakItemSwitch',
+                    setting = 1,
+                    load = function()
+                        if not MMAMod.MenuData.ItemSwitch then
+                            MMAMod.MenuData.ItemSwitch = {}
+                        end
+                        return MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_MEMORY_LEAK] or 1
+                    end,
+                    store = function(var)
+                        if not MMAMod.MenuData.ItemSwitch then
+                            MMAMod.MenuData.ItemSwitch = {}
+                        end
+                        MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_MEMORY_LEAK] = var
+                    end,
+                },
+                {
+                    str = GetStr('itemswitch_abstinence'),
+                    choices = {GetStr('itemswitch_on'),GetStr('itemswitch_off')},
+                    variable = 'AbstinenceItemSwitch',
+                    setting = 1,
+                    load = function()
+                        if not MMAMod.MenuData.ItemSwitch then
+                            MMAMod.MenuData.ItemSwitch = {}
+                        end
+                        return MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_ABSTINENCE] or 1
+                    end,
+                    store = function(var)
+                        if not MMAMod.MenuData.ItemSwitch then
+                            MMAMod.MenuData.ItemSwitch = {}
+                        end
+                        MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_ABSTINENCE] = var
+                    end,
+                },
+                {
+                    str = GetStr('itemswitch_overclocked'),
+                    choices = {GetStr('itemswitch_on'),GetStr('itemswitch_off')},
+                    variable = 'OverclockItemSwitch',
+                    setting = 1,
+                    load = function()
+                        if not MMAMod.MenuData.ItemSwitch then
+                            MMAMod.MenuData.ItemSwitch = {}
+                        end
+                        return MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_OVERCLOCKED_SINUSES] or 1
+                    end,
+                    store = function(var)
+                        if not MMAMod.MenuData.ItemSwitch then
+                            MMAMod.MenuData.ItemSwitch = {}
+                        end
+                        MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_OVERCLOCKED_SINUSES] = var
+                    end,
+                },
+                {
+                    str = GetStr('itemswitch_moms_scale'),
+                    choices = {GetStr('itemswitch_on'),GetStr('itemswitch_off')},
+                    variable = 'MomScaleItemSwitch',
+                    setting = 1,
+                    load = function()
+                        if not MMAMod.MenuData.ItemSwitch then
+                            MMAMod.MenuData.ItemSwitch = {}
+                        end
+                        return MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_MOMS_SCALE] or 1
+                    end,
+                    store = function(var)
+                        if not MMAMod.MenuData.ItemSwitch then
+                            MMAMod.MenuData.ItemSwitch = {}
+                        end
+                        MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_MOMS_SCALE] = var
+                    end,
                 },
             },
             tooltip = GetStr("startTooltip")
