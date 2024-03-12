@@ -9,17 +9,17 @@ function mod:useDSqrt(collectible, rng, player, useflags, activeslot, customvard
     local entities = Isaac.FindByType(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE)
     local bombs = player:GetNumBombs()
     local coins = player:GetNumCoins()
-    local secondsOnTimer = (game.BossRushParTime/30) % 60
+    local secondsOnTimer = math.floor(game.TimeCounter/30) % 60
     local totalItems = itemconfig:GetCollectibles().Size-1
-
+    
     for i, entity in ipairs(entities) do
         Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, -1, entity.Position, entity.Velocity, player)
         local oldItem = entity.SubType
         local newItem = (((bombs * oldItem * oldItem) + (coins * oldItem) + secondsOnTimer)/9) % totalItems
-        if newItem % 1 ~= 0 then
+        if newItem % 1 ~= 0 or oldItem == CollectibleType.COLLECTIBLE_POOP then
             newItem = CollectibleType.COLLECTIBLE_POOP
         end
-        entity:Morph(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, newItem, true)
+        entity:ToPickup():Morph(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COLLECTIBLE, newItem, true)
     end
     return {
         Discharge = true,
