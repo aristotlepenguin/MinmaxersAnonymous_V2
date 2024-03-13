@@ -12,6 +12,15 @@ function mod:GetPillFromEffect(effect, player)
     end
 end
 
+function mod:checkForFool(variant, subtype)
+    if variant == PickupVariant.PICKUP_TAROTCARD and subtype == Card.CARD_FOOL and 
+    not game:IsGreedMode() and game:GetLevel():GetStage() == 6 then
+        return true
+    else
+        return false
+    end
+end
+
 function mod:FixationUseCard(card, player, flags)
     local data = mod:mmaGetPData(player)
     if mod.MMA_GlobalSaveData.fixationVariant == nil and player:GetCollectibleNum(mod.MMATypes.COLLECTIBLE_HYPERFIXATION) > 0 and not data.BypassLockIn then
@@ -48,7 +57,7 @@ function mod:FixationPostPickupInit(pickup, itempool, decrease, seed)
                 hasIt = true
             end
         end)
-        if hasIt then
+        if hasIt and not mod:checkForFool(pickup.Variant, pickup.SubType) then
             pickup:ToPickup():Morph(EntityType.ENTITY_PICKUP, mod.MMA_GlobalSaveData.fixationVariant, mod.MMA_GlobalSaveData.fixationType, true)
         end
     end
