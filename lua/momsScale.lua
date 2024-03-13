@@ -95,7 +95,8 @@ mod:AddCallback(ModCallbacks.MC_POST_FIRE_TEAR, mod.MS_onFireTear)
 function mod:MS_onUpdateTear(tear)
     if tear:GetData().MMA_IsPortly == 1 then -- or tear:GetData().MMA_IsPortly == nil
         local sprite_tear = tear:GetSprite()
-        sprite_tear.Color = greyColor
+        --sprite_tear.Color = greyColor
+
         tear:GetData().MMA_IsPortly = 2
     end
 end
@@ -326,3 +327,96 @@ end
 
 --if it gets bad, account for spawning enemies randomly on top of the player
 --we'll also need to make sure segmented enemy spawns are accounted for
+
+
+local function getTearScale13(tear)
+	local sprite = tear:GetSprite()
+	local scale = tear.Scale
+	local sizeMulti = tear.SizeMulti
+	local flags = tear.TearFlags
+	
+	if scale > 2.55 then
+        return Vector((scale * sizeMulti.X) / 2.55, (scale * sizeMulti.Y) / 2.55)
+	elseif flags & TearFlags.TEAR_GROW == TearFlags.TEAR_GROW or flags & TearFlags.TEAR_LUDOVICO == TearFlags.TEAR_LUDOVICO then
+		if scale <= 0.3 then
+			return Vector((scale * sizeMulti.X) / 0.25, (scale * sizeMulti.Y) / 0.25)
+		elseif scale <= 0.55 then
+			local adjustedBase = math.ceil((scale - 0.175) / 0.25) * 0.25 + 0.175
+			return Vector((scale * sizeMulti.X) / adjustedBase, (scale * sizeMulti.Y) / adjustedBase)
+		elseif scale <= 1.175 then
+			local adjustedBase = math.ceil((scale - 0.175) / 0.125) * 0.125 + 0.175
+			return Vector((scale * sizeMulti.X) / adjustedBase, (scale * sizeMulti.Y) / adjustedBase)
+		elseif scale <= 2.175 then
+			local adjustedBase = math.ceil((scale - 0.175) / 0.25) * 0.25 + 0.175
+			return Vector((scale * sizeMulti.X) / adjustedBase, (scale * sizeMulti.Y) / adjustedBase)
+		else
+			return Vector((scale * sizeMulti.X) / 2.55, (scale * sizeMulti.Y) / 2.55)
+		end
+    else
+        return sizeMulti
+	end
+end
+
+function mod:scaleTearRender(tear, offset)
+	local data = tear:GetData()
+    if data.MMA_IsPortly == nil then
+        return
+    end
+
+	local sprite = mod.MMA_GlobalSaveData.ScaleSprite
+	if not mod.MMA_GlobalSaveData.ScaleSprite then
+		sprite = Sprite()
+		sprite:Load("gfx/tear_scale.anm2", true)
+		sprite:LoadGraphics()
+		mod.MMA_GlobalSaveData.ScaleSprite = sprite
+	end
+
+	local tearsprite = tear:GetSprite()
+	local scale = tear.Scale
+	local flags = tear.TearFlags
+
+	local anim
+	if scale <= 0.3 then
+		anim = "RegularTear1"
+	elseif scale <= 0.55 then
+		anim = "RegularTear2"
+	elseif scale <= 0.675 then
+		anim = "RegularTear3"
+	elseif scale <= 0.8 then
+		anim = "RegularTear4"
+	elseif scale <= 0.925 then
+		anim = "RegularTear5"
+	elseif scale <= 1.05 then
+		anim = "RegularTear6"
+	elseif scale <= 1.175 then
+		anim = "RegularTear7"
+	elseif scale <= 1.425 then
+		anim = "RegularTear8"
+	elseif scale <= 1.675 then
+		anim = "RegularTear9"
+	elseif scale <= 1.925 then
+		anim = "RegularTear10"
+	elseif scale <= 2.175 then
+		anim = "RegularTear11"
+	elseif scale <= 2.55 then
+		anim = "RegularTear12"
+	else
+		anim = "RegularTear13"
+	end
+
+	sprite.PlaybackSpeed = tearsprite.PlaybackSpeed
+	if not sprite:IsPlaying(anim) then
+		local frame = sprite:GetFrame()
+		sprite:Play(anim, true)
+		sprite:SetFrame(frame)
+	elseif not game:IsPaused() and Isaac.GetFrameCount() % 2 == 0 and data.MMA_LastRenderFrame ~= Isaac.GetFrameCount() then
+		sprite:Update()
+	end
+
+	local spritescale = getTearScale13(tear)
+	sprite.Scale = spritescale
+	sprite.Color = tearsprite.Color
+---@diagnostic disable-next-line: param-type-mismatch
+	sprite:Render(Isaac.WorldToRenderPosition(tear.Position + tear.PositionOffset) + offset, Vector.Zero, Vector.Zero)
+	data.MMA_LastRenderFrame = Isaac.GetFrameCount()
+end
