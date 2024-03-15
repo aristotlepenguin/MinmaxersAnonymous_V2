@@ -413,7 +413,7 @@ function mod:CheckRocksBreak()
         mod.MMA_GlobalSaveData.scanRockMap[i] = nil
       end
     else
-      if mod.MMA_GlobalSaveData.scanRockMap[i] ~= nil and rockIsBroken(i) then
+      if rock and mod.MMA_GlobalSaveData.scanRockMap[i] ~= nil and rockIsBroken(i) then
         mod:onRockBreak(mod.MMA_GlobalSaveData.scanRockMap[i], rock.Position)
         mod.MMA_GlobalSaveData.scanRockMap[i] = nil
       end

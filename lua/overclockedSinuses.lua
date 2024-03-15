@@ -26,9 +26,20 @@ mod.GetLeftDiag = {
 
   local nullVector = Vector.Zero
 
-  function mod:floatToInt(float)
+function mod:floatToInt(float)
     return math.floor(float * 10000) --4 digits is enough percision in my books
-  end
+end
+
+function mod:getTearDuplicateAmt(player)
+    return 1 + player:GetCollectibleNum(CollectibleType.COLLECTIBLE_20_20) + (player:GetCollectibleNum(CollectibleType.COLLECTIBLE_INNER_EYE) * 2) + (player:GetCollectibleNum(CollectibleType.COLLECTIBLE_MUTANT_SPIDER) * 3)
+end
+
+function mod:adjustAngle_OS(velocity, stream, totalstreams)
+    local multiplicator = velocity:Length()
+    local angleAdjustment = 10 * (stream-1) - 5 * (totalstreams-1)
+    local correctAngle = velocity:GetAngleDegrees() + angleAdjustment
+    return Vector.FromAngle(correctAngle) * multiplicator
+end
 
 function mod:spawnRocket(player, pos, delay, damage)
     local size = (player.Size * 2) + 65
@@ -236,8 +247,13 @@ function mod:handleTearsOut_OS(player, firstFrame, familiar)
         end
     else
         if tearTier >= 3 or frame % 2 == 0 then
-            local tear = player:FireTear(firePos, direction, true, false, true, player, 1)
-            tear = mod:tearModifiers(tear, player, true, true, familiar)
+            local multiples = mod:getTearDuplicateAmt(player)
+            for y=1, multiples, 1 do
+                local new_dir = mod:adjustAngle_OS(direction, y, multiples)
+                local tear = player:FireTear(firePos, new_dir, true, false, true, player, 1)
+                tear = mod:tearModifiers(tear, player, true, true, familiar)
+            end
+            
         end
         
         if tearTier >= 4 then
