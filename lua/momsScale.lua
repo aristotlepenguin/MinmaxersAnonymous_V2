@@ -44,7 +44,7 @@ function mod:isBottomFloor()
         return false
     end)
 end
-
+local normalSlow = Color(1,1,1,1,0,0,0)
 function mod:dropEnemy(enemy, player)
     local room = game:GetRoom()
 
@@ -71,7 +71,7 @@ function mod:dropEnemy(enemy, player)
         sfx:Play(SoundEffect.SOUND_ROCK_CRUMBLE, Options.SFXVolume*2)
         enemy:Remove()
     else
-        enemy:AddSlowing(EntityRef(player), 150, 0.5, greyColor)
+        enemy:AddSlowing(EntityRef(player), 150, 0.5, normalSlow)
     end
 end
 
@@ -420,3 +420,4 @@ function mod:scaleTearRender(tear, offset)
 	sprite:Render(Isaac.WorldToRenderPosition(tear.Position + tear.PositionOffset) + offset, Vector.Zero, Vector.Zero)
 	data.MMA_LastRenderFrame = Isaac.GetFrameCount()
 end
+mod:AddCallback(ModCallbacks.MC_POST_TEAR_RENDER, mod.scaleTearRender)
