@@ -205,6 +205,10 @@ function mod:test_command(cmd, args)
         local pickupList = Isaac.FindByType(5)
         print(#pickupList)
     end
+   
+    if cmd == "printtotalitems" then
+        print(Isaac.GetItemConfig():GetCollectibles().Size-1)
+    end
 
 end
 mod:AddCallback(ModCallbacks.MC_EXECUTE_CMD, mod.test_command)

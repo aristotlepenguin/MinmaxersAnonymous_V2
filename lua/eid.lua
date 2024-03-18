@@ -10,6 +10,7 @@ if EID then
     EID:addCollectible(mod.MMATypes.COLLECTIBLE_HYPERFIXATION, "After taking this item, the next card, pill or rune you take will lock all future cards/pills/runes to be only that one type for the rest of the run.", "Hyperfixation", "en_us")
     EID:addCollectible(mod.MMATypes.COLLECTIBLE_MOMS_SCALE, "Isaac has a chance to fire heavy tears that scale with Luck.#Heavy tears cause non-boss enemies to fall through the ground, creating a pit and sending the enemy to a random room on the next floor.", "Mom's Scale", "en_us")
     EID:addCollectible(mod.MMATypes.COLLECTIBLE_JOBS_CURSE, "Gain an extra life. Each time a room is cleared, all stats are reduced by a small amount.#After revival, your stats are restored, and increased further based on how long you survived.", "Job's Curse", "en_us")
+    EID:addCollectible(mod.MMATypes.COLLECTIBLE_D_SQRT, "Rerolls all items in the room. However, it uses a very particular formula to calculate this.#The formula is: Final item number = (<Number of bombs> * <old item number>^2 + <number of coins> * <old item number> + seconds on the timer + 109)/9 % <total number of items(732 in Repentance), plus modded ones>.#If the final item number is not a natural number, it will reroll into The Poop.", "D-Sqrt(-1)", "en_us")
     
     EID:addCard(mod.MMATypes.CARD_CHASTITY, "Use this card to gain one of the item pedestals you touched while holding Abstinence. The last item pedestal you touched is the first item out.", "Chastity Card", "en_us")
     local chasteHud = Sprite()
