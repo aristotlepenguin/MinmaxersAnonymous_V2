@@ -220,87 +220,76 @@ local ReturnFlag = {}
 ReturnFlag.RF_RANDOM_EMPTY = 0
 ReturnFlag.RF_BOSS = 1
 
-function mod:checkFloorRooms_MS(returnFlag)
-    local player = Isaac.GetPlayer(0)
-    local rng = player:GetCollectibleRNG(mod.MMATypes.COLLECTIBLE_MOMS_SCALE)
-    for i=0, 90000, 1 do
-        local randomroom = rng:RandomInt(169)
-        local roomid = game:GetLevel():GetRoomByIdx(randomroom)
-        if roomid and roomid.Data and
-        not roomid.Clear and
-        randomroom ~= 84 and
-        (returnFlag ~= ReturnFlag.RF_BOSS or roomid.Data.Type == RoomType.ROOM_BOSS) and
-        (returnFlag ~= ReturnFlag.RF_RANDOM_EMPTY or roomid.Data.Type == RoomType.ROOM_DEFAULT)
-        then
-            return randomroom
+function mod:checkFloorRooms_MS()
+    local roomcount = 0
+    for i=0, 168, 1 do
+        local room = game:GetLevel():GetRoomByIdx(i) 
+        if room.Data and room.Data.Type == RoomType.ROOM_DEFAULT then
+            roomcount = roomcount + 1
         end
     end
-    return -1
+    return roomcount
 end
 
 function mod:onNewFloor_MS()
     if mod.MMA_GlobalSaveData.droppedEnemies and #mod.MMA_GlobalSaveData.droppedEnemies > 0 then
         for i=1, #mod.MMA_GlobalSaveData.droppedEnemies, 1 do
-            local newRoom
-            if game:IsGreedMode() then
-                local totalWaves = 11
-                if game.Difficulty == Difficulty.DIFFICULTY_GREEDIER then
-                    totalWaves = 12
-                end
-                newRoom = rng:RandomInt(totalWaves) + 1
-            else
-                newRoom = mod:checkFloorRooms_MS(ReturnFlag.RF_RANDOM_EMPTY)
-            end
-            
-            if mod.MMA_GlobalSaveData.droppedEnemiesDest[newRoom] == nil then
-                mod.MMA_GlobalSaveData.droppedEnemiesDest[newRoom] = {}
-            end
             local oldTab = mod.MMA_GlobalSaveData.droppedEnemies[i]
-            local newTab ={}
+            local newTab = {}
             newTab.Type = oldTab.Type
             newTab.Variant = oldTab.Variant
             newTab.SubType = oldTab.SubType
             newTab.ChampionColor = oldTab.ChampionColor
 
-            table.insert(mod.MMA_GlobalSaveData.droppedEnemiesDest[newRoom], newTab)
+            table.insert(mod.MMA_GlobalSaveData.droppedEnemiesDest, newTab)
         end
     end
 end
 mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, mod.onNewFloor_MS)
 
 function mod:onNewRoom_MS(isGreedWave)
-    local currentroomindex = game:GetLevel():GetCurrentRoomIndex()
-    if game:IsGreedMode() then
-        if not isGreedWave then
-            return
-        end
-        currentroomindex = mod.MMA_GlobalSaveData.MMA_GreedWave
-    end
-    local bossroomindex = mod:checkFloorRooms_MS(ReturnFlag.RF_BOSS)
-    if mod.MMA_GlobalSaveData.droppedEnemiesDest and mod.MMA_GlobalSaveData.droppedEnemiesDest[bossroomindex] == nil then
-        mod.MMA_GlobalSaveData.droppedEnemiesDest[bossroomindex] = {}
-    end
     local room = game:GetRoom()
-    local cleared = room:IsClear() and not isGreedWave
-    if mod.MMA_GlobalSaveData.droppedEnemiesDest and mod.MMA_GlobalSaveData.droppedEnemiesDest[currentroomindex] ~= nil then
-        for u=1, #mod.MMA_GlobalSaveData.droppedEnemiesDest[currentroomindex] do
-            local profile = mod.MMA_GlobalSaveData.droppedEnemiesDest[currentroomindex][u]
-            if cleared then
-                table.insert(mod.MMA_GlobalSaveData.droppedEnemiesDest[bossroomindex], profile)
-                mod:OnRoomClear_MS(nil, nil)
-            elseif game:IsGreedMode() then
-                mod:OnRoomClear_MS(nil, nil)
-            else
+    local cleared = room:IsClear()
+    local scaleRNG = nil
+    mod:AnyPlayerDo(function(player)
+        if player:HasCollectible(mod.MMATypes.COLLECTIBLE_MOMS_SCALE) then
+            scaleRNG = player:GetCollectibleRNG(mod.MMATypes.COLLECTIBLE_MOMS_SCALE)
+        end
+    end)
+
+    if not mod.MMA_GlobalSaveData.RecycledEnemies then
+        mod.MMA_GlobalSaveData.RecycledEnemies = {}
+    end
+
+    if #mod.MMA_GlobalSaveData.RecycledEnemies > 0 then
+        for i=1, #mod.MMA_GlobalSaveData.RecycledEnemies, 1 do
+            local oldTab = table.remove(mod.MMA_GlobalSaveData.RecycledEnemies, 1)
+            table.insert(oldTab)
+        end
+    end
+
+    if scaleRNG and mod.MMA_GlobalSaveData.droppedEnemiesDest and #mod.MMA_GlobalSaveData.droppedEnemiesDest > 0 and not cleared then
+        local chance = scaleRNG:RandomInt(99)+1
+        local avgrooms = mod:checkFloorRooms_MS()
+        local probability = math.floor(100 * (#mod.MMA_GlobalSaveData.droppedEnemiesDest/avgrooms))
+        if chance <= probability then
+            local upperbound = math.ceil(probability/100) + 2
+            local enemiesToSpawn = math.max(upperbound, #mod.MMA_GlobalSaveData.droppedEnemiesDest)
+            for i=0, enemiesToSpawn, 1 do
+                local profile = table.remove(mod.MMA_GlobalSaveData.droppedEnemiesDest, scaleRNG:RandomInt(#mod.MMA_GlobalSaveData.droppedEnemiesDest+1))
                 local position = room:GetRandomPosition(40)
                 local enemy = Isaac.Spawn(profile.Type, profile.Variant, profile.SubType, position, Vector(0, 0), nil)
                 if profile.ChampionColor ~= nil then
                     enemy:MakeChampion(profile.ChampionColor)
                 end
+                table.insert(mod.MMA_GlobalSaveData.RecycledEnemies)
             end
         end
     end
 end
 mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, mod.onNewRoom_MS)
+
+--todo: set up leftover table for if the player leaves the room without clearing it
 
 function mod:OnRoomClear_MS(rng, spawnposition)
     local currentroomindex = game:GetLevel():GetCurrentRoomIndex()
@@ -312,8 +301,11 @@ function mod:OnRoomClear_MS(rng, spawnposition)
             table.remove(mod.MMA_GlobalSaveData.droppedEnemiesDest[currentroomindex])
         end
     end
+    if mod.MMA_GlobalSaveData.RecycledEnemies then
+        mod.MMA_GlobalSaveData.RecycledEnemies = {}
+    end
 end
-mod:AddCallback(ModCallbacks.MC_PRE_SPAWN_CLEAN_AWARD, mod.OnRoomClear_MS)
+--mod:AddCallback(ModCallbacks.MC_PRE_SPAWN_CLEAN_AWARD, mod.OnRoomClear_MS)
 
 function mod:onGreedUpdate_MS()
     if game:IsGreedMode() and mod.MMA_GlobalSaveData.MMA_GreedWave ~= game:GetLevel().GreedModeWave then
