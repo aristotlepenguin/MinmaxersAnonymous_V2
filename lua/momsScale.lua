@@ -261,7 +261,7 @@ function mod:onNewRoom_MS(isGreedWave)
         mod.MMA_GlobalSaveData.RecycledEnemies = {}
     end
 
-    if #mod.MMA_GlobalSaveData.RecycledEnemies > 0 then
+    if #mod.MMA_GlobalSaveData.RecycledEnemies > 0 and not game:IsGreedMode() then
         for i=1, #mod.MMA_GlobalSaveData.RecycledEnemies, 1 do
             local oldTab = table.remove(mod.MMA_GlobalSaveData.RecycledEnemies, 1)
             table.insert(oldTab)
@@ -292,15 +292,6 @@ mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, mod.onNewRoom_MS)
 --todo: set up leftover table for if the player leaves the room without clearing it
 
 function mod:OnRoomClear_MS(rng, spawnposition)
-    local currentroomindex = game:GetLevel():GetCurrentRoomIndex()
-    if game:IsGreedMode() then
-        currentroomindex = mod.MMA_GlobalSaveData.MMA_GreedWave
-    end
-    if mod.MMA_GlobalSaveData.droppedEnemiesDest and mod.MMA_GlobalSaveData.droppedEnemiesDest[currentroomindex] ~= nil then
-        for u=1, #mod.MMA_GlobalSaveData.droppedEnemiesDest[currentroomindex] do
-            table.remove(mod.MMA_GlobalSaveData.droppedEnemiesDest[currentroomindex])
-        end
-    end
     if mod.MMA_GlobalSaveData.RecycledEnemies then
         mod.MMA_GlobalSaveData.RecycledEnemies = {}
     end
