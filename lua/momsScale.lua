@@ -79,7 +79,7 @@ function mod:MS_onFireTear(tear)
     local player = mod:GetPlayerFromTear(tear)
     if player and player:HasCollectible(mod.MMATypes.COLLECTIBLE_MOMS_SCALE) then
         local rng = player:GetCollectibleRNG(mod.MMATypes.COLLECTIBLE_MOMS_SCALE)
-        local chance = player.Luck * 5 + 10
+        local chance = player.Luck * 5 + 20
         if player:HasTrinket(TrinketType.TRINKET_TEARDROP_CHARM) then
             chance = chance + 20
         end
@@ -132,7 +132,7 @@ function mod:checkLaser_MS(laser)
                 
             end
 
-            local chance = player.Luck * 5 + 10
+            local chance = player.Luck * 5 + 20
             if player:HasTrinket(TrinketType.TRINKET_TEARDROP_CHARM) then
                 chance = chance + 20
             end
@@ -201,7 +201,7 @@ mod:AddCallback(ModCallbacks.MC_ENTITY_TAKE_DMG, mod.LaserEnemyHit_MS)
 function mod:OnKnifeCollide_MS(knife, collider, low)
     local player = mod:getPlayerFromKnifeLaser(knife)
     if player and player:HasCollectible(mod.MMATypes.COLLECTIBLE_MOMS_SCALE) and collider:IsVulnerableEnemy() then
-        local chance = player.Luck * 5 + 10
+        local chance = player.Luck * 5 + 20
         local rng = player:GetCollectibleRNG(mod.MMATypes.COLLECTIBLE_MOMS_SCALE)
         if player:HasTrinket(TrinketType.TRINKET_TEARDROP_CHARM) then
             chance = chance + 20
