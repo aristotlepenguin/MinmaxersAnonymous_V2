@@ -32,7 +32,9 @@ function mod:renderScore()
         local data = mod.MMA_GlobalSaveData
         data.ScoreAssaultSprite:LoadGraphics()
         local renderpos = Vector(math.floor(Isaac.GetScreenWidth()/2), math.floor(Isaac.GetScreenHeight()/2))
-        data.ScoreAssaultSprite:Render(renderpos)
+        if game:GetHUD():IsVisible() then
+            data.ScoreAssaultSprite:Render(renderpos)
+        end
     end
 end
 mod:AddCallback(ModCallbacks.MC_POST_RENDER, mod.renderScore)

@@ -31,7 +31,7 @@ function mod:findHopeRenderPos(sequence, numPlayers, current_player_num)
     end
     
     starting_pos = Vector(Isaac.GetScreenWidth()-(26+xoffset), Isaac.GetScreenHeight()-(45+yoffset))
-    return starting_pos
+    return starting_pos + game.ScreenShakeOffset + (Options.HUDOffset * Vector(-20, -12)) + Vector(14, 8.4)
 end
 
 function mod:hopesAward(player)
@@ -118,7 +118,9 @@ function mod:hopesRender()
             if item.sprite == nil then
                 item.sprite = mod:getHopeSpr(item.subType)
             end
-            item.sprite:Render(pos)
+            if game:GetHUD():IsVisible() then
+                item.sprite:Render(pos)
+            end
             sequence = sequence + 1
         end
     end

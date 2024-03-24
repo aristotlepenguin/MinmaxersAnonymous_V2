@@ -217,6 +217,9 @@ function mod:test_command(cmd, args)
         end
     end
 
+    if cmd == "hudoffset" then
+        print(Options.HUDOffset)
+    end
 end
 mod:AddCallback(ModCallbacks.MC_EXECUTE_CMD, mod.test_command)
 

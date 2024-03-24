@@ -1,4 +1,4 @@
-<items gfxroot="gfx/items/" version="1">
+<items gfxroot="gfx/items/" version="1" deathanm2="gfx/death items.anm2">
 	<passive	id="1"	gfx="Collectibles_1_JungleGym.png" name="Jungle Gym" description="Time to monkey around" quality = "0" craftquality = "-1"/>
     <passive	id="2"	gfx="Collectibles_2_RainBucket.png" name="Rain Bucket" description="Catch the extra!" tags = "offensive" quality = "4" craftquality = "4"/>
     <passive	id="3"	gfx="Collectibles_3_Abstinence.png" name="Abstinence" description="You're not ready yet..." tags = "offensive" quality="2" craftquality = "-1"/>

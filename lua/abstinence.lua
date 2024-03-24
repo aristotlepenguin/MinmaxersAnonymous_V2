@@ -228,7 +228,7 @@ function mod:removeDevilPrice(player, price)
         player:AddMaxHearts(-4)
         return true
     elseif price == PickupPrice.PRICE_SOUL and player:HasTrinket(TrinketType.TRINKET_YOUR_SOUL) then
-        player:RemoveTrinket(TrinketType.TRINKET_YOUR_SOUL)
+        player:TryRemoveTrinket(TrinketType.TRINKET_YOUR_SOUL)
         return true
     else
         return false
