@@ -144,8 +144,13 @@ function mod:handleTearsOut_OS(player, firstFrame, familiar)
         if frame % 4 == 0 then
             local bombTier = math.floor((30 / (player.MaxFireDelay + 1))*3)
             if bombTier >= 3 or frame % 8 == 0 then
-                local tear = player:FireBomb(firePos, direction, player)
-                tear = mod:tearModifiers(tear, player, false, false, familiar)
+                local multiples = mod:getTearDuplicateAmt(player)
+                for y=1, multiples, 1 do
+                    local new_dir = mod:adjustAngle_OS(direction, y, multiples)
+                    local tear = player:FireBomb(firePos, new_dir, player)
+                    tear = mod:tearModifiers(tear, player, false, false, familiar)
+                end
+                
             end
             
             if bombTier >= 4 then
@@ -171,9 +176,12 @@ function mod:handleTearsOut_OS(player, firstFrame, familiar)
         end
     
     elseif player:HasCollectible(CollectibleType.COLLECTIBLE_MOMS_KNIFE) then
+        local tearSpread = 10 + (mod:getTearDuplicateAmt(player) * 5)
+
         if (tearTier > 3 and frame % 2 == 0) or frame % 4 == 0 or tearTier > 4 then
             local knife = player:FireKnife(player, 0, false, 2, 0)
-            local knifeSpread = sinusRng:RandomInt(30)-15
+            sfx:Play(SoundEffect.SOUND_SCYTHE_BREAK, Options.SFXVolume*2)
+            local knifeSpread = sinusRng:RandomInt(tearSpread*2)-tearSpread
             local spreadDirection = Vector.FromAngle(direction:GetAngleDegrees()+knifeSpread) * (tearSpeed * 1.5)
             knife.Velocity = spreadDirection
             knife.Rotation = direction:GetAngleDegrees() - 90
@@ -194,9 +202,13 @@ function mod:handleTearsOut_OS(player, firstFrame, familiar)
     elseif player:HasCollectible(CollectibleType.COLLECTIBLE_TECH_X) then
         local defaultRadius = 8 * player.Damage
         if tearTier >= 3 or frame % 2 == 0 then
-            player:FireTechXLaser(firePos, direction, defaultRadius, player, 1)
+            local multiples = mod:getTearDuplicateAmt(player)
+            for y=1, multiples, 1 do
+                local new_dir = mod:adjustAngle_OS(direction, y, multiples)
+                player:FireTechXLaser(firePos, new_dir, defaultRadius, player, 1)
+            end
         end
-        
+
         if tearTier >= 4 then
             local slantDir
             if frame % 2 == 0 then
@@ -224,12 +236,18 @@ function mod:handleTearsOut_OS(player, firstFrame, familiar)
             subLaserType = 9
         end
         if firstFrame then
-            local primeLaser = EntityLaser.ShootAngle(6, firePos, direction:GetAngleDegrees(), 500, Vector(0, 0), player)
-            primeLaser:GetData().MMA_oSPrimeLaser = true
-            primeLaser:AddTearFlags(player.TearFlags)
-            primeLaser.Color = player.LaserColor
+            local multiples = mod:getTearDuplicateAmt(player)
+            for y=1, multiples, 1 do
+                local new_dir = mod:adjustAngle_OS(direction, y, multiples)
+                local primeLaser = EntityLaser.ShootAngle(6, firePos, new_dir:GetAngleDegrees(), 500, Vector(0, 0), player)
+                primeLaser:GetData().MMA_oSPrimeLaser = true
+                primeLaser:GetData().MMA_AdjustAngle = new_dir:GetAngleDegrees() - direction:GetAngleDegrees()
+                primeLaser:AddTearFlags(player.TearFlags)
+                primeLaser.Color = player.LaserColor
+            end
+
             local laserTier = math.floor((30 / (player.MaxFireDelay + 1))*4)
-            
+
             for j=1, laserTier, 1 do
                 local directionSub = 0 + j * math.floor(360/laserTier)
                 local subLaser = EntityLaser.ShootAngle(subLaserType, firePos, directionSub, 500, Vector(0, 0), player)
@@ -333,7 +351,7 @@ function mod:onLaserUpdate(laser)
     if laser:GetData().MMA_oSPrimeLaser == true then
         local player = mod:getPlayerFromKnifeLaser(laser)
         local playerRotation = mod.directionToVector[player:GetHeadDirection()]:GetAngleDegrees()
-        laser.AngleDegrees = playerRotation
+        laser.AngleDegrees = playerRotation + (laser:GetData().MMA_AdjustAngle or 0)
     elseif laser:GetData().MMA_oSSubLaser == true then
         laser:SetActiveRotation(0, 25, 15, false)
     end
