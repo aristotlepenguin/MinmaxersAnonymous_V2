@@ -61,6 +61,9 @@ function mod:dropEnemy(enemy, player)
         if enemy:ToNPC():IsChampion() then
             droppedEnemy.ChampionColor = enemy:ToNPC():GetChampionColorIdx()
         end
+        if not mod.MMA_GlobalSaveData.droppedEnemies then
+            mod.MMA_GlobalSaveData.droppedEnemies = {}
+        end
         table.insert(mod.MMA_GlobalSaveData.droppedEnemies, droppedEnemy)
         for i=1, 3 do
             Isaac.Spawn(1000, 4, 0, room:GetGridPosition(room:GetGridIndex(pos)), RandomVector()*math.random()*5, enemy)
