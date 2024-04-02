@@ -9,4 +9,5 @@
     <costume anm2path = "hyperfixation_costume.anm2" hasSkinAlt = "true" type = "none"/>
     <costume anm2path = "job_curse_head.anm2" skinColor = "4" type = "none" overwriteColor = "true"/>
     <costume anm2path = "job_curse_foot.anm2" skinColor = "4" type = "none"/>
+    <costume anm2path = "bucket_head.anm2" type = "none"/>
 </costumes>

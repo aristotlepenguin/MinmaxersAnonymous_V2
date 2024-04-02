@@ -472,6 +472,17 @@ if isEph then
 end
 --account for skeleton key, pyro, and dollar
 
+function mod:initMaxie(player)
+    print("hus")
+    if player:GetPlayerType() == mod.MMATypes.CHARACTER_EPAPHRAS then
+        player:AddNullCostume(mod.MMATypes.COSTUME_BUCKET_HEAD)
+        print("yo!")
+    end
+end
+if isEph then
+    mod:AddCallback(ModCallbacks.MC_POST_PLAYER_INIT, mod.initMaxie)
+end
+
 function mod:BossRushImmunity_RB(rng, spawnPosition)
     local room = Game():GetRoom()
     local isMaxie = false
