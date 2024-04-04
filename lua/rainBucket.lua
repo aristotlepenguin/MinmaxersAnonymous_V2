@@ -473,10 +473,8 @@ end
 --account for skeleton key, pyro, and dollar
 
 function mod:initMaxie(player)
-    print("hus")
     if player:GetPlayerType() == mod.MMATypes.CHARACTER_EPAPHRAS then
         player:AddNullCostume(mod.MMATypes.COSTUME_BUCKET_HEAD)
-        print("yo!")
     end
 end
 if isEph then
