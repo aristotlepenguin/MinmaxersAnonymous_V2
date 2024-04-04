@@ -151,7 +151,18 @@ mod:AddCallback(ModCallbacks.MC_POST_LASER_INIT, mod.checkLaser_MS)
 mod:AddCallback(ModCallbacks.MC_POST_EFFECT_INIT, mod.checkLaser_MS, EffectVariant.BRIMSTONE_BALL)
 mod:AddCallback(ModCallbacks.MC_POST_EFFECT_INIT, mod.checkLaser_MS, EffectVariant.BRIMSTONE_SWIRL)
 
-function mod:updateLasersPlayer_MS(player)
+function mod:updateLasers_MS()
+    local laserEndpoints = Isaac.FindByType(EntityType.ENTITY_EFFECT, EffectVariant.LASER_IMPACT)
+	for i=1, #laserEndpoints do
+		local laserEndpoint = laserEndpoints[i]
+        if laserEndpoint.SpawnerEntity and laserEndpoint.SpawnerEntity.Type == EntityType.ENTITY_LASER then
+            local laser = laserEndpoint.SpawnerEntity
+            if laser:GetData().Laser_Heavy == true then
+                laserEndpoint.Color = greyColor
+            end
+        end
+	end
+
     local lasers = Isaac.FindByType(EntityType.ENTITY_LASER)
     for i=1, #lasers do
         local laser = lasers[i]
@@ -169,7 +180,7 @@ function mod:updateLasersPlayer_MS(player)
             brimball.Color = greyColor
         end
     end
-
+    
     local brimswirls = Isaac.FindByType(EntityType.ENTITY_EFFECT, EffectVariant.BRIMSTONE_SWIRL)
     for i=1, #brimswirls do
         local brimswirl = brimswirls[i]
@@ -180,7 +191,7 @@ function mod:updateLasersPlayer_MS(player)
     end
 
 end
-mod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, mod.updateLasersPlayer_MS)
+mod:AddCallback(ModCallbacks.MC_POST_UPDATE, mod.updateLasers_MS)
 
 function mod:LaserEnemyHit_MS(entity, amount, damageflags, source, countdownframes)
     if entity:IsVulnerableEnemy() then

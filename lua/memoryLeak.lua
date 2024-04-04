@@ -39,7 +39,6 @@ function mod:PostPickupInit_ML(pickup)
 end
 mod:AddCallback(ModCallbacks.MC_POST_PICKUP_INIT, mod.PostPickupInit_ML)
 
-
 function mod:PostPickupUpdate_ML(pickup)
     if pickup:GetData().MMA_WillGlitch then
         pickup:AddEntityFlags(EntityFlag.FLAG_GLITCH)
@@ -47,3 +46,65 @@ function mod:PostPickupUpdate_ML(pickup)
     end
 end
 mod:AddCallback(ModCallbacks.MC_POST_PICKUP_UPDATE, mod.PostPickupUpdate_ML)
+
+function mod:AlterTearColor(tear)
+    local player = mod:GetPlayerFromTear(tear)
+    if player and player:HasCollectible(mod.MMATypes.COLLECTIBLE_MEMORY_LEAK) and tear.FrameCount == 0 then
+        tear:GetSprite().Color:SetColorize(0, 0, 0.8, 1)
+    end
+end
+mod:AddCallback(ModCallbacks.MC_POST_TEAR_UPDATE, mod.AlterTearColor)
+
+
+function mod:updateLasersPlayer_ML()
+    local lasers = Isaac.FindByType(EntityType.ENTITY_LASER)
+    for i=1, #lasers do
+        local laser = lasers[i]
+        local player = mod:getPlayerFromKnifeLaser(laser)
+        if laser:GetData().LaserMadeBlue == nil and player:HasCollectible(mod.MMATypes.COLLECTIBLE_MEMORY_LEAK) then
+            laser:GetData().LaserMadeBlue = true
+            laser:GetSprite().Color:SetTint(0.5, 0.5, 2, 1)
+            laser:GetSprite().Color:SetOffset(0, 0, 1)
+        end
+    end
+
+    local brimballs = Isaac.FindByType(EntityType.ENTITY_EFFECT, EffectVariant.BRIMSTONE_BALL)
+    for i=1, #brimballs do
+        local brimball = brimballs[i]
+        local player = mod:getPlayerFromKnifeLaser(laser)
+        if brimball:GetData().LaserMadeBlue == nil and player:HasCollectible(mod.MMATypes.COLLECTIBLE_MEMORY_LEAK) then
+            brimball:GetData().LaserMadeBlue = true
+            --brimball:GetSprite().Color:SetColorize(0, 0, 0.8, 1)
+            brimball:GetSprite().Color:SetTint(0.5, 0.5, 2, 1)
+            brimball:GetSprite().Color:SetOffset(0, 0, 1)
+        end
+    end
+
+    local brimswirls = Isaac.FindByType(EntityType.ENTITY_EFFECT, EffectVariant.BRIMSTONE_SWIRL)
+    for i=1, #brimswirls do
+        local brimswirl = brimswirls[i]
+        local player = mod:getPlayerFromKnifeLaser(laser)
+        if brimswirl:GetData().LaserMadeBlue == nil and player:HasCollectible(mod.MMATypes.COLLECTIBLE_MEMORY_LEAK) then
+            brimswirl:GetData().LaserMadeBlue = true
+            brimswirl:GetSprite().Color:SetTint(0.5, 0.5, 2, 1)
+            brimswirl:GetSprite().Color:SetOffset(0, 0, 1)
+        end
+    end
+
+    local laserEndpoints = Isaac.FindByType(EntityType.ENTITY_EFFECT, EffectVariant.LASER_IMPACT)
+	for i=1, #laserEndpoints do
+		local laserEndpoint = laserEndpoints[i]
+        local player
+        if laserEndpoint.SpawnerEntity and laserEndpoint.SpawnerEntity.Type == EntityType.ENTITY_LASER then
+            local laser = laserEndpoint.SpawnerEntity
+            player = mod:getPlayerFromKnifeLaser(laser)
+        end
+
+        if laserEndpoint:GetData().LaserMadeBlue == nil and player and player:HasCollectible(mod.MMATypes.COLLECTIBLE_MEMORY_LEAK) then
+            laserEndpoint:GetData().LaserMadeBlue = true
+            laserEndpoint:GetSprite().Color:SetTint(0.5, 0.5, 2, 1)
+            laserEndpoint:GetSprite().Color:SetOffset(0, 0, 1)
+        end
+	end
+end
+mod:AddCallback(ModCallbacks.MC_POST_UPDATE, mod.updateLasersPlayer_ML)
