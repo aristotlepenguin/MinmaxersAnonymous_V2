@@ -253,8 +253,18 @@ end
 function mod:scoreAssaultPickupCalc()
     if Isaac.GetChallenge() == mod.MMATypes.CHALLENGE_SCORE_ASSAULT then
         local pickupList = Isaac.FindByType(5)
+
+        local floorItems = 0
+        mod:AnyPlayerDo(function(player)
+            floorItems = floorItems + player:GetCollectibleCount()
+        end)
+
         if #pickupList > 250 and mod:checkIfAchieved("maxedPickups") == false then
             mod:applyAchievement("maxedPickups", 70000, "Packed Room", "Fill a room with pickups")
+        elseif floorItems - mod.MMA_GlobalSaveData.SA_StartFloorItems > 50 and mod:checkIfAchieved("itemWindfall") == false then
+            mod:applyAchievement("itemWindfall", 70000, "Item Windfall", "Get over 50 items on a floor")
+        elseif math.floor(game.TimeCounter/30) - mod.MMA_GlobalSaveData.SA_StartFloorTimestamp > 1800 and mod:checkIfAchieved("whilingAway") == false then
+            mod:applyAchievement("whilingAway", 70000, "Whiling Away", "Spend 30 minutes on one floor")
         end
     end
 end
@@ -279,11 +289,19 @@ end
 mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, mod.refreshExplorationBonus_SA)
 
 
-function mod:depositExploreScore_SA()
+function mod:onNewFloor_SA()
     if Isaac.GetChallenge() == mod.MMATypes.CHALLENGE_SCORE_ASSAULT then
         mod.MMA_GlobalSaveData.TotalBonusScore = (mod.MMA_GlobalSaveData.TotalBonusScore or 0) + mod.MMA_GlobalSaveData.TotalExploreScore
         mod.MMA_GlobalSaveData.TotalExploreScore = 0
+        local floorItems = 0
+
+        mod:AnyPlayerDo(function(player)
+            floorItems = floorItems + player:GetCollectibleCount()
+        end)
+        mod.MMA_GlobalSaveData.SA_StartFloorItems = floorItems
+        mod.MMA_GlobalSaveData.SA_StartFloorTimestamp = math.floor(game.TimeCounter/30)
+
         mod:refreshTotalScore_SA()
     end
 end
-mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, mod.depositExploreScore_SA)
+mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, mod.onNewFloor_SA)
