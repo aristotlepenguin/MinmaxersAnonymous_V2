@@ -38,6 +38,8 @@ mod.MMATypes.COSTUME_HYPERFIXATION = Isaac.GetCostumeIdByPath("gfx/characters/hy
 mod.MMATypes.COSTUME_JOBSCURSE_1 = Isaac.GetCostumeIdByPath("gfx/characters/job_curse_head.anm2")
 mod.MMATypes.COSTUME_JOBSCURSE_2 = Isaac.GetCostumeIdByPath("gfx/characters/job_curse_foot.anm2")
 mod.MMATypes.COSTUME_BUCKET_HEAD = Isaac.GetCostumeIdByPath("gfx/characters/bucket_head.anm2")
+mod.MMATypes.COSTUME_MINNIE_HAIR = Isaac.GetCostumeIdByPath("gfx/characters/minnie_hair.anm2")
+mod.MMATypes.COSTUME_DAD_SNEAKERS = Isaac.GetCostumeIdByPath("gfx/characters/dad_sneakers_costume.anm2")
 
 mod.MMATypes.CHALLENGE_SCORE_ASSAULT = Isaac.GetChallengeIdByName("Score Assault")
 
