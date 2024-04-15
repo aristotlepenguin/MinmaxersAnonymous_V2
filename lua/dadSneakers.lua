@@ -223,6 +223,19 @@ mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, mod.onNewLevelStart_DS)
 --T. EPAPHRAS STARTS HERE
 ------------------------------------
 
+function mod:initMinnie(player)
+    if player:GetPlayerType() == mod.MMATypes.CHARACTER_EPAPHRAS_B then --mod.MMATypes.CHARACTER_EPAPHRAS_B
+        local dadSneakersConfig = Isaac.GetItemConfig():GetCollectible(mod.MMATypes.COLLECTIBLE_DAD_SNEAKERS)
+        player:AddCostume(dadSneakersConfig)
+        player:AddNullCostume(mod.MMATypes.COSTUME_MINNIE_HAIR)
+        --player:AddNullCostume(mod.MMATypes.COSTUME_BUCKET_HEAD)
+        
+    end
+end
+if tEph then
+    mod:AddCallback(ModCallbacks.MC_POST_PLAYER_INIT, mod.initMinnie)
+end
+
 function mod:tEphStatsHandling(player, cache)
     if cache == CacheFlag.CACHE_SPEED then
         player.MoveSpeed = player.MoveSpeed + 0.2

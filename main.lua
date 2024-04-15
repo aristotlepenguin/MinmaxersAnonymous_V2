@@ -17,7 +17,7 @@ DSSInitializerFunction(mod)
 mod.MMATypes = {}
 
 mod.MMATypes.CHARACTER_EPAPHRAS = Isaac.GetPlayerTypeByName("Epaphras")
-mod.MMATypes.CHARACTER_EPAPHRAS_B = Isaac.GetPlayerTypeByName("Tainted Epaphras")
+mod.MMATypes.CHARACTER_EPAPHRAS_B = Isaac.GetPlayerTypeByName("Tainted Epaphras", true)
 
 mod.MMATypes.COLLECTIBLE_JUNGLE_GYM = Isaac.GetItemIdByName("Jungle Gym")
 mod.MMATypes.COLLECTIBLE_RAIN_BUCKET = Isaac.GetItemIdByName("Rain Bucket")
@@ -39,7 +39,6 @@ mod.MMATypes.COSTUME_JOBSCURSE_1 = Isaac.GetCostumeIdByPath("gfx/characters/job_
 mod.MMATypes.COSTUME_JOBSCURSE_2 = Isaac.GetCostumeIdByPath("gfx/characters/job_curse_foot.anm2")
 mod.MMATypes.COSTUME_BUCKET_HEAD = Isaac.GetCostumeIdByPath("gfx/characters/bucket_head.anm2")
 mod.MMATypes.COSTUME_MINNIE_HAIR = Isaac.GetCostumeIdByPath("gfx/characters/minnie_hair.anm2")
-mod.MMATypes.COSTUME_DAD_SNEAKERS = Isaac.GetCostumeIdByPath("gfx/characters/dad_sneakers_costume.anm2")
 
 mod.MMATypes.CHALLENGE_SCORE_ASSAULT = Isaac.GetChallengeIdByName("Score Assault")
 
