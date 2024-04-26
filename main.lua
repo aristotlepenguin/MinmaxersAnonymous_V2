@@ -48,6 +48,17 @@ mod.FloorSaves = {}
 mod.MMA_GlobalSaveData = {}
 
 
+local ItemTranslate = include("lib.translation.ItemTranslation")
+ItemTranslate("MinmaxersAnonymous_V2")
+
+local translations = {
+    "ru",
+}
+for i=1,#translations do
+    local module = include("lib.translation." .. translations[i])
+    module(mod)
+end
+
 local extrafiles = {
     "lua.jungleGym",
     "lua.rainBucket",
