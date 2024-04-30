@@ -3,18 +3,31 @@ local game = Game()
 local hud = game:GetHUD()
 local sfx = SFXManager()
 
+local digitLayer = {
+    [0] = 9,
+    [1] = 8,
+    [2] = 7,
+    [3] = 6,
+    [4] = 5,
+    [5] = 0,
+    [6] = 1,
+    [7] = 2,
+    [8] = 3
+
+}
+
 function mod:refreshTotalScore_SA()
     local data = mod.MMA_GlobalSaveData
     data.TotalAssaultScore = (data.TotalStatScore or 0) + --check total stats
     (data.TotalCollectibleScore or 0) + --checks held items
     (data.TotalBonusScore or 0) --other scoring mechanics that aren't adjusted after earning them
-
+    
     if data.ScoreAssaultSprite then
         local score = data.TotalAssaultScore or 0
         local scorelength = math.max(string.len(tostring(data.TotalAssaultScore)), 9)
-        for j=1, scorelength, 1 do
+        for j=0, scorelength-1, 1 do
             local digit = score % 10
-            data.ScoreAssaultSprite:SetLayerFrame(9-(j), digit)
+            data.ScoreAssaultSprite:SetLayerFrame(digitLayer[j], digit)
             score = math.floor(score/10)
         end
     end
@@ -31,9 +44,10 @@ function mod:renderScore()
     if Isaac.GetChallenge() == mod.MMATypes.CHALLENGE_SCORE_ASSAULT and mod.MMA_GlobalSaveData.ScoreAssaultSprite then
         local data = mod.MMA_GlobalSaveData
         data.ScoreAssaultSprite:LoadGraphics()
-        local renderpos = Vector(math.floor(Isaac.GetScreenWidth()/2), math.floor(Isaac.GetScreenHeight()/2))
+        local renderpos = Vector(math.floor(Isaac.GetScreenWidth()/2), 35)
         if game:GetHUD():IsVisible() then
             data.ScoreAssaultSprite:Render(renderpos)
+            print(data.TotalAssaultScore)
         end
     end
 end
@@ -261,9 +275,9 @@ function mod:scoreAssaultPickupCalc()
 
         if #pickupList > 250 and mod:checkIfAchieved("maxedPickups") == false then
             mod:applyAchievement("maxedPickups", 70000, "Packed Room", "Fill a room with pickups")
-        elseif floorItems - mod.MMA_GlobalSaveData.SA_StartFloorItems > 50 and mod:checkIfAchieved("itemWindfall") == false then
+        elseif floorItems - (mod.MMA_GlobalSaveData.SA_StartFloorItems or 0) > 50 and mod:checkIfAchieved("itemWindfall") == false then
             mod:applyAchievement("itemWindfall", 70000, "Item Windfall", "Get over 50 items on a floor")
-        elseif math.floor(game.TimeCounter/30) - mod.MMA_GlobalSaveData.SA_StartFloorTimestamp > 1800 and mod:checkIfAchieved("whilingAway") == false then
+        elseif math.floor(game.TimeCounter/30) - (mod.MMA_GlobalSaveData.SA_StartFloorTimestamp or 0) > 1800 and mod:checkIfAchieved("whilingAway") == false then
             mod:applyAchievement("whilingAway", 70000, "Whiling Away", "Spend 30 minutes on one floor")
         end
     end
