@@ -1,8 +1,8 @@
-<players nameimageroot="gfx/ui/boss/" portraitroot="gfx/ui/stage/" root="gfx/characters/costumes/">
+<players nameimageroot="gfx/ui/boss/" portraitroot="gfx/ui/boss/" root="gfx/characters/costumes/">
 	<player hp="6" bombs="1" keys = "1" coins = "1" name="Epaphras"
-	nameimage="playername_epaphras.png" bigportrait="maxiecrouch.png" portrait="playerportrait_epaphras.png" skin="character_epaphras.png" skinColor="1" birthright="Tighter pockets"
+	nameimage="playername_epaphras.png" portrait="maxiecrouch.png" skin="character_epaphras.png" birthright="Tighter pockets"
 	/>
 	<player hp="4" bombs="1" name="Tainted Epaphras"
-	nameimage="playername_epaphras_b.png" bigportrait="minniecrouch.png" portrait="playerportrait_epaphras_b.png" skin="character_epaphras_b.png" skinColor="1" birthright="Home renovation" 
+	nameimage="playername_epaphras_b.png" portrait="minniecrouch.png" skin="character_epaphras_b.png" birthright="Home renovation" 
 	bSkinParent="Epaphras" pocketActive = "422"/>
 </players>

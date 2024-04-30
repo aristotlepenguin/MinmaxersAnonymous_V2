@@ -13,6 +13,16 @@ function mod:getHopeSpr(pickup_num)
     return hopeSpr
 end
 
+function mod:IsInDCDimension()
+    local desc = game:GetLevel():GetCurrentRoomDesc()
+    if desc.Data and (desc.Data.StageID == 35 and (desc.Data.Subtype == 33 or desc.Data.Subtype == 34)) then
+        return true
+    end
+    print(desc.Data.StageID)
+    print(desc.Data.Subtype)
+    return false
+end
+
 function mod:findHopeRenderPos(sequence, numPlayers, current_player_num)
     local starting_pos = Vector(-32, -32)
     if sequence > 6 then
@@ -108,8 +118,8 @@ function mod:hopesRender()
     for i, item in ipairs(data.hopesItems) do
         if not item.obtained then
             mod:AnyPlayerDo(function(player)
-                if player:HasCollectible(item.subType) or
-                (player:GetOtherTwin() ~= nil and player:GetOtherTwin():HasCollectible(item.subType)) then
+                if (player:HasCollectible(item.subType) or
+                (player:GetOtherTwin() ~= nil and player:GetOtherTwin():HasCollectible(item.subType))) and not mod:IsInDCDimension() then
                     item.obtained = true
                     mod:hopesAward(player)
                 end
@@ -118,8 +128,25 @@ function mod:hopesRender()
             if item.sprite == nil then
                 item.sprite = mod:getHopeSpr(item.subType)
             end
+            mod:AnyPlayerDo(function(player)
+                if Input.IsActionPressed(ButtonAction.ACTION_MAP, player.ControllerIndex) then
+                    mod.MMA_GlobalSaveData.LastTimeTabbed = game:GetFrameCount()
+                end
+            end)
+
             if game:GetHUD():IsVisible() then
-                item.sprite:Render(pos)
+                if (mod.MMA_GlobalSaveData.LastTimeTabbed or 0) == game:GetFrameCount() or (mod.MMA_GlobalSaveData.LastTimePickedUp_HD or 0) + 150 > game:GetFrameCount() then
+                    local opaqueColor = Color.Default
+                    opaqueColor:SetTint(1, 1, 1, 1)
+                    item.sprite.Color = opaqueColor
+                    item.sprite:Render(pos)
+                elseif (mod.MMA_GlobalSaveData.LastTimeTabbed or 0) + 60 > game:GetFrameCount() or (mod.MMA_GlobalSaveData.LastTimePickedUp_HD or 0) + 300 > game:GetFrameCount() then
+                    local transparentColor = Color.Default
+                    transparentColor:SetTint(1, 1, 1, 0.2)
+                    item.sprite.Color = transparentColor
+                    item.sprite:Render(pos)
+                
+                end
             end
             sequence = sequence + 1
         end
@@ -127,6 +154,12 @@ function mod:hopesRender()
 end
 mod:AddCallback(ModCallbacks.MC_POST_RENDER, mod.hopesRender)
 --mod:AddCallback(ModCallbacks.MC_POST_PLAYER_RENDER, mod.hopesRender)
+
+mod.ItemGrabCallback:AddCallback(mod.ItemGrabCallback.InventoryCallback.POST_ADD_ITEM, function(player, item, count, touched, fromQueue)
+    if not touched or not fromQueue then
+        mod.MMA_GlobalSaveData.LastTimePickedUp_HD = game:GetFrameCount()
+    end
+end, MMAMod.MMATypes.COLLECTIBLE_HOPES_AND_DREAMS)
 
 --rain bucket already calculates bonus stats, keep this in case items are published individually
 function mod:bonusStatsCache_HAD(player, cache)
