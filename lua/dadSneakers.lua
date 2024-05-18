@@ -10,8 +10,6 @@ function mod:findValidDoors_DS(roomid)
     local shape = roomdesc.Data.Shape
     local doorTable = {}
 
-
-      
     if shape >= 8 then
         if shape ~= 9 then
             table.insert(doorTable, 0)
@@ -135,7 +133,7 @@ end
 function mod:refreshRooms_DS()
     if game:GetLevel():GetCurrentRoomIndex() ~=84 then
         mod.MMA_GlobalSaveData.UnexploredCount = mod:checkFloorRooms_DS(false, -1)
-    end 
+    end
 end
 mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, mod.refreshRooms_DS)
 
@@ -161,6 +159,36 @@ function mod:isAdjacentDoor(room, door)
     return spawningRoom == 83 or spawningRoom == 85 or spawningRoom == 71 or spawningRoom == 97
 end
 
+function mod:setMapping(roomid)
+local hasMap = false
+local hasCompass = false
+local displayFlag = 0
+    local roomdesc = game:GetLevel():GetRoomByIdx(roomid)
+    mod:AnyPlayerDo(function(player)
+        if player:HasCollectible(CollectibleType.COLLECTIBLE_TREASURE_MAP) then
+            hasMap = true
+        end
+        if player:HasCollectible(CollectibleType.COLLECTIBLE_COMPASS) then
+            hasCompass = true
+        end
+        if player:HasCollectible(CollectibleType.COLLECTIBLE_MIND) then
+            hasCompass = true
+            hasMap = true
+        end
+    end)
+    if hasMap then
+        displayFlag = displayFlag + 1
+    end
+    if hasCompass then
+        displayFlag = displayFlag + 4
+    end
+    if hasMap or hasCompass then
+        roomdesc.DisplayFlags = displayFlag
+    end
+    game:GetLevel():Update()
+    game:GetLevel():UpdateVisibility()
+end
+
 function mod:onNewLevelStart_DS()
     local hasIt = false
     local rng = RNG()
@@ -183,7 +211,7 @@ function mod:onNewLevelStart_DS()
         local triedCombos = {}
         for i=1, numOfNewRooms, 1 do
             local numOfOldRooms = mod:checkFloorRooms_DS(true, -1)
-            local isOpened = false 
+            local isOpened = false
             for j=1, 10000, 1 do
                 local roomIdToExpand = mod:checkFloorRooms_DS(true, rng:RandomInt(numOfOldRooms)+1)
                 local doorTable = mod:findValidDoors_DS(roomIdToExpand)
@@ -195,6 +223,7 @@ function mod:onNewLevelStart_DS()
                         triedCombos[tostring(roomIdToExpand) .. tostring(door)] == nil and 
                         game:GetLevel():MakeRedRoomDoor(roomIdToExpand, door) then
                             isOpened = true
+                            mod:setMapping(roomDirectionTable[door] + roomIdToExpand)
                             triedCombos[tostring(roomIdToExpand) .. tostring(door)] = true
                             break
                         end
@@ -213,6 +242,7 @@ function mod:onNewLevelStart_DS()
                 end
             end
         end
+        
     end
     mod.MMA_GlobalSaveData.UnexploredCount = mod:checkFloorRooms_DS(false, -1)
 end
@@ -409,7 +439,7 @@ function mod:openSpecialRedRoom_DS(roomIdToExpand, door, rng)
             
             local roomState = Game():GetLevel():GetRoomByIdx(moddedID)
             roomState.AllowedDoors = 0
-            roomState.DisplayFlags = 5
+            --roomState.DisplayFlags = 5
             roomState.Flags = roomState.Flags | RoomDescriptor.FLAG_RED_ROOM
             game:GetLevel():Update()
             game:GetHUD():Update()

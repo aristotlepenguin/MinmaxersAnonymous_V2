@@ -2,7 +2,7 @@ local mod  = RegisterMod("MinmaxersAnonymous_v2", 1)
 
 MMAMod = mod
 
-mod.DEBUG = true
+mod.DEBUG = false
 mod.SINGLE_ITEM = false
 
 local hiddenItemManager = require("lib.hidden_item_manager")

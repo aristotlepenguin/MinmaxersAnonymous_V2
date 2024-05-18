@@ -1,11 +1,11 @@
 <AnimatedActor>
-	<Info CreatedBy="robot" CreatedOn="2/27/2024 8:49:45 PM" Version="114" Fps="30"/>
+	<Info CreatedBy="robot" CreatedOn="5/16/2024 8:25:05 PM" Version="115" Fps="30"/>
 	<Content>
 		<Spritesheets>
 			<Spritesheet Path="costumes\costume_overclock.png" Id="0"/>
 		</Spritesheets>
 		<Layers>
-			<Layer Name="head5" Id="0" SpritesheetId="0"/>
+			<Layer Name="head" Id="0" SpritesheetId="0"/>
 		</Layers>
 		<Nulls/>
 		<Events/>
