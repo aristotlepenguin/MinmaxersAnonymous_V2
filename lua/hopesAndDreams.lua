@@ -18,8 +18,6 @@ function mod:IsInDCDimension()
     if desc.Data and (desc.Data.StageID == 35 and (desc.Data.Subtype == 33 or desc.Data.Subtype == 34)) then
         return true
     end
-    print(desc.Data.StageID)
-    print(desc.Data.Subtype)
     return false
 end
 

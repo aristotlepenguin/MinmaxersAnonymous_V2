@@ -47,7 +47,7 @@ function mod:renderScore()
         local renderpos = Vector(math.floor(Isaac.GetScreenWidth()/2), 35)
         if game:GetHUD():IsVisible() then
             data.ScoreAssaultSprite:Render(renderpos)
-            print(data.TotalAssaultScore)
+            --print(data.TotalAssaultScore)
         end
     end
 end
@@ -214,12 +214,15 @@ mod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, mod.trackPickups_SA)
 
 
 function mod:applyAchievement(key, score, name, description)
+    if not mod.MMA_GlobalSaveData.ScoreAssaultAchievements then
+        mod.MMA_GlobalSaveData.ScoreAssaultAchievements = {}
+    end
     mod.MMA_GlobalSaveData.ScoreAssaultAchievements[key] = true
     mod.MMA_GlobalSaveData.TotalBonusScore = (mod.MMA_GlobalSaveData.TotalBonusScore or 0) + score
-    local descString = "+" .. tostring(score) .. " " .. description
+    local descString = description .. " +" .. tostring(score)
     mod:refreshTotalScore_SA()
     hud:ShowItemText(name, descString, false)
-    sfx:Play(SoundEffect.SOUND_POWERUP_SPEWER, Options.SFXVolume*2)
+    sfx:Play(mod.MMATypes.SOUND_ACHIEVE_SA, Options.SFXVolume*2)
 end
 
 

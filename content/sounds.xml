@@ -2,4 +2,7 @@
     <sound name="CryBaby">
         <sample weight="1" path="have_a_cry.wav" />
     </sound>
+    <sound name="AchieveSA">
+        <sample weight="1" path="slotwin.wav" />
+    </sound>
 </sounds>

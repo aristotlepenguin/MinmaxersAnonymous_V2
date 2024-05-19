@@ -220,9 +220,24 @@ function mod:test_command(cmd, args)
     if cmd == "hudoffset" then
         print(Options.HUDOffset)
     end
+
+    if cmd == "testachievement" then
+        mod:applyAchievement("testAch", 3200, "Mary Rose", "Burst her piles")
+    end
+
+
+
 end
 mod:AddCallback(ModCallbacks.MC_EXECUTE_CMD, mod.test_command)
 
+function mod:EnemyHit(entity, amount, damageflags, source, countdownframes)
+    local player = entity:ToPlayer()
+    if player == nil then
+        return
+    end
+    mod:applyAchievement("getFucked", 6900, "GET FUCKED SCRUB", "Take more damage than yer mum")
+end
+--mod:AddCallback(ModCallbacks.MC_ENTITY_TAKE_DMG, mod.EnemyHit, EntityType.ENTITY_PLAYER)
 
 function mod:crashGame(card, player, useflags)
     local knife = player:FireKnife(player, 0, false, 1, 0)
