@@ -71,7 +71,7 @@ function mod:updateLasersPlayer_ML()
     local brimballs = Isaac.FindByType(EntityType.ENTITY_EFFECT, EffectVariant.BRIMSTONE_BALL)
     for i=1, #brimballs do
         local brimball = brimballs[i]
-        local player = mod:getPlayerFromKnifeLaser(laser)
+        local player = mod:getPlayerFromKnifeLaser(brimball)
         if brimball:GetData().LaserMadeBlue == nil and player:HasCollectible(mod.MMATypes.COLLECTIBLE_MEMORY_LEAK) then
             brimball:GetData().LaserMadeBlue = true
             --brimball:GetSprite().Color:SetColorize(0, 0, 0.8, 1)
@@ -83,7 +83,7 @@ function mod:updateLasersPlayer_ML()
     local brimswirls = Isaac.FindByType(EntityType.ENTITY_EFFECT, EffectVariant.BRIMSTONE_SWIRL)
     for i=1, #brimswirls do
         local brimswirl = brimswirls[i]
-        local player = mod:getPlayerFromKnifeLaser(laser)
+        local player = mod:getPlayerFromKnifeLaser(brimswirl)
         if brimswirl:GetData().LaserMadeBlue == nil and player:HasCollectible(mod.MMATypes.COLLECTIBLE_MEMORY_LEAK) then
             brimswirl:GetData().LaserMadeBlue = true
             brimswirl:GetSprite().Color:SetTint(0.5, 0.5, 2, 1)

@@ -9,6 +9,51 @@ mod.directionToVector = {
     [Direction.NO_DIRECTION] = Vector(0, 1)
 }
 
+local sF = function (int)
+  return 1 << int
+end
+
+local ShapeToNeighbors = {
+  [RoomShape.ROOMSHAPE_1x1] = {-1,-13,1,13},
+  [RoomShape.ROOMSHAPE_IH] = {-1,1},
+  [RoomShape.ROOMSHAPE_IV] = {-13,13},
+  [RoomShape.ROOMSHAPE_1x2] = {-1,-13,1,12,15,26},
+  [RoomShape.ROOMSHAPE_IIV] = {-13,26},
+  [RoomShape.ROOMSHAPE_2x1] = {-1,-13,-12,2,13,14},
+  [RoomShape.ROOMSHAPE_IIH] = {-1,2},
+  [RoomShape.ROOMSHAPE_2x2] = {-1,-13,-12,2,12,15,26,27},
+  [RoomShape.ROOMSHAPE_LTL] = {0,-12,2,12,15,26,27},
+  [RoomShape.ROOMSHAPE_LTR] = {-1,-13,1,12,15,26,27},
+  [RoomShape.ROOMSHAPE_LBL] = {-1,-13,-12,2,13,15,27},
+  [RoomShape.ROOMSHAPE_LBR] = {-1,-13,-12,2,12,14,26},
+}
+local ShapeToNeighborsDoor = {
+  [RoomShape.ROOMSHAPE_1x1] = {DoorSlot.LEFT0,DoorSlot.UP0,DoorSlot.RIGHT0,DoorSlot.DOWN0},
+  [RoomShape.ROOMSHAPE_IH] = {DoorSlot.LEFT0, DoorSlot.RIGHT0},
+  [RoomShape.ROOMSHAPE_IV] = {DoorSlot.UP0, DoorSlot.DOWN0},
+  [RoomShape.ROOMSHAPE_1x2] = {DoorSlot.LEFT0, DoorSlot.UP0, DoorSlot.RIGHT0, DoorSlot.LEFT1, DoorSlot.RIGHT1, DoorSlot.DOWN0},
+  [RoomShape.ROOMSHAPE_IIV] = {DoorSlot.UP0, DoorSlot.DOWN0},
+  [RoomShape.ROOMSHAPE_2x1] = {DoorSlot.LEFT0,DoorSlot.UP0,DoorSlot.UP1,DoorSlot.RIGHT0,DoorSlot.DOWN0, DoorSlot.DOWN1},
+  [RoomShape.ROOMSHAPE_IIH] = {DoorSlot.LEFT0, DoorSlot.RIGHT0},
+  [RoomShape.ROOMSHAPE_2x2] = {DoorSlot.LEFT0,DoorSlot.UP0,DoorSlot.UP1,DoorSlot.RIGHT0,DoorSlot.LEFT1,DoorSlot.RIGHT1,DoorSlot.DOWN0,DoorSlot.DOWN1},
+  [RoomShape.ROOMSHAPE_LTL] = {{DoorSlot.LEFT0, DoorSlot.UP0},DoorSlot.UP1,DoorSlot.RIGHT0,DoorSlot.LEFT1,DoorSlot.RIGHT1,DoorSlot.DOWN0,DoorSlot.DOWN1},
+  [RoomShape.ROOMSHAPE_LTR] = {DoorSlot.LEFT0,DoorSlot.UP0,{DoorSlot.RIGHT0,DoorSlot.UP1},DoorSlot.LEFT1,DoorSlot.RIGHT1,DoorSlot.DOWN0,DoorSlot.DOWN1},
+  [RoomShape.ROOMSHAPE_LBL] = {DoorSlot.LEFT0,DoorSlot.UP0,DoorSlot.UP1,DoorSlot.RIGHT0,{DoorSlot.DOWN0,DoorSlot.LEFT1},DoorSlot.RIGHT1,DoorSlot.DOWN1},
+  [RoomShape.ROOMSHAPE_LBR] = {DoorSlot.LEFT0,DoorSlot.UP0,DoorSlot.UP1,DoorSlot.RIGHT0,DoorSlot.LEFT1,{DoorSlot.RIGHT1,DoorSlot.DOWN1},DoorSlot.DOWN0},
+}
+
+local ttn = function (num)
+  if type(num) == "table" then
+      local a = 0
+      for i=1, #num do
+          a = a | sF(num[i])
+      end
+      return a
+  else
+      return num
+  end
+end
+
 function mod:shuffleTable(tbl)
     for i = #tbl, 2, -1 do
       local j = math.random(i)

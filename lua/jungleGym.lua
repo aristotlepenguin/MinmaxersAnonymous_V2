@@ -210,10 +210,11 @@ function mod:test_command(cmd, args)
         print(Isaac.GetItemConfig():GetCollectibles().Size-1)
     end
 
-    if cmd == "checkItemTimer" then
-        local pedestals = Isaac.FindByType(5, 100)
+    if cmd == "checkItemState" then
+        local pedestals = Isaac.FindByType(33)
         for i, pedestal in ipairs(pedestals) do
-            print(pedestal.FrameCount)
+            print(pedestal.HitPoints)
+            pedestal.HitPoints = 5
         end
     end
 

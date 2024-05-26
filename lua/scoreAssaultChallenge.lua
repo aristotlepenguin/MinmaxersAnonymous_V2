@@ -208,6 +208,13 @@ function mod:trackPickups_SA(pickup, collider, low)
             mod.MMA_GlobalSaveData.TotalBonusScore = (mod.MMA_GlobalSaveData.TotalBonusScore or 0) + scoreIt
             mod:refreshTotalScore_SA()
         end
+
+        if pickup.Variant == PickupVariant.PICKUP_TROPHY and (not mod.MMA_GlobalSaveData.TotalAssaultScore or mod.MMA_GlobalSaveData.TotalAssaultScore < 1000000) then
+            Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, pickup.Position, Vector(0,0), nil)
+            pickup:Remove()
+            sfx:Play(SoundEffect.SOUND_BOSS2INTRO_ERRORBUZZ, Options.SFXVolume*2)
+            hud:ShowItemText('MILLIONAIRES ONLY', 'Try again next time...', false)
+        end
     end
 end
 mod:AddCallback(ModCallbacks.MC_PRE_PICKUP_COLLISION, mod.trackPickups_SA)
