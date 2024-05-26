@@ -42,7 +42,6 @@ mod.MMATypes.COSTUME_MINNIE_HAIR = Isaac.GetCostumeIdByPath("gfx/characters/minn
 
 mod.MMATypes.CHALLENGE_SCORE_ASSAULT = Isaac.GetChallengeIdByName("Score Assault")
 
-mod.MMATypes.SOUND_CRYBABY = Isaac.GetSoundIdByName("CryBaby")
 mod.MMATypes.SOUND_ACHIEVE_SA = Isaac.GetSoundIdByName("AchieveSA")
 
 mod.FloorSaves = {}
