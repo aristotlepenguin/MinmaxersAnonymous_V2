@@ -114,10 +114,13 @@ function mod:hopesRender()
     end
     local sequence = 1
     for i, item in ipairs(data.hopesItems) do
+        if totalHopeItems < sequence then
+            break
+        end
         if not item.obtained then
             mod:AnyPlayerDo(function(player)
-                if (player:HasCollectible(item.subType) or
-                (player:GetOtherTwin() ~= nil and player:GetOtherTwin():HasCollectible(item.subType))) and not mod:IsInDCDimension() then
+                if (player:HasCollectible(item.subType) or (player:GetOtherTwin() ~= nil and player:GetOtherTwin():HasCollectible(item.subType)))
+                and not mod:IsInDCDimension() then
                     item.obtained = true
                     mod:hopesAward(player)
                 end
