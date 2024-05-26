@@ -18,6 +18,8 @@ function mod:checkDeath_JC(player)
     local oneUpCount = hiddenItemManager:CountStack(player, CollectibleType.COLLECTIBLE_ONE_UP, hiddenItemManager.kDefaultGroup)
     if player:IsDead() then
         pdata.MMA_Died = true
+    elseif oneUpCount > 0 and not player:HasCollectible(mod.MMATypes.COLLECTIBLE_JOBS_CURSE) then
+        hiddenItemManager:Remove(player, CollectibleType.COLLECTIBLE_ONE_UP, hiddenItemManager.kDefaultGroup)
     elseif pdata.MMA_Died == true  and not player:IsDead() and oneUpCount >= 1 then
         pdata.AnimOverride_JC = true
         pdata.MMA_Died = false
@@ -85,6 +87,9 @@ mod:AddCallback(ModCallbacks.MC_PRE_SPAWN_CLEAN_AWARD, mod.ClearRoom_JC)
 function mod:Cache_JC(player, cache)
     local sign = 0.125
     local pdata = mod:mmaGetPData(player)
+    if not player:HasCollectible(mod.MMATypes.COLLECTIBLE_JOBS_CURSE) then
+        pdata.MMA_JobCurseLevel = 0
+    end
     local jobMultiplier = ((pdata.MMA_JobBlessLevel or 0) - (pdata.MMA_JobCurseLevel or 0)) * sign
 
     if jobMultiplier > 0 then
