@@ -45,7 +45,7 @@ end
 mod:AddCallback(ModCallbacks.MC_PRE_GAME_EXIT, mod.saveData)
 mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, mod.saveData)
 
-function mod:loadData(isSave)
+function mod:loadData_MMA(isSave)
     print('two')
     if mod:HasData() and isSave then
         local numPlayers = game:GetNumPlayers()
@@ -86,7 +86,7 @@ function mod:loadData(isSave)
         end)
     end
 end
-mod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, mod.loadData)
+mod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, mod.loadData_MMA)
 
 function mod.GetMenuSaveData()
     if not mod.MenuData then

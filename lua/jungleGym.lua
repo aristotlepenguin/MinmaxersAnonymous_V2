@@ -226,6 +226,9 @@ function mod:test_command(cmd, args)
         mod:applyAchievement("testAch", 3200, "Mary Rose", "Burst her piles")
     end
 
+    if cmd == "reloadsave" then
+        mod:loadData_MMA(true)
+    end
 
 
 end

@@ -81,12 +81,12 @@ end
 function mod:MS_onFireTear(tear)
     local player = mod:GetPlayerFromTear(tear)
     if player and player:HasCollectible(mod.MMATypes.COLLECTIBLE_MOMS_SCALE) then
-        local rng = player:GetCollectibleRNG(mod.MMATypes.COLLECTIBLE_MOMS_SCALE)
-        local chance = player.Luck * 5 + 20
+        local fireRNG = player:GetCollectibleRNG(mod.MMATypes.COLLECTIBLE_MOMS_SCALE)
+        local chance = player.Luck * 3 + 10
         if player:HasTrinket(TrinketType.TRINKET_TEARDROP_CHARM) then
             chance = chance + 20
         end
-        local chance_num = rng:RandomInt(100)
+        local chance_num = fireRNG:RandomInt(100)
 
         if chance_num < chance or mod.DEBUG then
             tear:GetData().MMA_IsPortly = 1
@@ -247,6 +247,9 @@ end
 
 function mod:onNewFloor_MS()
     if mod.MMA_GlobalSaveData.droppedEnemies and #mod.MMA_GlobalSaveData.droppedEnemies > 0 then
+        if not mod.MMA_GlobalSaveData.droppedEnemiesDest then
+            mod.MMA_GlobalSaveData.droppedEnemiesDest = {}
+        end
         for i=1, #mod.MMA_GlobalSaveData.droppedEnemies, 1 do
             local oldTab = mod.MMA_GlobalSaveData.droppedEnemies[i]
             local newTab = {}
@@ -257,6 +260,7 @@ function mod:onNewFloor_MS()
 
             table.insert(mod.MMA_GlobalSaveData.droppedEnemiesDest, newTab)
         end
+        mod.MMA_GlobalSaveData.droppedEnemies = {}
     end
 end
 mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, mod.onNewFloor_MS)
@@ -278,25 +282,31 @@ function mod:onNewRoom_MS(isGreedWave)
     if #mod.MMA_GlobalSaveData.RecycledEnemies > 0 and not game:IsGreedMode() then
         for i=1, #mod.MMA_GlobalSaveData.RecycledEnemies, 1 do
             local oldTab = table.remove(mod.MMA_GlobalSaveData.RecycledEnemies, 1)
-            table.insert(oldTab)
+            table.insert(mod.MMA_GlobalSaveData.droppedEnemiesDest, oldTab)
         end
     end
 
     if scaleRNG and mod.MMA_GlobalSaveData.droppedEnemiesDest and #mod.MMA_GlobalSaveData.droppedEnemiesDest > 0 and not cleared then
         local chance = scaleRNG:RandomInt(99)+1
         local avgrooms = mod:checkFloorRooms_MS()
+        print('chance ' .. tostring(chance) .. ' avgrooms ' .. tostring(avgrooms))
         local probability = math.floor(100 * (#mod.MMA_GlobalSaveData.droppedEnemiesDest/avgrooms))
         if chance <= probability then
             local upperbound = math.ceil(probability/100) + 2
-            local enemiesToSpawn = math.max(upperbound, #mod.MMA_GlobalSaveData.droppedEnemiesDest)
+            local enemiesToSpawn = math.min(scaleRNG:RandomInt(upperbound), #mod.MMA_GlobalSaveData.droppedEnemiesDest)
+            print(enemiesToSpawn)
             for i=0, enemiesToSpawn, 1 do
-                local profile = table.remove(mod.MMA_GlobalSaveData.droppedEnemiesDest, scaleRNG:RandomInt(#mod.MMA_GlobalSaveData.droppedEnemiesDest+1))
+                local profile = table.remove(mod.MMA_GlobalSaveData.droppedEnemiesDest, scaleRNG:RandomInt(#mod.MMA_GlobalSaveData.droppedEnemiesDest)+1)
                 local position = room:GetRandomPosition(40)
                 local enemy = Isaac.Spawn(profile.Type, profile.Variant, profile.SubType, position, Vector(0, 0), nil)
-                if profile.ChampionColor ~= nil then
-                    enemy:MakeChampion(profile.ChampionColor)
+                if mod.DEBUG then
+                    sfx:Play(SoundEffect.SOUND_COIN_INSERT)
+                    enemy:AddFear(EntityRef(enemy), 60)
                 end
-                table.insert(mod.MMA_GlobalSaveData.RecycledEnemies)
+                if profile.ChampionColor ~= nil then
+                    enemy:ToNPC():MakeChampion(rng:RandomInt(100000)+1, profile.ChampionColor)
+                end
+                table.insert(mod.MMA_GlobalSaveData.RecycledEnemies, profile)
             end
         end
     end
