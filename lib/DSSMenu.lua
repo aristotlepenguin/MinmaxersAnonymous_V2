@@ -7,7 +7,7 @@ local DSSCoreVersion = 6
 local MenuProvider = {}
     
 function MenuProvider.SaveSaveData()
-    mod.StoreSaveData()
+    mod:savePersistentData()
 end
     
 function MenuProvider.GetPaletteSetting()
@@ -156,7 +156,7 @@ local strings = {
     hopes_2 = {
         en = "all items"
     },
-    itemswitch = {
+    itemswitch_rd = {
         en = "item switch"
     },
     itemswitch_on = {
@@ -287,13 +287,13 @@ MMAMod.DSSdirectory = {
                         if not MMAMod.MenuData.ItemSwitch then
                             MMAMod.MenuData.ItemSwitch = {}
                         end
-                        return MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_RAIN_BUCKET] or 1
+                        return MMAMod.MenuData.ItemSwitch[tostring(MMAMod.MMATypes.COLLECTIBLE_RAIN_BUCKET)] or 1
                     end,
                     store = function(var)
                         if not MMAMod.MenuData.ItemSwitch then
                             MMAMod.MenuData.ItemSwitch = {}
                         end
-                        MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_RAIN_BUCKET] = var
+                        MMAMod.MenuData.ItemSwitch[tostring(MMAMod.MMATypes.COLLECTIBLE_RAIN_BUCKET)] = var
                     end,
                 },
                 {
@@ -305,13 +305,13 @@ MMAMod.DSSdirectory = {
                         if not MMAMod.MenuData.ItemSwitch then
                             MMAMod.MenuData.ItemSwitch = {}
                         end
-                        return MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_DAD_SNEAKERS] or 1
+                        return MMAMod.MenuData.ItemSwitch[tostring(MMAMod.MMATypes.COLLECTIBLE_DAD_SNEAKERS)] or 1
                     end,
                     store = function(var)
                         if not MMAMod.MenuData.ItemSwitch then
                             MMAMod.MenuData.ItemSwitch = {}
                         end
-                        MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_DAD_SNEAKERS] = var
+                        MMAMod.MenuData.ItemSwitch[tostring(MMAMod.MMATypes.COLLECTIBLE_DAD_SNEAKERS)] = var
                     end,
                 },
                 {
@@ -323,13 +323,13 @@ MMAMod.DSSdirectory = {
                         if not MMAMod.MenuData.ItemSwitch then
                             MMAMod.MenuData.ItemSwitch = {}
                         end
-                        return MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_HOPES_AND_DREAMS] or 1
+                        return MMAMod.MenuData.ItemSwitch[tostring(MMAMod.MMATypes.COLLECTIBLE_HOPES_AND_DREAMS)] or 1
                     end,
                     store = function(var)
                         if not MMAMod.MenuData.ItemSwitch then
                             MMAMod.MenuData.ItemSwitch = {}
                         end
-                        MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_HOPES_AND_DREAMS] = var
+                        MMAMod.MenuData.ItemSwitch[tostring(MMAMod.MMATypes.COLLECTIBLE_HOPES_AND_DREAMS)] = var
                     end,
                 },
                 {
@@ -341,13 +341,13 @@ MMAMod.DSSdirectory = {
                         if not MMAMod.MenuData.ItemSwitch then
                             MMAMod.MenuData.ItemSwitch = {}
                         end
-                        return MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_HYPERFIXATION] or 1
+                        return MMAMod.MenuData.ItemSwitch[tostring(MMAMod.MMATypes.COLLECTIBLE_HYPERFIXATION)] or 1
                     end,
                     store = function(var)
                         if not MMAMod.MenuData.ItemSwitch then
                             MMAMod.MenuData.ItemSwitch = {}
                         end
-                        MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_HYPERFIXATION] = var
+                        MMAMod.MenuData.ItemSwitch[tostring(MMAMod.MMATypes.COLLECTIBLE_HYPERFIXATION)] = var
                     end,
                 },
                 {
@@ -359,13 +359,13 @@ MMAMod.DSSdirectory = {
                         if not MMAMod.MenuData.ItemSwitch then
                             MMAMod.MenuData.ItemSwitch = {}
                         end
-                        return MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_D_SQRT] or 1
+                        return MMAMod.MenuData.ItemSwitch[tostring(MMAMod.MMATypes.COLLECTIBLE_D_SQRT)] or 1
                     end,
                     store = function(var)
                         if not MMAMod.MenuData.ItemSwitch then
                             MMAMod.MenuData.ItemSwitch = {}
                         end
-                        MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_D_SQRT] = var
+                        MMAMod.MenuData.ItemSwitch[tostring(MMAMod.MMATypes.COLLECTIBLE_D_SQRT)] = var
                     end,
                 },
                 {
@@ -377,13 +377,13 @@ MMAMod.DSSdirectory = {
                         if not MMAMod.MenuData.ItemSwitch then
                             MMAMod.MenuData.ItemSwitch = {}
                         end
-                        return MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_JOBS_CURSE] or 1
+                        return MMAMod.MenuData.ItemSwitch[tostring(MMAMod.MMATypes.COLLECTIBLE_JOBS_CURSE)] or 1
                     end,
                     store = function(var)
                         if not MMAMod.MenuData.ItemSwitch then
                             MMAMod.MenuData.ItemSwitch = {}
                         end
-                        MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_JOBS_CURSE] = var
+                        MMAMod.MenuData.ItemSwitch[tostring(MMAMod.MMATypes.COLLECTIBLE_JOBS_CURSE)] = var
                     end,
                 },
                 {
@@ -395,13 +395,13 @@ MMAMod.DSSdirectory = {
                         if not MMAMod.MenuData.ItemSwitch then
                             MMAMod.MenuData.ItemSwitch = {}
                         end
-                        return MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_MEMORY_LEAK] or 1
+                        return MMAMod.MenuData.ItemSwitch[tostring(MMAMod.MMATypes.COLLECTIBLE_MEMORY_LEAK)] or 1
                     end,
                     store = function(var)
                         if not MMAMod.MenuData.ItemSwitch then
                             MMAMod.MenuData.ItemSwitch = {}
                         end
-                        MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_MEMORY_LEAK] = var
+                        MMAMod.MenuData.ItemSwitch[tostring(MMAMod.MMATypes.COLLECTIBLE_MEMORY_LEAK)] = var
                     end,
                 },
                 {
@@ -413,13 +413,13 @@ MMAMod.DSSdirectory = {
                         if not MMAMod.MenuData.ItemSwitch then
                             MMAMod.MenuData.ItemSwitch = {}
                         end
-                        return MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_ABSTINENCE] or 1
+                        return MMAMod.MenuData.ItemSwitch[tostring(MMAMod.MMATypes.COLLECTIBLE_ABSTINENCE)] or 1
                     end,
                     store = function(var)
                         if not MMAMod.MenuData.ItemSwitch then
                             MMAMod.MenuData.ItemSwitch = {}
                         end
-                        MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_ABSTINENCE] = var
+                        MMAMod.MenuData.ItemSwitch[tostring(MMAMod.MMATypes.COLLECTIBLE_ABSTINENCE)] = var
                     end,
                 },
                 {
@@ -431,13 +431,13 @@ MMAMod.DSSdirectory = {
                         if not MMAMod.MenuData.ItemSwitch then
                             MMAMod.MenuData.ItemSwitch = {}
                         end
-                        return MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_OVERCLOCKED_SINUSES] or 1
+                        return MMAMod.MenuData.ItemSwitch[tostring(MMAMod.MMATypes.COLLECTIBLE_OVERCLOCKED_SINUSES)] or 1
                     end,
                     store = function(var)
                         if not MMAMod.MenuData.ItemSwitch then
                             MMAMod.MenuData.ItemSwitch = {}
                         end
-                        MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_OVERCLOCKED_SINUSES] = var
+                        MMAMod.MenuData.ItemSwitch[tostring(MMAMod.MMATypes.COLLECTIBLE_OVERCLOCKED_SINUSES)] = var
                     end,
                 },
                 {
@@ -449,13 +449,13 @@ MMAMod.DSSdirectory = {
                         if not MMAMod.MenuData.ItemSwitch then
                             MMAMod.MenuData.ItemSwitch = {}
                         end
-                        return MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_MOMS_SCALE] or 1
+                        return MMAMod.MenuData.ItemSwitch[tostring(MMAMod.MMATypes.COLLECTIBLE_MOMS_SCALE)] or 1
                     end,
                     store = function(var)
                         if not MMAMod.MenuData.ItemSwitch then
                             MMAMod.MenuData.ItemSwitch = {}
                         end
-                        MMAMod.MenuData.ItemSwitch[MMAMod.MMATypes.COLLECTIBLE_MOMS_SCALE] = var
+                        MMAMod.MenuData.ItemSwitch[tostring(MMAMod.MMATypes.COLLECTIBLE_MOMS_SCALE)] = var
                     end,
                 },
             },

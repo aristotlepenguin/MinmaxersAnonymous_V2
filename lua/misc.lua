@@ -8,14 +8,14 @@ function mod:itemSwitch_MMA(pickup)
         return
     end
     
-    if mod.MenuData.ItemSwitch[pickup.SubType] == 2 or (mod.MenuData.ItemSwitch[pickup.SubType] ~= 2 and pickup.SubType == mod.MMATypes.COLLECTIBLE_D_SQRT) then
+    if mod.MenuData.ItemSwitch[tostring(pickup.SubType)] == 2 or (mod.MenuData.ItemSwitch[tostring(pickup.SubType)] ~= 2 and pickup.SubType == mod.MMATypes.COLLECTIBLE_D_SQRT) then
         local room = game:GetRoom()
         local new_random_item
         local pool = itemPool:GetPoolForRoom (room:GetType(), rng:GetSeed())
 
         for i=0, 10000, 1 do
             new_random_item = itemPool:GetCollectible(pool, true)
-            if mod.MenuData.ItemSwitch[new_random_item] ~= 2 then
+            if mod.MenuData.ItemSwitch[tostring(new_random_item)] ~= 2 then
                 break
             end
         end

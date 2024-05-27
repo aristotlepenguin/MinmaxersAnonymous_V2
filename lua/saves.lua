@@ -4,7 +4,17 @@ local mod = MMAMod
 local game = Game()
 local hiddenItemManager = require("lib.hidden_item_manager")
 
+function mod:savePersistentData()
+    print('one')
+    local loadedData = json.decode(mod:LoadData())
+    loadedData.MenuData = mod.MenuData
+    local jsonString = json.encode(loadedData)
+    print(jsonString)
+    mod:SaveData(jsonString)
+end
+
 function mod:saveData()
+    print('three')
     --mod.MMA_GlobalSaveData.MMA_firingOverclock = nil
     local numPlayers = game:GetNumPlayers()
     mod.MMA_GlobalSaveData.PlayerData = {}
@@ -36,6 +46,7 @@ mod:AddCallback(ModCallbacks.MC_PRE_GAME_EXIT, mod.saveData)
 mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, mod.saveData)
 
 function mod:loadData(isSave)
+    print('two')
     if mod:HasData() and isSave then
         local numPlayers = game:GetNumPlayers()
         mod.MMA_GlobalSaveData = json.decode(mod:LoadData())
@@ -58,6 +69,7 @@ function mod:loadData(isSave)
             player:EvaluateItems()
         end
         hiddenItemManager:LoadData(mod.MMA_GlobalSaveData.HIDDEN_ITEM_DATA)
+        mod.MenuData = mod.MMA_GlobalSaveData.MenuData
         if Isaac.GetChallenge() == mod.MMATypes.CHALLENGE_SCORE_ASSAULT then
             if mod.MMA_GlobalSaveData.crashWarning ~= nil and not mod:checkIfAchieved("crashGame") then
                 mod:applyAchievement("crashGame", 70000, "Game break for real", "Crash the game")
@@ -65,12 +77,9 @@ function mod:loadData(isSave)
             mod.MMA_GlobalSaveData.crashWarning = true
         end
     else
-        local persistentData
-        if mod.MMA_GlobalSaveData then
-            persistentData = mod.MMA_GlobalSaveData.MenuData
-        end
+        local loadedData = json.decode(mod:LoadData())
         mod.MMA_GlobalSaveData = {}
-        mod.MMA_GlobalSaveData.MenuData = persistentData
+        mod.MMA_GlobalSaveData.MenuData = loadedData.MenuData
         mod:AnyPlayerDo(function(player)
         player:AddCacheFlags(CacheFlag.CACHE_ALL)
         player:EvaluateItems()
