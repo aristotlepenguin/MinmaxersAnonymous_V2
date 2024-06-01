@@ -20,9 +20,9 @@ local function locateRoom(roomtype)
     --print(#rooms)
     for i=0, 168, 1 do
         local roomid = game:GetLevel():GetRoomByIdx(i)
-        if roomid and roomid.Data and roomid.Data.Type > 1  then
-            print(tostring(roomid.Data.Type) .. " - " .. tostring(i))
-        end
+        --if roomid and roomid.Data and roomid.Data.Type > 1  then
+            --print(tostring(roomid.Data.Type) .. " - " .. tostring(i))
+        --end
         
         if roomid and roomid.Data and roomid.Data.Type == roomtype then
             return i

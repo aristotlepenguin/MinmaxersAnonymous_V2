@@ -47,7 +47,6 @@ function mod:renderScore()
         local renderpos = Vector(math.floor(Isaac.GetScreenWidth()/2), 35)
         if game:GetHUD():IsVisible() then
             data.ScoreAssaultSprite:Render(renderpos)
-            --print(data.TotalAssaultScore)
         end
     end
 end

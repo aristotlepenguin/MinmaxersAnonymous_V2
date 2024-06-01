@@ -61,7 +61,7 @@ function mod:updateLasersPlayer_ML()
     for i=1, #lasers do
         local laser = lasers[i]
         local player = mod:getPlayerFromKnifeLaser(laser)
-        if laser:GetData().LaserMadeBlue == nil and player:HasCollectible(mod.MMATypes.COLLECTIBLE_MEMORY_LEAK) then
+        if player and laser:GetData().LaserMadeBlue == nil and player:HasCollectible(mod.MMATypes.COLLECTIBLE_MEMORY_LEAK) then
             laser:GetData().LaserMadeBlue = true
             laser:GetSprite().Color:SetTint(0.5, 0.5, 2, 1)
             laser:GetSprite().Color:SetOffset(0, 0, 1)

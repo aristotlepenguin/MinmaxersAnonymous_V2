@@ -195,9 +195,7 @@ function mod.canGeneratePit(pos, breakGrid, gMap, checkPoopsOrBarrels, checkPlay
   
   local gridPath = room:GetGridPathFromPos(pos)
   if grid then
-    --print(grid.Desc.Variant)
     local gType = grid:GetType()
-    --print(gType)
     local typesDeny = 1<<7 | 1<<8 | 1<<15 | 1<<16 | 1<<17 | 1<<18 | 1<<20 | 1<<23  --pit/wall/door/trapdoor/stairs/plate/teleporter
     if (typesDeny & (1<<gType)) ~= 0 then
       if not(gType == 7 and gridPath == 0) then return false end

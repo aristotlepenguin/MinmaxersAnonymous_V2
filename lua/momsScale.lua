@@ -64,7 +64,10 @@ function mod:dropEnemy(enemy, player)
         if not mod.MMA_GlobalSaveData.droppedEnemies then
             mod.MMA_GlobalSaveData.droppedEnemies = {}
         end
-        table.insert(mod.MMA_GlobalSaveData.droppedEnemies, droppedEnemy)
+        local dropRNG = enemy:GetDropRNG()
+        if dropRNG:RandomInt(100) < 50 then
+            table.insert(mod.MMA_GlobalSaveData.droppedEnemies, droppedEnemy)
+        end
         for i=1, 3 do
             Isaac.Spawn(1000, 4, 0, room:GetGridPosition(room:GetGridIndex(pos)), RandomVector()*math.random()*5, enemy)
         end
@@ -117,7 +120,6 @@ mod:AddCallback(ModCallbacks.MC_PRE_TEAR_COLLISION, mod.hitEnemy)
 ---------------------------------------------------------------------------
 function mod:checkLaser_MS(laser)
     local player = mod:getPlayerFromKnifeLaser(laser)
-    local pdata = player and mod:mmaGetPData(player)
     local data = laser:GetData()
     local var = laser.Variant
     local subt = laser.SubType
@@ -129,21 +131,7 @@ function mod:checkLaser_MS(laser)
 
     if player and not ignoreLaserVar then
         if player:HasCollectible(mod.MMATypes.COLLECTIBLE_MOMS_SCALE) then
-            local rng = player:GetCollectibleRNG(mod.MMATypes.COLLECTIBLE_MOMS_SCALE)
-
-            if laser.Type == EntityType.ENTITY_EFFECT and laser.Variant == EffectVariant.BRIMSTONE_SWIRL then
-                
-            end
-
-            local chance = player.Luck * 5 + 20
-            if player:HasTrinket(TrinketType.TRINKET_TEARDROP_CHARM) then
-                chance = chance + 20
-            end
-            local chance_num = rng:RandomInt(100)
-            if chance_num < chance then
-                data.Laser_Heavy = true
-                pdata.LaserHeavy = true
-            end
+            data.Laser_Heavy = true
         end
     end
 end
@@ -196,16 +184,21 @@ mod:AddCallback(ModCallbacks.MC_POST_UPDATE, mod.updateLasers_MS)
 function mod:LaserEnemyHit_MS(entity, amount, damageflags, source, countdownframes)
     if entity:IsVulnerableEnemy() then
         local player
-        local pdata
         if source and source.Entity then
             player = source.Entity:ToPlayer()
         end
-        if player then
-            pdata = mod:mmaGetPData(player)
-        end
-        if pdata and pdata.LaserHeavy == true then
-            player:GetData().LaserHeavy = false
-            mod:dropEnemy(entity, player)
+
+        if player and damageflags == damageflags | DamageFlag.DAMAGE_LASER then
+            local momRNG = player:GetCollectibleRNG(mod.MMATypes.COLLECTIBLE_MOMS_SCALE)
+            local chance_num = momRNG:RandomInt(100)
+            --local chance = player.Luck * 5 + 20
+            local chance = player.Luck * 3 + 10
+            if player:HasTrinket(TrinketType.TRINKET_TEARDROP_CHARM) then
+                chance = chance + 20
+            end
+            if chance_num < chance then
+                mod:dropEnemy(entity, player)
+            end
         end
     end
 end
@@ -215,12 +208,12 @@ mod:AddCallback(ModCallbacks.MC_ENTITY_TAKE_DMG, mod.LaserEnemyHit_MS)
 function mod:OnKnifeCollide_MS(knife, collider, low)
     local player = mod:getPlayerFromKnifeLaser(knife)
     if player and player:HasCollectible(mod.MMATypes.COLLECTIBLE_MOMS_SCALE) and collider:IsVulnerableEnemy() then
-        local chance = player.Luck * 5 + 20
-        local rng = player:GetCollectibleRNG(mod.MMATypes.COLLECTIBLE_MOMS_SCALE)
+        local chance = player.Luck * 3 + 10
+        local momRNG = player:GetCollectibleRNG(mod.MMATypes.COLLECTIBLE_MOMS_SCALE)
         if player:HasTrinket(TrinketType.TRINKET_TEARDROP_CHARM) then
             chance = chance + 20
         end
-        local chance_num = rng:RandomInt(100)
+        local chance_num = momRNG:RandomInt(100)
         if chance_num < chance then
             mod:dropEnemy(collider, player)
         end
@@ -269,9 +262,11 @@ function mod:onNewRoom_MS(isGreedWave)
     local room = game:GetRoom()
     local cleared = room:IsClear()
     local scaleRNG = nil
+    local player_source
     mod:AnyPlayerDo(function(player)
         if player:HasCollectible(mod.MMATypes.COLLECTIBLE_MOMS_SCALE) then
             scaleRNG = player:GetCollectibleRNG(mod.MMATypes.COLLECTIBLE_MOMS_SCALE)
+            player_source = player
         end
     end)
 
@@ -289,16 +284,15 @@ function mod:onNewRoom_MS(isGreedWave)
     if scaleRNG and mod.MMA_GlobalSaveData.droppedEnemiesDest and #mod.MMA_GlobalSaveData.droppedEnemiesDest > 0 and not cleared then
         local chance = scaleRNG:RandomInt(99)+1
         local avgrooms = mod:checkFloorRooms_MS()
-        print('chance ' .. tostring(chance) .. ' avgrooms ' .. tostring(avgrooms))
         local probability = math.floor(100 * (#mod.MMA_GlobalSaveData.droppedEnemiesDest/avgrooms))
         if chance <= probability then
             local upperbound = math.ceil(probability/100) + 2
             local enemiesToSpawn = math.min(scaleRNG:RandomInt(upperbound), #mod.MMA_GlobalSaveData.droppedEnemiesDest)
-            print(enemiesToSpawn)
             for i=0, enemiesToSpawn, 1 do
                 local profile = table.remove(mod.MMA_GlobalSaveData.droppedEnemiesDest, scaleRNG:RandomInt(#mod.MMA_GlobalSaveData.droppedEnemiesDest)+1)
                 local position = room:GetRandomPosition(40)
                 local enemy = Isaac.Spawn(profile.Type, profile.Variant, profile.SubType, position, Vector(0, 0), nil)
+                enemy:AddConfusion(EntityRef(player_source), 60, true)
                 if mod.DEBUG then
                     sfx:Play(SoundEffect.SOUND_COIN_INSERT)
                     enemy:AddFear(EntityRef(enemy), 60)
@@ -315,12 +309,12 @@ mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, mod.onNewRoom_MS)
 
 --todo: set up leftover table for if the player leaves the room without clearing it
 
-function mod:OnRoomClear_MS(rng, spawnposition)
+function mod:OnRoomClear_MS(xrng, spawnposition)
     if mod.MMA_GlobalSaveData.RecycledEnemies then
         mod.MMA_GlobalSaveData.RecycledEnemies = {}
     end
 end
---mod:AddCallback(ModCallbacks.MC_PRE_SPAWN_CLEAN_AWARD, mod.OnRoomClear_MS)
+mod:AddCallback(ModCallbacks.MC_PRE_SPAWN_CLEAN_AWARD, mod.OnRoomClear_MS)
 
 function mod:onGreedUpdate_MS()
     if game:IsGreedMode() and mod.MMA_GlobalSaveData.MMA_GreedWave ~= game:GetLevel().GreedModeWave then
