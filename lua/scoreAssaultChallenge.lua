@@ -40,25 +40,65 @@ function mod:checkIfAchieved(key)
     return mod.MMA_GlobalSaveData.ScoreAssaultAchievements[key] ~= nil
 end
 
-function mod:renderScore()
+local lastTabbed = 0
+function mod:renderScore(shaderName)
     if Isaac.GetChallenge() == mod.MMATypes.CHALLENGE_SCORE_ASSAULT and mod.MMA_GlobalSaveData.ScoreAssaultSprite then
         local data = mod.MMA_GlobalSaveData
         data.ScoreAssaultSprite:LoadGraphics()
         local renderpos = Vector(math.floor(Isaac.GetScreenWidth()/2), 35)
+        local overlapEnts = Isaac.FindInRadius(Isaac.ScreenToWorld(renderpos) + Vector(200, 0), 100) --
+        local opacity = false
+        for i, ent in ipairs(overlapEnts) do
+            if ent.Type == EntityType.ENTITY_PLAYER or ent:IsActiveEnemy() then
+               opacity = true 
+            end
+        end
+        
         if game:GetHUD():IsVisible() then
-            data.ScoreAssaultSprite:Render(renderpos)
+            if shaderName == "MMAEmptyShader" then
+                mod:AnyPlayerDo(function(player)
+                    if Input.IsActionPressed(ButtonAction.ACTION_MAP, player.ControllerIndex) and not game:IsPaused() then
+                        lastTabbed = game:GetFrameCount()
+                    end
+                end)
+                local newOpacity = Color.Default
+                newOpacity:SetTint(1, 1, 1, 1)
+                data.ScoreAssaultSprite.Color = newOpacity
+                if lastTabbed + 15 >= game:GetFrameCount() then
+                    data.ScoreAssaultSprite:Render(renderpos)
+                end
+            elseif not shaderName then
+                local newOpacity = Color.Default
+                if opacity then
+                    newOpacity:SetTint(1, 1, 1, 0.2)
+                else
+                    newOpacity:SetTint(1, 1, 1, 1)
+                end
+                data.ScoreAssaultSprite.Color = newOpacity
+                data.ScoreAssaultSprite:Render(renderpos)
+            end
         end
     end
 end
 mod:AddCallback(ModCallbacks.MC_POST_RENDER, mod.renderScore)
+mod:AddCallback(ModCallbacks.MC_GET_SHADER_PARAMS, mod.renderScore)
 
+
+
+function mod:initAsMaxie(player)
+    if Isaac.GetChallenge() == mod.MMATypes.CHALLENGE_SCORE_ASSAULT then
+        player:ChangePlayerType(mod.MMATypes.CHARACTER_EPAPHRAS)
+        player:AddNullCostume(mod.MMATypes.COSTUME_BUCKET_HEAD)
+    end
+end
+mod:AddCallback(ModCallbacks.MC_POST_PLAYER_INIT, mod.initAsMaxie)
 
 local qualTable = {
-    [0] = 5000,
-    [1] = 7000,
-    [2] = 15000,
-    [3] = 25000,
-    [4] = 50000
+    [0] = 1000,
+    [1] = 2000,
+    [2] = 3000,
+    [3] = 5000,
+    [4] = 7500
 }
 
 function mod:refreshItems_SA()
@@ -68,8 +108,8 @@ function mod:refreshItems_SA()
             mod.MMA_GlobalSaveData.ScoreAssaultSprite = Sprite()
             mod.MMA_GlobalSaveData.ScoreAssaultSprite:Load("gfx/ui/score_indicator.anm2", true)
             mod.MMA_GlobalSaveData.ScoreAssaultSprite:Play("NumbersRed")
+            mod.MMA_GlobalSaveData.ScoreAssaultSprite.Scale = Vector(0.75, 0.75)
         end
-
         local itemScore = 0
         local recalc = false
         mod:AnyPlayerDo(function(player)
@@ -85,7 +125,9 @@ function mod:refreshItems_SA()
                 local itemConfig = Isaac.GetItemConfig()
                 for itemID=1, itemConfig:GetCollectibles().Size-1 do
                     local item = itemConfig:GetCollectible(itemID)
-                    if item and item.Type ~= ItemType.ITEM_ACTIVE and player:HasCollectible(itemID, true) then
+                    if item and item.Type ~= ItemType.ITEM_ACTIVE and
+                    player:HasCollectible(itemID, true) and
+                    (item.Tags & ItemConfig.TAG_QUEST ~= ItemConfig.TAG_QUEST) then
                         local qualityMult = qualTable[item.Quality]
                         itemScore = itemScore + (qualityMult * player:GetCollectibleNum(itemID))
                     end
@@ -102,7 +144,7 @@ end
 mod:AddCallback(ModCallbacks.MC_POST_UPDATE, mod.refreshItems_SA)
 
 local baseStats = {
-    Range = 200,
+    Range = 260,
     FireDelay = 10,
     Damage = 3.5,
     Speed = 1.1,
@@ -117,8 +159,20 @@ local rangeMultiplier = 139
 
 function mod:refreshStats_SA(_player, cacheflag)
     if Isaac.GetChallenge() == mod.MMATypes.CHALLENGE_SCORE_ASSAULT then
+        
         local statScore = 0
         mod:AnyPlayerDo(function(player)
+            print(player.TearRange)
+            print(baseStats.Range)
+            print(player.Luck)
+            print(baseStats.Luck)
+            print(player.MaxFireDelay)
+            print(baseStats.FireDelay)
+            print(player.Damage)
+            print(baseStats.Damage)
+            print(player.MoveSpeed)
+            print(baseStats.Speed)
+            print('-------------------------------------')
             statScore = statScore + math.floor((player.TearRange-baseStats.Range) * rangeMultiplier)
             statScore = statScore + math.floor((player.Luck-baseStats.Luck) * luckMultiplier)
             statScore = statScore + math.floor((baseStats.FireDelay-player.MaxFireDelay) * tearMultiplier)

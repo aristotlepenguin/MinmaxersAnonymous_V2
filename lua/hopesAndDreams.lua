@@ -136,12 +136,12 @@ function mod:hopesRender()
             end)
 
             if game:GetHUD():IsVisible() then
-                if (mod.MMA_GlobalSaveData.LastTimeTabbed or 0) == game:GetFrameCount() or (mod.MMA_GlobalSaveData.LastTimePickedUp_HD or 0) + 150 > game:GetFrameCount() then
+                if (mod.MMA_GlobalSaveData.LastTimeTabbed or 0) + 60 >= game:GetFrameCount() or (mod.MMA_GlobalSaveData.LastTimePickedUp_HD or 0) + 150 > game:GetFrameCount() then
                     local opaqueColor = Color.Default
                     opaqueColor:SetTint(1, 1, 1, 1)
                     item.sprite.Color = opaqueColor
                     item.sprite:Render(pos)
-                elseif (mod.MMA_GlobalSaveData.LastTimeTabbed or 0) + 60 > game:GetFrameCount() or (mod.MMA_GlobalSaveData.LastTimePickedUp_HD or 0) + 300 > game:GetFrameCount() then
+                elseif (mod.MMA_GlobalSaveData.LastTimeTabbed or 0) + 120 > game:GetFrameCount() or (mod.MMA_GlobalSaveData.LastTimePickedUp_HD or 0) + 300 > game:GetFrameCount() then
                     local transparentColor = Color.Default
                     transparentColor:SetTint(1, 1, 1, 0.2)
                     item.sprite.Color = transparentColor
