@@ -204,7 +204,7 @@ function mod:onNewLevelStart_DS()
     end)
 
     if hasIt and not (game:GetLevel():GetStageType() ~= StageType.STAGETYPE_REPENTANCE_B and game:GetLevel():GetStage() == 1) then
-        local numOfNewRooms = mod.MMA_GlobalSaveData.UnexploredCount
+        local numOfNewRooms = (mod.MMA_GlobalSaveData.UnexploredCount or 0)
         if hasBirthright and not REPENTOGON then
             numOfNewRooms = numOfNewRooms + 3
         end
