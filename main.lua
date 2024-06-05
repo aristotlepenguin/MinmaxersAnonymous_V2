@@ -40,7 +40,7 @@ mod.MMATypes.COSTUME_JOBSCURSE_2 = Isaac.GetCostumeIdByPath("gfx/characters/job_
 mod.MMATypes.COSTUME_BUCKET_HEAD = Isaac.GetCostumeIdByPath("gfx/characters/bucket_head.anm2")
 mod.MMATypes.COSTUME_MINNIE_HAIR = Isaac.GetCostumeIdByPath("gfx/characters/minnie_hair.anm2")
 
-mod.MMATypes.CHALLENGE_SCORE_ASSAULT = Isaac.GetChallengeIdByName("Score Assault")
+mod.MMATypes.CHALLENGE_SCORE_ASSAULT = Isaac.GetChallengeIdByName("Road to One Million")
 
 mod.MMATypes.SOUND_ACHIEVE_SA = Isaac.GetSoundIdByName("AchieveSA")
 
