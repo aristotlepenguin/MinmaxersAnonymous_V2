@@ -188,7 +188,7 @@ function mod:LaserEnemyHit_MS(entity, amount, damageflags, source, countdownfram
             player = source.Entity:ToPlayer()
         end
 
-        if player and damageflags == damageflags | DamageFlag.DAMAGE_LASER then
+        if player and player:HasCollectible(mod.MMATypes.COLLECTIBLE_MOMS_SCALE) and damageflags == damageflags | DamageFlag.DAMAGE_LASER then
             local momRNG = player:GetCollectibleRNG(mod.MMATypes.COLLECTIBLE_MOMS_SCALE)
             local chance_num = momRNG:RandomInt(100)
             --local chance = player.Luck * 5 + 20
