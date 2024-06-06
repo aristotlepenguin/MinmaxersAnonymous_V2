@@ -156,6 +156,24 @@ local strings = {
     hopes_2 = {
         en = "all items"
     },
+    sa_score = {
+        en = "road to one million"
+    },
+    sa_score_2 = {
+        en = "score goal"
+    },
+    sa_score_1m = {
+        en = "1 million"
+    },
+    sa_score_10m = {
+        en = "10 million"
+    },
+    sa_score_100m = {
+        en = "100 million"
+    },
+    sa_score_1b = {
+        en = "1 billion"
+    },
     itemswitch_rd = {
         en = "item switch"
     },
@@ -276,6 +294,20 @@ MMAMod.DSSdirectory = {
                         MMAMod.MenuData.HopesItemSelect = var
                     end,
                     
+                },
+                {str = GetStr(''), nosel = true, fsize = 3},
+                {str = GetStr('sa_score'), nosel = true, fsize = 3},
+                {
+                    str = GetStr('sa_score_2'),
+                    choices = {GetStr('sa_score_1m'), GetStr('sa_score_10m'), GetStr('sa_score_100m'), GetStr('sa_score_1b')},
+                    variable = 'ScoreAssaultScore',
+                    setting = 1,
+                    load = function()
+                        return MMAMod.MenuData.ScoreAssaultScore or 1
+                    end,
+                    store = function(var)
+                        MMAMod.MenuData.ScoreAssaultScore = var
+                    end,
                 },
                 {str = GetStr('item switch'), nosel = true, fsize = 3},
                 {

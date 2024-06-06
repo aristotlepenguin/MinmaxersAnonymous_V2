@@ -237,6 +237,19 @@ local backupPickups = {
     [PickupVariant.PICKUP_LIL_BATTERY] = 1
 }
 
+local SA_nameTable_Trophy = {
+    [1000000]="MILLIONAIRES ONLY",
+    [10000000]="TOO POOR",
+    [100000000]="SHOULD'VE LOWERED THE GOAL, DUMBASS",
+    [1000000000]="BILLIONAIRES ONLY"
+}
+local SA_descriptionTable_Trophy = {
+    [1000000]="Try again next time...",
+    [10000000]="Couldn't be me...",
+    [100000000]="Don't throw your life away on the funny number",
+    [1000000000]="The integer overflow beckons..."
+}
+
 function mod:trackPickups_SA(pickup, collider, low)
     if Isaac.GetChallenge() == mod.MMATypes.CHALLENGE_SCORE_ASSAULT then
         if not pickup:GetData().MMA_ItemTouched then --pickup:GetSprite():GetAnimation() == "Collect" and
@@ -254,10 +267,12 @@ function mod:trackPickups_SA(pickup, collider, low)
             mod:refreshTotalScore_SA()
         end
 
-        if pickup.Variant == PickupVariant.PICKUP_TROPHY and (not mod.MMA_GlobalSaveData.TotalAssaultScore or mod.MMA_GlobalSaveData.TotalAssaultScore < 1000000) then
+        if pickup.Variant == PickupVariant.PICKUP_TROPHY and (not mod.MMA_GlobalSaveData.TotalAssaultScore or mod.MMA_GlobalSaveData.TotalAssaultScore < mod.MMA_GlobalSaveData.ScoreAssaultGoalScore) then
             Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, pickup.Position, Vector(0,0), nil)
             pickup:Remove()
             sfx:Play(SoundEffect.SOUND_BOSS2INTRO_ERRORBUZZ, Options.SFXVolume*2)
+            local name = SA_nameTable_Trophy[mod.MMA_GlobalSaveData.ScoreAssaultGoalScore]
+            local description = SA_descriptionTable_Trophy[mod.MMA_GlobalSaveData.ScoreAssaultGoalScore]
             hud:ShowItemText('MILLIONAIRES ONLY', 'Try again next time...', false)
         end
     end
@@ -318,13 +333,24 @@ function mod:scoreAssaultRockBreak(rocktype)
     end
 end
 
-local quickMessage = false
+local titleFlash = {
+    [1000000] = "ROAD TO A MILLION",
+    [10000000] = "ROAD TO 10 MILLION",
+    [100000000] = "ROAD TO 100 MILLION",
+    [1000000000] = "ROAD TO A BILLION"
+}
+
+local descriptionFlash = {
+    [1000000] = "Get to 1,000,000 points by Mega Satan",
+    [10000000] = "Get to 10,000,000 points by Mega Satan",
+    [100000000] = "Get to 100,000,000 points by Mega Satan",
+    [1000000000] = "Go motherfucking apeshit by Mega Satan"
+}
 
 function mod:scoreAssaultPickupCalc()
     if Isaac.GetChallenge() == mod.MMATypes.CHALLENGE_SCORE_ASSAULT then
-        if not quickMessage then
-            quickMessage = true
-            hud:ShowItemText("ROAD TO A MILLION", "Get to 1,000,000 points by Mega Satan", false)
+        if game:GetFrameCount() == 20 then
+            hud:ShowItemText(titleFlash[mod.MMA_GlobalSaveData.ScoreAssaultGoalScore], descriptionFlash[mod.MMA_GlobalSaveData.ScoreAssaultGoalScore], false)
         end
 
         local pickupList = Isaac.FindByType(5)
@@ -415,3 +441,20 @@ end
 mod:AddCallback(ModCallbacks.MC_USE_PILL, mod.TakePillCardPointSA)
 mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.TakePillCardPointSA)
 
+
+
+function mod:onGameStart_SA(isSave)
+    if Isaac.GetChallenge() == mod.MMATypes.CHALLENGE_SCORE_ASSAULT and not isSave then
+        if mod.MenuData and mod.MenuData.ScoreAssaultScore and mod.MenuData.ScoreAssaultScore == 2 then
+            mod.MMA_GlobalSaveData.ScoreAssaultGoalScore = 10000000
+        elseif mod.MenuData and mod.MenuData.ScoreAssaultScore and mod.MenuData.ScoreAssaultScore == 3 then
+            mod.MMA_GlobalSaveData.ScoreAssaultGoalScore = 100000000
+        elseif mod.MenuData and mod.MenuData.ScoreAssaultScore and mod.MenuData.ScoreAssaultScore == 4 then
+            mod.MMA_GlobalSaveData.ScoreAssaultGoalScore = 1000000000
+        else
+            mod.MMA_GlobalSaveData.ScoreAssaultGoalScore = 1000000
+        end
+
+    end
+end
+mod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, mod.onGameStart_SA)
