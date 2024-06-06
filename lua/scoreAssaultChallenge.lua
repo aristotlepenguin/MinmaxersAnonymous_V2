@@ -83,8 +83,6 @@ end
 mod:AddCallback(ModCallbacks.MC_POST_RENDER, mod.renderScore)
 mod:AddCallback(ModCallbacks.MC_GET_SHADER_PARAMS, mod.renderScore)
 
-
-
 function mod:initAsMaxie(player)
     if Isaac.GetChallenge() == mod.MMATypes.CHALLENGE_SCORE_ASSAULT then
         player:ChangePlayerType(mod.MMATypes.CHARACTER_EPAPHRAS)
@@ -94,10 +92,10 @@ end
 mod:AddCallback(ModCallbacks.MC_POST_PLAYER_INIT, mod.initAsMaxie)
 
 local qualTable = {
-    [0] = 1000,
-    [1] = 2000,
-    [2] = 3000,
-    [3] = 5000,
+    [0] = 3000,
+    [1] = 3500,
+    [2] = 4000,
+    [3] = 5500,
     [4] = 7500
 }
 
@@ -132,6 +130,12 @@ function mod:refreshItems_SA()
                         itemScore = itemScore + (qualityMult * player:GetCollectibleNum(itemID))
                     end
                 end
+                
+                for i=0, PlayerForm.NUM_PLAYER_FORMS-1 do
+                    if player:HasPlayerForm(i) then
+                        itemScore = itemScore + 20000
+                    end
+                end
             end)
         end
 
@@ -159,20 +163,8 @@ local rangeMultiplier = 139
 
 function mod:refreshStats_SA(_player, cacheflag)
     if Isaac.GetChallenge() == mod.MMATypes.CHALLENGE_SCORE_ASSAULT then
-        
         local statScore = 0
         mod:AnyPlayerDo(function(player)
-            print(player.TearRange)
-            print(baseStats.Range)
-            print(player.Luck)
-            print(baseStats.Luck)
-            print(player.MaxFireDelay)
-            print(baseStats.FireDelay)
-            print(player.Damage)
-            print(baseStats.Damage)
-            print(player.MoveSpeed)
-            print(baseStats.Speed)
-            print('-------------------------------------')
             statScore = statScore + math.floor((player.TearRange-baseStats.Range) * rangeMultiplier)
             statScore = statScore + math.floor((player.Luck-baseStats.Luck) * luckMultiplier)
             statScore = statScore + math.floor((baseStats.FireDelay-player.MaxFireDelay) * tearMultiplier)
@@ -290,14 +282,14 @@ local ultraSecretBonus = 50000
 
 local rockBreakKey = {
 [GridEntityType.GRID_ROCK] = 1,
-[GridEntityType.GRID_ROCKT] = 5000,
+[GridEntityType.GRID_ROCKT] = 3000,
 [GridEntityType.GRID_ROCK_BOMB] = 5,
-[GridEntityType.GRID_ROCK_ALT] = 500,
+[GridEntityType.GRID_ROCK_ALT] = 300,
 [GridEntityType.GRID_POOP] = 5,
-[GridEntityType.GRID_ROCK_SS] = 10000,
+[GridEntityType.GRID_ROCK_SS] = 5000,
 [GridEntityType.GRID_ROCK_SPIKED] = 1,
-[GridEntityType.GRID_ROCK_ALT2] = 500,
-[GridEntityType.GRID_ROCK_GOLD] = 500
+[GridEntityType.GRID_ROCK_ALT2] = 300,
+[GridEntityType.GRID_ROCK_GOLD] = 300
 }
 
 function mod:getRoomBonus()
@@ -326,9 +318,15 @@ function mod:scoreAssaultRockBreak(rocktype)
     end
 end
 
+local quickMessage = false
 
 function mod:scoreAssaultPickupCalc()
     if Isaac.GetChallenge() == mod.MMATypes.CHALLENGE_SCORE_ASSAULT then
+        if not quickMessage then
+            quickMessage = true
+            hud:ShowItemText("ROAD TO A MILLION", "Get to 1,000,000 points by Mega Satan", false)
+        end
+
         local pickupList = Isaac.FindByType(5)
 
         local floorItems = 0
@@ -337,39 +335,37 @@ function mod:scoreAssaultPickupCalc()
         end)
 
         if #pickupList > 250 and mod:checkIfAchieved("maxedPickups") == false then
-            mod:applyAchievement("maxedPickups", 70000, "Packed Room", "Fill a room with pickups")
+            mod:applyAchievement("maxedPickups", 50000, "Packed Room", "Fill a room with pickups")
         elseif floorItems - (mod.MMA_GlobalSaveData.SA_StartFloorItems or 0) > 50 and mod:checkIfAchieved("itemWindfall") == false then
-            mod:applyAchievement("itemWindfall", 70000, "Item Windfall", "Get over 50 items on a floor")
+            mod:applyAchievement("itemWindfall", 50000, "Item Windfall", "Get over 50 items on a floor")
         elseif math.floor(game.TimeCounter/30) - (mod.MMA_GlobalSaveData.SA_StartFloorTimestamp or 0) > 1800 and mod:checkIfAchieved("whilingAway") == false then
-            mod:applyAchievement("whilingAway", 70000, "Whiling Away", "Spend 30 minutes on one floor")
+            mod:applyAchievement("whilingAway", 50000, "Whiling Away", "Spend 30 minutes on one floor")
+        end
+
+        local fires = Isaac.FindByType(EntityType.ENTITY_FIREPLACE)
+        for i, fire in ipairs(fires) do
+            local firedata = fire:GetData()
+            if (fire:GetSprite():IsPlaying("Dissapear") or fire:GetSprite():IsPlaying("Dissapear2") or fire:GetSprite():IsPlaying("Dissapear3")) and not firedata.MMA_FireScored then
+                firedata.MMA_FireScored = true
+                mod.MMA_GlobalSaveData.TotalBonusScore = (mod.MMA_GlobalSaveData.TotalBonusScore or 0) + 5
+                mod:refreshTotalScore_SA()
+            end
+        end
+
+        local slots = Isaac.FindByType(EntityType.ENTITY_SLOT)
+        for i, slot in ipairs(slots) do
+            if (slot:GetSprite():IsPlaying("PayNothing") or slot:GetSprite():IsPlaying("PayPrize") or slot:GetSprite():IsPlaying("Initiate")) and slot:GetSprite():GetFrame() == 1 then
+                mod.MMA_GlobalSaveData.TotalBonusScore = (mod.MMA_GlobalSaveData.TotalBonusScore or 0) + 70
+                mod:refreshTotalScore_SA()
+            end
         end
     end
 end
 mod:AddCallback(ModCallbacks.MC_POST_UPDATE, mod.scoreAssaultPickupCalc)
 
 
-local explorationBonus = 500
-function mod:refreshExplorationBonus_SA()
-    if Isaac.GetChallenge() == mod.MMATypes.CHALLENGE_SCORE_ASSAULT then
-        local totalRooms = 0
-        if game:GetLevel():GetCurrentRoomIndex() ~= 84 then
-            for i=0, 168, 1 do
-                local room = game:GetLevel():GetRoomByIdx(i)
-                if room and room.VisitedCount >=1 and room.Clear then
-                    totalRooms = totalRooms + 1
-                end
-            end
-        end
-        mod.MMA_GlobalSaveData.TotalExploreScore = totalRooms * explorationBonus
-    end
-end
-mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, mod.refreshExplorationBonus_SA)
-
-
 function mod:onNewFloor_SA()
     if Isaac.GetChallenge() == mod.MMATypes.CHALLENGE_SCORE_ASSAULT then
-        mod.MMA_GlobalSaveData.TotalBonusScore = (mod.MMA_GlobalSaveData.TotalBonusScore or 0) + mod.MMA_GlobalSaveData.TotalExploreScore
-        mod.MMA_GlobalSaveData.TotalExploreScore = 0
         local floorItems = 0
 
         mod:AnyPlayerDo(function(player)
@@ -377,8 +373,45 @@ function mod:onNewFloor_SA()
         end)
         mod.MMA_GlobalSaveData.SA_StartFloorItems = floorItems
         mod.MMA_GlobalSaveData.SA_StartFloorTimestamp = math.floor(game.TimeCounter/30)
-
-        mod:refreshTotalScore_SA()
     end
 end
 mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, mod.onNewFloor_SA)
+
+local baseClear = 200
+
+local roomTypeTables = {
+    [RoomType.ROOM_BOSS] = baseClear * 7.5,
+    [RoomType.ROOM_MINIBOSS] = baseClear * 5,
+    [RoomType.ROOM_CHALLENGE] = baseClear * 5
+}
+
+
+function mod:roomClear_Score_SA()
+    if Isaac.GetChallenge() == mod.MMATypes.CHALLENGE_SCORE_ASSAULT then
+        local room = game:GetRoom()
+        local score = roomTypeTables[room:GetType()] or baseClear
+        mod.MMA_GlobalSaveData.TotalBonusScore = (mod.MMA_GlobalSaveData.TotalBonusScore or 0) + score
+        mod:refreshTotalScore_SA()
+    end
+
+end
+mod:AddCallback(ModCallbacks.MC_PRE_SPAWN_CLEAN_AWARD, mod.roomClear_Score_SA)
+
+function mod:OnEnemyKill_SA(npc)
+    print(npc:IsVulnerableEnemy())
+    if npc:IsEnemy() and Isaac.GetChallenge() == mod.MMATypes.CHALLENGE_SCORE_ASSAULT then
+        mod.MMA_GlobalSaveData.TotalBonusScore = (mod.MMA_GlobalSaveData.TotalBonusScore or 0) + 5
+        mod:refreshTotalScore_SA()
+    end
+end
+mod:AddCallback(ModCallbacks.MC_POST_ENTITY_KILL, mod.OnEnemyKill_SA)
+
+function mod:TakePillCardPointSA()
+    if Isaac.GetChallenge() == mod.MMATypes.CHALLENGE_SCORE_ASSAULT then
+        mod.MMA_GlobalSaveData.TotalBonusScore = (mod.MMA_GlobalSaveData.TotalBonusScore or 0) + 800
+        mod:refreshTotalScore_SA()
+    end
+end
+mod:AddCallback(ModCallbacks.MC_USE_PILL, mod.TakePillCardPointSA)
+mod:AddCallback(ModCallbacks.MC_USE_CARD, mod.TakePillCardPointSA)
+
