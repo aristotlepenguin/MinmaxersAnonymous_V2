@@ -486,7 +486,7 @@ function mod:BossRushImmunity_RB(rng, spawnPosition)
     local isMaxie = false
 
     mod:AnyPlayerDo(function(player)
-    if isEph and player:GetPlayerType() ~= mod.MMATypes.CHARACTER_EPAPHRAS then
+    if isEph and player:GetPlayerType() == mod.MMATypes.CHARACTER_EPAPHRAS then
         isMaxie = true
     end
     end)

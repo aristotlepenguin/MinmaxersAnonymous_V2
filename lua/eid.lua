@@ -18,12 +18,8 @@ if EID then
     EID:addIcon("Card" .. tostring(mod.MMATypes.CARD_CHASTITY), "HUDSmall", 0, 16, 16, 6, 6, chasteHud)
 
     EID:addBirthright(mod.MMATypes.CHARACTER_EPAPHRAS, "Reduces limits for coins, bombs and keys to 45. If coin limits for Maxie are set to 99, Birthright sets them to 65.", "Maxie", "en_us")
-    
-    if REPENTOGON then
-        EID:addBirthright(mod.MMATypes.CHARACTER_EPAPHRAS_B, "Red rooms opened when descending floors now have a 20% chance to be special rooms, up from 10%", "Minnie", "en_us")
-    else
-        EID:addBirthright(mod.MMATypes.CHARACTER_EPAPHRAS_B, "3 more red rooms are opened when descending floors, in addition to ignored rooms.", "Minnie", "en_us")
-    end
+    EID:addBirthright(mod.MMATypes.CHARACTER_EPAPHRAS_B, "3 more red rooms are opened when descending floors, in addition to ignored rooms.", "Minnie", "en_us")
+
 
 
     EID:addCollectible(mod.MMATypes.COLLECTIBLE_ABSTINENCE, "#При прикосновении к пьедесталу с предметом он превращается в карту целомудрия. Использование карты дает предмет.#Если было создано несколько карт, первым выдается самый последний предмет.#Вы можете таким образом заключить сделку в магазине или с дьяволом, не платя за нее.", "Воздержание", "ru")
@@ -40,10 +36,5 @@ if EID then
     EID:addCard(mod.MMATypes.CARD_CHASTITY, "Используя эту карту, вы получите один из пьедесталов с предметом, к которым вы прикоснулись, пока держали в руках эту карту. Последний пьедестал предмета, которого вы коснулись, является первым предметом.", "Карта целомудрия", "ru")
     
     EID:addBirthright(mod.MMATypes.CHARACTER_EPAPHRAS, "Уменьшает лимит на монеты, бомбы и ключи до 45. Если лимит монет для \"Макси\" установлен на 99, право первородства устанавливает их на 65.", "Maxie", "ru")
-    
-    if REPENTOGON then
-        EID:addBirthright(mod.MMATypes.CHARACTER_EPAPHRAS_B, "Красные комнаты, открывающиеся при спуске по этажам, теперь имеют 20% шанс оказаться особыми комнатами вместо 10%.", "Minnie", "ru")
-    else
-        EID:addBirthright(mod.MMATypes.CHARACTER_EPAPHRAS_B, "На каждом этаже открываются еще 3 красные комнаты, помимо игнорируемых комнат.", "Minnie", "ru")
-    end
+    EID:addBirthright(mod.MMATypes.CHARACTER_EPAPHRAS_B, "На каждом этаже открываются еще 3 красные комнаты, помимо игнорируемых комнат.", "Minnie", "ru")
 end
