@@ -123,6 +123,19 @@ function mod:handleTearsOut_OS(player, firstFrame, familiar)
     local sinusRng = player:GetCollectibleRNG(mod.MMATypes.COLLECTIBLE_OVERCLOCKED_SINUSES)
     local tearSpeed = 25 * player.ShotSpeed
     local firePos = player.Position + Vector(0, 1)
+    local hasLudo = false
+
+    if player:HasCollectible(CollectibleType.COLLECTIBLE_LUDOVICO_TECHNIQUE) then
+        local tears = Isaac.FindByType(EntityType.ENTITY_TEAR)
+        hasLudo = true
+        for i, tear in ipairs(tears) do
+            if tear:ToTear():HasTearFlags(TearFlags.TEAR_LUDOVICO) then
+                firePos = tear.Position
+                break
+            end
+        end
+    end
+
     if familiar then
         firePos = familiar.Position + Vector(0, 1)
     end
@@ -268,6 +281,9 @@ function mod:handleTearsOut_OS(player, firstFrame, familiar)
             local multiples = mod:getTearDuplicateAmt(player)
             for y=1, multiples, 1 do
                 local new_dir = mod:adjustAngle_OS(direction, y, multiples)
+                if hasLudo then
+                    new_dir = Vector(sinusRng:RandomInt(100)-50, sinusRng:RandomInt(100)-50):Normalized() * tearSpeed
+                end
                 local tear = player:FireTear(firePos, new_dir, true, false, true, player, 1)
                 tear = mod:tearModifiers(tear, player, true, true, familiar)
             end
@@ -283,6 +299,9 @@ function mod:handleTearsOut_OS(player, firstFrame, familiar)
             end
             
             for x=4, tearTier, 1 do
+                if hasLudo then
+                    slantDir = Vector(sinusRng:RandomInt(100)-50, sinusRng:RandomInt(100)-50):Normalized() * tearSpeed
+                end
                 local tear = player:FireTear(firePos, slantDir * tearSpeed, true, false, true, player, 1)
                 slantDir = (slantDir * mod.TearTierMultiplier[player:GetHeadDirection()]):Normalized()
                 tear = mod:tearModifiers(tear, player, false, true, familiar)
@@ -430,3 +449,5 @@ function mod:knifeUpdate_OS(knife)
     end
 end
 mod:AddCallback(ModCallbacks.MC_POST_KNIFE_UPDATE, mod.knifeUpdate_OS)
+
+
