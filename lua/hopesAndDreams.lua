@@ -13,14 +13,6 @@ function mod:getHopeSpr(pickup_num)
     return hopeSpr
 end
 
-function mod:IsInDCDimension()
-    local desc = game:GetLevel():GetCurrentRoomDesc()
-    if desc.Data and (desc.Data.StageID == 35 and (desc.Data.Subtype == 33 or desc.Data.Subtype == 34)) then
-        return true
-    end
-    return false
-end
-
 function mod:findHopeRenderPos(sequence, numPlayers, current_player_num)
     local starting_pos = Vector(-32, -32)
     if sequence > 6 then

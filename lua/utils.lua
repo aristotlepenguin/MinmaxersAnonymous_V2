@@ -464,3 +464,12 @@ function mod:CheckRocksBreak()
   end
 end
 mod:AddCallback(ModCallbacks.MC_POST_UPDATE, mod.CheckRocksBreak)
+
+
+function mod:IsInDCDimension()
+  local desc = game:GetLevel():GetCurrentRoomDesc()
+  if desc.Data and (desc.Data.StageID == 35 and (desc.Data.Subtype == 33 or desc.Data.Subtype == 34)) then
+      return true
+  end
+  return false
+end

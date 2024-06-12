@@ -78,7 +78,8 @@ function mod:collideItemPedestalAbs(pickup, collider, low)
     if player == nil or not player:HasCollectible(mod.MMATypes.COLLECTIBLE_ABSTINENCE) or
     pickup:GetData().MMA_ABS_Touched == true or pickup.SubType == 0 or
     itemconfig:GetCollectible(pickup.SubType):HasTags(ItemConfig.TAG_QUEST) or
-    (player:GetPlayerType() == PlayerType.PLAYER_ISAAC_B or (player:GetPlayerType() == PlayerType.PLAYER_CAIN_B and not REPENTOGON)) then
+    (player:GetPlayerType() == PlayerType.PLAYER_ISAAC_B or (player:GetPlayerType() == PlayerType.PLAYER_CAIN_B and not REPENTOGON))
+    or mod:IsInDCDimension() then
         return nil
     else
         pickup:GetData().MMA_ABS_Touched = true
