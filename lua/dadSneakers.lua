@@ -61,7 +61,27 @@ function mod:findValidDoors_DS(roomid)
     return  mod:shuffleTable(doorTable)
 end
 
+local expandedRoomDown = {
+    [4] = true,
+    [5] = true,
+    [8] = true,
+    [9] = true,
+    [10] = true,
+    [11] = true,
+    [12] = true
+}
+
+local expandedRoomRight = {
+    [6] = true,
+    [7] = true,
+    [8] = true,
+    [9] = true,
+    [10] = true,
+    [11] = true,
+    [12] = true
+}
 function mod:findValidDoors_Edges(door, room)
+    local roomdesc = Game():GetLevel():GetRoomByIdx(room)
     local upRoomId = room - 13
     local downRoomId = room - 13
     local leftRoomId = room - 1
@@ -97,11 +117,11 @@ function mod:findValidDoors_Edges(door, room)
     
     if (door == 0 or door == 4) and room % 13 == 0 then
         return false
-    elseif (door == 2 or door == 6) and room % 13 == 12 then
+    elseif (door == 2 or door == 6) and (room % 13 == 12 or (expandedRoomRight[room.Data.Shape] == true and room % 13 >= 11)) then
         return false
     elseif (door == 1 or door == 5) and room < 13 then
         return false
-    elseif (door == 3 or door == 7) and room > 155 then
+    elseif (door == 3 or door == 7) and (room > 155 or (expandedRoomDown[room.Data.Shape] == true and room > 142)) then
         return false
     else
         return true
