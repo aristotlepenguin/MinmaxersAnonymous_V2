@@ -223,7 +223,8 @@ function mod:onNewLevelStart_DS()
         end
     end)
 
-    if hasIt and not (game:GetLevel():GetStageType() ~= StageType.STAGETYPE_REPENTANCE_B and game:GetLevel():GetStage() == 1) then
+    if hasIt and not (game:GetLevel():GetStageType() < StageType.STAGETYPE_REPENTANCE and game:GetLevel():GetStage() == 1 and mod.MMA_GlobalSaveData.RKeyOverride ~= true) then
+        mod.MMA_GlobalSaveData.RKeyOverride = nil
         local numOfNewRooms = (mod.MMA_GlobalSaveData.UnexploredCount or 0)
         if hasBirthright then
             numOfNewRooms = numOfNewRooms + 3
@@ -256,6 +257,13 @@ function mod:onNewLevelStart_DS()
     mod.MMA_GlobalSaveData.UnexploredCount = mod:checkFloorRooms_DS(false, -1)
 end
 mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, mod.onNewLevelStart_DS)
+
+function mod:onRKey_DS(collectible, rng, player, useflags, activeslot, customvardata)
+    if player:HasCollectible(mod.MMATypes.COLLECTIBLE_DAD_SNEAKERS) or player:GetPlayerType() == mod.MMATypes.CHARACTER_EPAPHRAS_B then
+        mod.MMA_GlobalSaveData.RKeyOverride = true
+    end
+end
+mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.onRKey_DS, CollectibleType.COLLECTIBLE_R_KEY)
 
 
 ------------------------------------
