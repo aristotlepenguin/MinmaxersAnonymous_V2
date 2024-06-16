@@ -131,10 +131,16 @@ function mod:refreshItems_SA()
                     end
                 end
                 
-                for i=0, PlayerForm.NUM_PLAYER_FORMS-1 do
+                local allTransformations = true
+                for i=0, PlayerForm.NUM_PLAYER_FORMS-2 do
                     if player:HasPlayerForm(i) then
                         itemScore = itemScore + 20000
+                    else
+                        allTransformations = false
                     end
+                end
+                if allTransformations and mod:checkIfAchieved("allTransformations") == false then
+                    mod:applyAchievement("allTransformations", 200000, "ALL TRANSFORMATIONS", "Who were you again?")
                 end
             end)
         end
@@ -170,8 +176,19 @@ function mod:refreshStats_SA(_player, cacheflag)
             statScore = statScore + math.floor((baseStats.FireDelay-player.MaxFireDelay) * tearMultiplier)
             statScore = statScore + math.floor((player.Damage-baseStats.Damage) * damageMultiplier)
             statScore = statScore + math.floor((player.MoveSpeed-baseStats.Speed) * speedMultiplier)
+
+            if player.Damage > 100 and mod:CheckIfAchieved("centurion") == false then
+                mod:applyAchievement("centurion", 50000, "CENTURION", "Get over 100 damage")
+            end
+            if player.Luck > 100 and mod:CheckIfAchieved("hundredLeafClover") == false then
+                mod:applyAchievement("hundredLeafClover", 50000, "HUNDRED LEAF CLOVER", "Get over 100 luck")
+            end
+            if player.TearRange > 4000 and mod:CheckIfAchieved("reallyHighRange") == false then
+                mod:applyAchievement("reallyHighRange", 1, "REALLY HIGH RANGE", "Does anyone care about this?")
+            end
         end)
         mod.MMA_GlobalSaveData.TotalStatScore = statScore
+
         mod:refreshTotalScore_SA()
     end
 end
@@ -273,7 +290,7 @@ function mod:trackPickups_SA(pickup, collider, low)
             sfx:Play(SoundEffect.SOUND_BOSS2INTRO_ERRORBUZZ, Options.SFXVolume*2)
             local name = SA_nameTable_Trophy[mod.MMA_GlobalSaveData.ScoreAssaultGoalScore]
             local description = SA_descriptionTable_Trophy[mod.MMA_GlobalSaveData.ScoreAssaultGoalScore]
-            hud:ShowItemText('MILLIONAIRES ONLY', 'Try again next time...', false)
+            hud:ShowItemText(name, description, false)
         end
     end
 end
@@ -360,7 +377,7 @@ function mod:scoreAssaultPickupCalc()
             floorItems = floorItems + player:GetCollectibleCount()
         end)
 
-        if #pickupList > 250 and mod:checkIfAchieved("maxedPickups") == false then
+        if #pickupList > 200 and mod:checkIfAchieved("maxedPickups") == false then
             mod:applyAchievement("maxedPickups", 50000, "Packed Room", "Fill a room with pickups")
         elseif floorItems - (mod.MMA_GlobalSaveData.SA_StartFloorItems or 0) > 50 and mod:checkIfAchieved("itemWindfall") == false then
             mod:applyAchievement("itemWindfall", 50000, "Item Windfall", "Get over 50 items on a floor")
@@ -458,3 +475,57 @@ function mod:onGameStart_SA(isSave)
     end
 end
 mod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, mod.onGameStart_SA)
+
+function mod:EnemyHit_SA(entity, amount, damageflags, source, countdownframes)
+    if Isaac.GetChallenge() == mod.MMATypes.CHALLENGE_SCORE_ASSAULT then
+        local player = entity:ToPlayer()
+        if player == nil then
+            return
+        end
+        mod.MMA_GlobalSaveData.SA_HitCounter = (mod.MMA_GlobalSaveData.SA_HitCounter or 0) + 1
+        if mod:checkIfAchieved("getFucked") == false  and mod.MMA_GlobalSaveData.SA_HitCounter > 998 then
+            mod:applyAchievement("getFucked", 50000, "GET FUCKED SCRUB", "Take more damage than yer mum")
+        end
+    end
+end
+mod:AddCallback(ModCallbacks.MC_ENTITY_TAKE_DMG, mod.EnemyHit_SA, EntityType.ENTITY_PLAYER)
+
+function mod:onRKey_DS(collectible, rng, player, useflags, activeslot, customvardata)
+    if Isaac.GetChallenge() == mod.MMATypes.CHALLENGE_SCORE_ASSAULT then
+        mod:applyAchievement("hereWeGoAgain", 50000, "HERE WE GO AGAIN", "The struggle continues...")
+    end
+end
+mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.onRKey_DS, CollectibleType.COLLECTIBLE_R_KEY)
+
+function mod:checkIfBreakfast(pickup)
+    if pickup.Variant == PickupVariant.PICKUP_COLLECTIBLE
+    and pickup.SubType == CollectibleType.COLLECTIBLE_BREAKFAST then
+        local isPoolBreakfast = false
+        local itemPool = Game():GetItemPool()
+        local roomType = Game():GetRoom():GetType()
+        local seed = pickup:GetDropRNG():GetSeed()
+        local roomPool = itemPool:GetPoolForRoom(roomType, seed)
+
+        if roomPool == ItemPoolType.POOL_NULL then
+            roomPool = ItemPoolType.POOL_TREASURE
+        end
+
+        local breakfastCount = 0
+        repeat
+            local itemId = itemPool:GetCollectible(roomPool, false)
+            breakfastCount = breakfastCount + 1
+
+            if breakfastCount == 50 then
+                isPoolBreakfast = true
+                goto exit
+            end
+
+        until itemId ~= CollectibleType.COLLECTIBLE_BREAKFAST
+        ::exit::
+
+        if isPoolBreakfast and mod:checkIfAchieved("milkManCometh") then
+            mod:applyAchievement("milkManCometh", 100000, "THE MILKMAN COMETH", "Breakfast out of an item pool")
+        end
+    end
+end
+mod:AddCallback(ModCallbacks.MC_POST_PICKUP_INIT, mod.checkIfBreakfast)
