@@ -10,7 +10,6 @@ function mod:tearsup_ML(player, cache)
 end
 mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, mod.tearsup_ML)
 
-
 function mod:PostPickupInit_ML(pickup)
     if pickup.Variant == PickupVariant.PICKUP_COLLECTIBLE or pickup.Variant == PickupVariant.PICKUP_SHOPITEM then
         local level = Game():GetLevel():GetStage()
@@ -18,7 +17,15 @@ function mod:PostPickupInit_ML(pickup)
         local leaksHeld = 0
         local chosenPlayer
         local room = game:GetRoom()
-
+        local IsOriginal = true
+        if not mod.MMA_GlobalSaveData.OldPedestals then
+            mod.MMA_GlobalSaveData.OldPedestals = {}
+        end
+        for _, v in ipairs(mod.MMA_GlobalSaveData.OldPedestals) do
+            if v == pickup.InitSeed then
+                IsOriginal = false
+            end
+        end
         for i=0, numPlayers-1, 1 do
             local player = Isaac.GetPlayer(i)
             if player:GetCollectibleNum(mod.MMATypes.COLLECTIBLE_MEMORY_LEAK) > 0 then
@@ -31,10 +38,15 @@ function mod:PostPickupInit_ML(pickup)
             local benchmark = level * 4 * leaksHeld
             local selectednumber = rand_seed:RandomInt(100)+1
             local config = Isaac.GetItemConfig():GetCollectible(pickup.SubType)
-            if selectednumber < benchmark and (config.Tags & ItemConfig.TAG_QUEST ~= ItemConfig.TAG_QUEST) and (room:GetFrameCount() > -1 or room:IsFirstVisit()) then
+            if selectednumber < benchmark and 
+            (config.Tags & ItemConfig.TAG_QUEST ~= ItemConfig.TAG_QUEST) and
+            (room:GetFrameCount() > -1 or room:IsFirstVisit()) and
+            pickup.Touched == false and IsOriginal then
                 pickup:GetData().MMA_WillGlitch = true
             end
         end
+        table.insert(mod.MMA_GlobalSaveData.OldPedestals, pickup.InitSeed)
+        --print(IsOriginal)
     end
 end
 mod:AddCallback(ModCallbacks.MC_POST_PICKUP_INIT, mod.PostPickupInit_ML)
