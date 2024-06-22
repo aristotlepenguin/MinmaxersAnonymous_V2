@@ -9,11 +9,13 @@
         <Item Name="Mom's Scale" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
         <Item Name="Hyperfixation" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
         <Item Name="Job's Curse" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+        <Item Name="D-Sqrt(-1)" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
     </Pool>
 	<Pool Name="curse">
         <Item Name="Memory Leak" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
         <Item Name="Hyperfixation" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
         <Item Name="Job's Curse" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+        <Item Name="D-Sqrt(-1)" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
     </Pool>
 	<Pool Name="secret">
         <Item Name="Memory Leak" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
@@ -29,11 +31,13 @@
         <Item Name="Mom's Scale" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
         <Item Name="Hyperfixation" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
         <Item Name="Job's Curse" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+        <Item Name="D-Sqrt(-1)" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
     </Pool>
 	<Pool Name="greedCurse">
         <Item Name="Memory Leak" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
         <Item Name="Hyperfixation" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
         <Item Name="Job's Curse" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
+        <Item Name="D-Sqrt(-1)" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>
     </Pool>
 	<Pool Name="greedSecret">
         <Item Name="Memory Leak" Weight="1" DecreaseBy="0.5" RemoveOn="0.1"/>

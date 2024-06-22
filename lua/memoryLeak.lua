@@ -10,6 +10,7 @@ function mod:tearsup_ML(player, cache)
 end
 mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, mod.tearsup_ML)
 
+
 function mod:PostPickupInit_ML(pickup)
     if pickup.Variant == PickupVariant.PICKUP_COLLECTIBLE or pickup.Variant == PickupVariant.PICKUP_SHOPITEM then
         local level = Game():GetLevel():GetStage()
@@ -46,7 +47,6 @@ function mod:PostPickupInit_ML(pickup)
             end
         end
         table.insert(mod.MMA_GlobalSaveData.OldPedestals, pickup.InitSeed)
-        --print(IsOriginal)
     end
 end
 mod:AddCallback(ModCallbacks.MC_POST_PICKUP_INIT, mod.PostPickupInit_ML)

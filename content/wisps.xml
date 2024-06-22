@@ -3,6 +3,6 @@
 	<color name="core_blue" r="255" g="356" b="510"/>
 	<color name="tear_blue" or="64" og="89" ob="128"/>
 
-    <wisp id="7" hp="12" layer="1" damage="3" flameColor="flame_blue" coreColor="core_blue" tearColor="tear_blue" count="0" canShoot = "false"/>
+    <wisp id="6" hp="12" layer="1" damage="3" flameColor="flame_blue" coreColor="core_blue" tearColor="tear_blue" count="0" canShoot = "false"/>
 
 </wisps>
