@@ -117,11 +117,11 @@ function mod:findValidDoors_Edges(door, room)
     
     if (door == 0 or door == 4) and room % 13 == 0 then
         return false
-    elseif (door == 2 or door == 6) and (room % 13 == 12 or (expandedRoomRight[room.Data.Shape] == true and room % 13 >= 11)) then
+    elseif (door == 2 or door == 6) and (room % 13 == 12 or (expandedRoomRight[roomdesc.Data.Shape] == true and room % 13 >= 11)) then
         return false
     elseif (door == 1 or door == 5) and room < 13 then
         return false
-    elseif (door == 3 or door == 7) and (room > 155 or (expandedRoomDown[room.Data.Shape] == true and room > 142)) then
+    elseif (door == 3 or door == 7) and (room > 155 or (expandedRoomDown[roomdesc.Data.Shape] == true and room > 142)) then
         return false
     else
         return true
