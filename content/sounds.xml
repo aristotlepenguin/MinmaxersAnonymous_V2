@@ -2,4 +2,15 @@
     <sound name="AchieveSA">
         <sample weight="1" path="slotwin.wav" />
     </sound>
+
+    <sound name="DSS pop">
+	<sample weight="1" path="dss/dss_pop.wav"/>
+    </sound>
+
+    <sound name="DSS whoosh">
+        <sample weight="1" path="dss/dss_whoosh.wav"/>
+    </sound>
+
 </sounds>
+
+<!-- DSS sounds -->

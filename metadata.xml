@@ -1,8 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <metadata>
-	<name>MinmaxersAnonymous_V2</name>
-	<directory>minmaxersanonymous_v2</directory>
-	<description/>
-	<version>1.0</version>
-	<visibility/>
-</metadata>
+    <name>MinmaxersAnonymous_V2</name>
+    <directory>minmaxersanonymous_v2</directory>
+    <id>3300647294</id>
+    <description>This is a mod for people who like to play 30 minute runs for 10 hours. The 10 items and 2 characters in this pack reward, enable, or encourage shameless game-breakery while not trivializing what it takes to get into that state. 
 
+There's an item that transforms pickups into something else when you're full. One item doubles your damage if you crash the game with it. There's a D6 variant that forces you do complex algebra and time your reroll lest you turn your item into The Poop. 
+
+Don't worry, we can go stupider. There's a score attack challenge with a unique scoring system, and the end trophy disappears if you don't hit a million. Or a billion, depending on your settings.</description>
+    <version>1.2</version>
+    <visibility>Private</visibility>
+    <tag id="Lua"/>
+    <tag id="Items"/>
+    <tag id="Active Items"/>
+    <tag id="Cards"/>
+    <tag id="Pickups"/>
+    <tag id="Player Characters"/>
+    <tag id="Challenges"/>
+</metadata>
