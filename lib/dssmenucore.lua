@@ -125,7 +125,6 @@ return function(DSSModName, DSSCoreVersion, MenuProvider)
         Open = { Sound = Isaac.GetSoundIdByName("DSS whoosh"), Volume = .5, PitchVariance = .1 },
         Close = { Sound = Isaac.GetSoundIdByName("DSS whoosh"), Volume = .5, Pitch = .8, PitchVariance = .1 }
     }
-    print(dssmod.menusounds.Pop2.Sound)
 
     dssmod.playSound = function(...) -- A simpler method to play sounds, allows ordered or paired tables.
         local args = { ... }

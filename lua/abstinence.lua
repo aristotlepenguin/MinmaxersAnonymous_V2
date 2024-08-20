@@ -81,6 +81,8 @@ function mod:collideItemPedestalAbs(pickup, collider, low)
     (player:GetPlayerType() == PlayerType.PLAYER_ISAAC_B or (player:GetPlayerType() == PlayerType.PLAYER_CAIN_B and not REPENTOGON))
     or mod:IsInDCDimension() then
         return nil
+    elseif pickup.FrameCount < 15 then
+        return false
     else
         pickup:GetData().MMA_ABS_Touched = true
         
@@ -94,7 +96,6 @@ function mod:collideItemPedestalAbs(pickup, collider, low)
         if pickup:IsShopItem() then
             item_tbl.price = pickup.Price
         end
-
         sfx:Play(SoundEffect.SOUND_THUMBS_DOWN, Options.SFXVolume*2)
         Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_TAROTCARD, mod.MMATypes.CARD_CHASTITY, pickup.Position, Vector(0,0), nil)
         Isaac.Spawn(EntityType.ENTITY_EFFECT, EffectVariant.POOF01, 0, pickup.Position, Vector(0,0), nil)

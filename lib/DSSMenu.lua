@@ -405,7 +405,7 @@ local mainDirectory = {
                     },
                     {
                         str = GetStr('itemswitch_d_sqrt'),
-                        choices = {GetStr('itemswitch_on'),GetStr('itemswitch_off')},
+                        choices = {GetStr('itemswitch_off'), GetStr('itemswitch_on')},
                         variable = 'DSqrtItemSwitch',
                         setting = 1,
                         load = function()
