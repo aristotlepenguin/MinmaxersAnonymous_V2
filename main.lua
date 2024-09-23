@@ -40,6 +40,8 @@ mod.MMATypes.SOUND_ACHIEVE_SA = Isaac.GetSoundIdByName("AchieveSA")
 mod.FloorSaves = {}
 mod.MMA_GlobalSaveData = {}
 
+hiddenItemManager:Init(mod)
+
 --New statement to account for both menus. had to move it down here (Aaron)
 local InitializerFunction = nil
 if ModConfigMenu then 

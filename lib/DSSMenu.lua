@@ -136,10 +136,10 @@ local strings = {
         en = "stat payout"
     },
     job_1 = {
-        en = "1/2"
+        en = "1/4"
     },
     job_2 = {
-        en = "1/4"
+        en = "1/2"
     },
     job_3 = {
         en = "1"

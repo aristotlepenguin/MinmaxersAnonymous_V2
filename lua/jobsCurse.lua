@@ -96,9 +96,9 @@ function mod:Cache_JC(player, cache)
         if mod.MenuData and mod.MenuData.JobStatPayout and mod.MenuData.JobStatPayout == 3 then
             jobMultiplier = jobMultiplier
         elseif mod.MenuData and mod.MenuData.JobStatPayout and mod.MenuData.JobStatPayout == 2 then
-            jobMultiplier = jobMultiplier * 0.25
-        else
             jobMultiplier = jobMultiplier * 0.5
+        else
+            jobMultiplier = jobMultiplier * 0.25
         end
     end
 
