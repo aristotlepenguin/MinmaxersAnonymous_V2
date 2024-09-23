@@ -441,7 +441,6 @@ end
 mod:AddCallback(ModCallbacks.MC_PRE_SPAWN_CLEAN_AWARD, mod.roomClear_Score_SA)
 
 function mod:OnEnemyKill_SA(npc)
-    print(npc:IsVulnerableEnemy())
     if npc:IsEnemy() and Isaac.GetChallenge() == mod.MMATypes.CHALLENGE_SCORE_ASSAULT then
         mod.MMA_GlobalSaveData.TotalBonusScore = (mod.MMA_GlobalSaveData.TotalBonusScore or 0) + 5
         mod:refreshTotalScore_SA()

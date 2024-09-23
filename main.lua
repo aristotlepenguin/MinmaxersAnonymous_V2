@@ -8,12 +8,6 @@ mod.SINGLE_ITEM = false
 local hiddenItemManager = require("lib.hidden_item_manager")
 mod.ItemGrabCallback = include("lua.inventory_callbacks")
 
-hiddenItemManager:Init(mod)
-
-local DSSInitializerFunction = include("lib.DSSMenu")
-DSSInitializerFunction(mod)
-
-
 mod.MMATypes = {}
 
 mod.MMATypes.CHARACTER_EPAPHRAS = Isaac.GetPlayerTypeByName("Epaphras")
@@ -45,6 +39,16 @@ mod.MMATypes.SOUND_ACHIEVE_SA = Isaac.GetSoundIdByName("AchieveSA")
 
 mod.FloorSaves = {}
 mod.MMA_GlobalSaveData = {}
+
+--New statement to account for both menus. had to move it down here (Aaron)
+local InitializerFunction = nil
+if ModConfigMenu then 
+    InitializerFunction = include("lib.MCMMenu")
+else
+    InitializerFunction = include("lib.DSSMenu")
+end
+
+InitializerFunction(mod)
 
 
 local ItemTranslate = include("lib.translation.ItemTranslation")

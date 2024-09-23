@@ -20,7 +20,7 @@ function mod:checkDeath_JC(player)
         pdata.MMA_Died = true
     elseif oneUpCount > 0 and not player:HasCollectible(mod.MMATypes.COLLECTIBLE_JOBS_CURSE) then
         hiddenItemManager:Remove(player, CollectibleType.COLLECTIBLE_ONE_UP, hiddenItemManager.kDefaultGroup)
-    elseif pdata.MMA_Died == true  and not player:IsDead() and oneUpCount >= 1 then
+    elseif pdata.MMA_Died == true and not player:IsDead() and oneUpCount >= 1 then
         pdata.AnimOverride_JC = true
         pdata.MMA_Died = false
         hiddenItemManager:Remove(player, CollectibleType.COLLECTIBLE_ONE_UP, hiddenItemManager.kDefaultGroup)
@@ -96,9 +96,9 @@ function mod:Cache_JC(player, cache)
         if mod.MenuData and mod.MenuData.JobStatPayout and mod.MenuData.JobStatPayout == 3 then
             jobMultiplier = jobMultiplier
         elseif mod.MenuData and mod.MenuData.JobStatPayout and mod.MenuData.JobStatPayout == 2 then
-            jobMultiplier = jobMultiplier * 0.5
-        else
             jobMultiplier = jobMultiplier * 0.25
+        else
+            jobMultiplier = jobMultiplier * 0.5
         end
     end
 
