@@ -43,8 +43,9 @@ mod.MMA_GlobalSaveData = {}
 hiddenItemManager:Init(mod)
 
 --New statement to account for both menus. had to move it down here (Aaron)
+local REPENTOGON = REPENTOGON
 local InitializerFunction = nil
-if ModConfigMenu then 
+if ModConfigMenu and REPENTOGON then 
     InitializerFunction = include("lib.MCMMenu")
 else
     InitializerFunction = include("lib.DSSMenu")
