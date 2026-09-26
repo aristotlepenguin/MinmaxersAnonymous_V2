@@ -331,7 +331,7 @@ mod:AddCallback(ModCallbacks.MC_POST_UPDATE, mod.OnUpdate_RB)
 
 function mod:RBOnPlayerUpdate(player)
     local pdata = mod:mmaGetPData(player)
-    if pdata.RB_JustReceived ~= nil and (player:HasCollectible(mod.MMATypes.COLLECTIBLE_RAIN_BUCKET) or (isEph and player:GetPlayerType() == mod.MMATypes.CHARACTER_EPAPHRAS)) then
+    if pdata.RB_JustReceived ~= nil and (player:HasCollectible(mod.MMATypes.COLLECTIBLE_RAIN_BUCKET) or (isEph and player:GetPlayerType() == mod.MMATypes.CHARACTER_EPAPHRAS) and pdata.bombsRec3 ~= nil) then
         local config = itemconfig:GetCollectible(pdata.RB_JustReceived)
         local bombs = config.AddBombs
         local keys = config.AddKeys
@@ -491,11 +491,12 @@ function mod:BossRushImmunity_RB(rng, spawnPosition)
     end
     end)
 
+
     if room:GetType() == RoomType.ROOM_BOSS and (room:IsClear() or rng ~= nil) and isMaxie and not game:IsGreedMode() and MMAMod.MenuData and MMAMod.MenuData.MaxieBossRush ~= 2 then
         if game:GetLevel():GetStage() == LevelStage.STAGE3_2 then
-            room:TrySpawnBossRushDoor()
+            room:TrySpawnBossRushDoor(true)
         elseif game:GetLevel():GetStage() == LevelStage.STAGE4_2 and game:GetLevel():GetStageType() < 3 then
-            room:TrySpawnBlueWombDoor()
+            room:TrySpawnBlueWombDoor(true)
         end
     end
 end

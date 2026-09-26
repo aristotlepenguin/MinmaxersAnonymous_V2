@@ -51,7 +51,6 @@ else
     InitializerFunction = include("lib.DSSMenu")
 end
 
-InitializerFunction(mod)
 
 
 local ItemTranslate = include("lib.translation.ItemTranslation")
@@ -86,3 +85,4 @@ for i=1,#extrafiles do
     include(extrafiles[i])
 end
 
+InitializerFunction(mod)
