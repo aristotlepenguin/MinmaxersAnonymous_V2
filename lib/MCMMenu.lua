@@ -295,13 +295,13 @@ return function(mod)
 
         Type = ModConfigMenu.OptionType.NUMBER,
     
-        Default = 1,
+        Default = 2,
     
         CurrentSetting = function() return mod.MenuData.ItemSwitch[tostring(mod.MMATypes.COLLECTIBLE_D_SQRT)] end,
         
         Display = function() 
             local choices = {[1] = "On", [2] = "Off"}
-            return "hopes item select: " .. (choices[mod.MenuData.ItemSwitch[tostring(mod.MMATypes.COLLECTIBLE_D_SQRT)]])
+            return "D SQRT(-1): " .. (choices[mod.MenuData.ItemSwitch[tostring(mod.MMATypes.COLLECTIBLE_D_SQRT)]])
             end,
     
         OnChange = function(new)

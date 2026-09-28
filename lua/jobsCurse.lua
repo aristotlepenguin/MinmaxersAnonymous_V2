@@ -1,46 +1,8 @@
 local mod = MMAMod
 local game = Game()
-local hiddenItemManager = require("lib.hidden_item_manager")
+--local hiddenItemManager = require("lib.hidden_item_manager")
 local sfx = SFXManager()
 
-function mod:recacheFamiliars_JC(player, cache)
-    if cache == CacheFlag.CACHE_FAMILIARS then
-        local rng = player:GetCollectibleRNG(CollectibleType.COLLECTIBLE_ONE_UP)
-        local itemconfig = Isaac.GetItemConfig()
-        local oneUps = player:GetCollectibleNum(CollectibleType.COLLECTIBLE_ONE_UP) - hiddenItemManager:CountStack(player, CollectibleType.COLLECTIBLE_ONE_UP, hiddenItemManager.kDefaultGroup)
-        player:CheckFamiliar(FamiliarVariant.ONE_UP, oneUps, rng, itemconfig:GetCollectible(CollectibleType.COLLECTIBLE_ONE_UP), -1)
-    end
-end
-mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, mod.recacheFamiliars_JC)
-
-function mod:checkDeath_JC(player)
-    local pdata = mod:mmaGetPData(player)
-    local oneUpCount = hiddenItemManager:CountStack(player, CollectibleType.COLLECTIBLE_ONE_UP, hiddenItemManager.kDefaultGroup)
-    if player:IsDead() then
-        pdata.MMA_Died = true
-    elseif oneUpCount > 0 and not player:HasCollectible(mod.MMATypes.COLLECTIBLE_JOBS_CURSE) then
-        hiddenItemManager:Remove(player, CollectibleType.COLLECTIBLE_ONE_UP, hiddenItemManager.kDefaultGroup)
-    elseif pdata.MMA_Died == true and not player:IsDead() and oneUpCount >= 1 then
-        pdata.AnimOverride_JC = true
-        pdata.MMA_Died = false
-        hiddenItemManager:Remove(player, CollectibleType.COLLECTIBLE_ONE_UP, hiddenItemManager.kDefaultGroup)
-        pdata.MMA_JobBlessLevel = (pdata.MMA_JobBlessLevel or 0) + (pdata.MMA_JobCurseLevel or 0)
-        pdata.MMA_JobCurseLevel = 0
-        if oneUpCount == 1 then
-            pdata.MMA_JobCurseStatus = false
-            player:TryRemoveNullCostume(mod.MMATypes.COSTUME_JOBSCURSE_1)
-            player:TryRemoveNullCostume(mod.MMATypes.COSTUME_JOBSCURSE_2)
-        end
-        player:AddCacheFlags(CacheFlag.CACHE_ALL)
-        player:EvaluateItems()
-    end
-
-    if string.sub(player:GetSprite():GetAnimation(), 1, 6) == "Pickup" and pdata.AnimOverride_JC == true then
-        pdata.AnimOverride_JC = false
-        player:AnimateCollectible(mod.MMATypes.COLLECTIBLE_JOBS_CURSE)
-    end
-end
-mod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, mod.checkDeath_JC)
 
 function mod:onGreedUpdate_JC()
     if game:IsGreedMode() and mod.MMA_GlobalSaveData.MMA_GreedWave ~= game:GetLevel().GreedModeWave then
@@ -55,11 +17,8 @@ mod:AddCallback(ModCallbacks.MC_POST_UPDATE, mod.onGreedUpdate_JC)
 
 mod.ItemGrabCallback:AddCallback(mod.ItemGrabCallback.InventoryCallback.POST_ADD_ITEM, function(player, item, count, touched, fromQueue)
     if not touched or not fromQueue then
-        hiddenItemManager:Add(player, CollectibleType.COLLECTIBLE_ONE_UP)
         player:AddNullCostume(mod.MMATypes.COSTUME_JOBSCURSE_1)
         player:AddNullCostume(mod.MMATypes.COSTUME_JOBSCURSE_2)
-        player:AddCacheFlags(CacheFlag.CACHE_FAMILIARS)
-        player:EvaluateItems()
         local pdata = mod:mmaGetPData(player)
         pdata.MMA_JobCurseStatus = true
         if game:IsGreedMode() then
@@ -116,3 +75,76 @@ function mod:Cache_JC(player, cache)
     end
 end
 mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, mod.Cache_JC)
+
+--:GetSprite():GetAnimation()
+function mod:checkDeath_JC()
+    mod:AnyPlayerDo(function(player)
+        local pdata = mod:mmaGetPData(player)
+        local p2 = player
+        local anim = player
+        -- or player:GetPlayerType() == PlayerType.PLAYER_JACOB or player:GetPlayerType() == PlayerType.PLAYER_ESAU 
+        if player:GetPlayerType() == PlayerType.PLAYER_THEFORGOTTEN_B  or player:GetPlayerType() == PlayerType.PLAYER_JACOB or player:GetPlayerType() == PlayerType.PLAYER_ESAU then 
+            p2 = player:GetOtherTwin() 
+        end
+        
+        if player:GetPlayerType() == PlayerType.PLAYER_THEFORGOTTEN_B then 
+            anim = player:GetOtherTwin() 
+        end
+        
+        local p2data = mod:mmaGetPData(p2)
+
+        
+        if player:IsDead() and player:HasCollectible(mod.MMATypes.COLLECTIBLE_JOBS_CURSE) and pdata.MMA_JobIsDead ~= 1 and p2data.MMA_JobIsDead ~= 1 then
+            if not p2:IsDead() and player:GetPlayerType() ~= PlayerType.PLAYER_THEFORGOTTEN_B then -- 
+                p2data.JC_LastInOrder = 2
+            else 
+                pdata.JC_LastInOrder = 1
+            end
+            pdata.MMA_JobIsDead = 1
+            player:UseCard(89, UseFlag.USE_NOANNOUNCER)
+            player:RemoveCollectible(mod.MMATypes.COLLECTIBLE_JOBS_CURSE)
+
+        elseif pdata.MMA_JobIsDead == 1 and anim:IsExtraAnimationFinished() then
+            
+            pdata.MMA_JobIsDead = 0
+            player:AnimateCollectible(mod.MMATypes.COLLECTIBLE_JOBS_CURSE)
+            pdata.MMA_JobBlessLevel = (pdata.MMA_JobBlessLevel or 0) + (pdata.MMA_JobCurseLevel or 0)
+            pdata.MMA_JobCurseLevel = 0
+            player:AddCacheFlags(CacheFlag.CACHE_ALL)
+            player:EvaluateItems()
+            if not player:HasCollectible(mod.MMATypes.COLLECTIBLE_JOBS_CURSE) then
+                pdata.MMA_JobCurseStatus = false
+                player:TryRemoveNullCostume(mod.MMATypes.COSTUME_JOBSCURSE_1)
+                player:TryRemoveNullCostume(mod.MMATypes.COSTUME_JOBSCURSE_2)
+            end   
+            
+            if pdata.JC_LastInOrder == 1 then
+                local player_type = player:GetPlayerType()
+                pdata.JC_LastInOrder = nil
+                if player_type == PlayerType.PLAYER_BLUEBABY or player_type == PlayerType.PLAYER_BLUEBABY_B  or player_type == PlayerType.PLAYER_BETHANY_B or player_type == PlayerType.PLAYER_THEFORGOTTEN_B then 
+                    player:AddSoulHearts(5)
+                elseif player_type == PlayerType.PLAYER_JUDAS_B then
+                    player:AddBlackHearts(3)
+                elseif player_type == PlayerType.PLAYER_THEFORGOTTEN then
+                    player:AddBoneHearts(1)
+                    player:SetFullHearts()
+                elseif player_type == PlayerType.PLAYER_THESOUL then
+                    player:AddSoulHearts(1)
+                else 
+                    player:SetFullHearts()
+                end
+            end
+        elseif pdata.JC_LastInOrder == 2 and p2data.MMA_JobIsDead == 0 and p2:IsExtraAnimationFinished() then
+            local player_type = player:GetPlayerType()
+            if (player:GetPlayerType() == PlayerType.PLAYER_JACOB or player:GetPlayerType() == PlayerType.PLAYER_ESAU) then
+                player:GetOtherTwin():SetFullHearts()
+                pdata.JC_LastInOrder = nil
+            else
+                player:SetFullHearts()
+                pdata.JC_LastInOrder = nil
+            end
+        end
+    end
+)
+end
+mod:AddCallback(ModCallbacks.MC_POST_UPDATE, mod.checkDeath_JC)
