@@ -2,8 +2,6 @@ local mod = MMAMod
 local game = Game()
 
 
-local tEph = mod.MMATypes.CHARACTER_EPAPHRAS_B ~= nil
-
 --god this function sucks
 function mod:findValidDoors_DS(roomid)
     local roomdesc = Game():GetLevel():GetRoomByIdx(roomid)
@@ -216,7 +214,7 @@ function mod:onNewLevelStart_DS()
     mod:AnyPlayerDo(function(player)
         if player:HasCollectible(mod.MMATypes.COLLECTIBLE_DAD_SNEAKERS) or (tEph and player:GetPlayerType() == mod.MMATypes.CHARACTER_EPAPHRAS_B and not game:IsGreedMode()) then
             hasIt = true
-            if tEph and player:GetPlayerType() == mod.MMATypes.CHARACTER_EPAPHRAS_B and player:HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT) then
+            if player:GetPlayerType() == mod.MMATypes.CHARACTER_EPAPHRAS_B and player:HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT) then
                 hasBirthright = true
             end
             rng = player:GetCollectibleRNG(mod.MMATypes.COLLECTIBLE_DAD_SNEAKERS)
@@ -278,15 +276,15 @@ function mod:initMinnie(player)
         --player:AddNullCostume(mod.MMATypes.COSTUME_BUCKET_HEAD)
     end
 end
-if tEph then
-    mod:AddCallback(ModCallbacks.MC_POST_PLAYER_INIT, mod.initMinnie)
-end
+
+mod:AddCallback(ModCallbacks.MC_POST_PLAYER_INIT, mod.initMinnie)
+
 
 function mod:tEphStatsHandling(player, cache)
-    if cache == CacheFlag.CACHE_SPEED then
+    if cache == CacheFlag.CACHE_SPEED and player:GetPlayerType() == mod.MMATypes.CHARACTER_EPAPHRAS_B then
         player.MoveSpeed = player.MoveSpeed + 0.2
     end
 end
-if tEph then
-    mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, mod.tEphStatsHandling)
-end
+
+mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, mod.tEphStatsHandling)
+

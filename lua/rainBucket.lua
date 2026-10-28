@@ -2,7 +2,6 @@ local mod = MMAMod
 local game = Game()
 local sfx = SFXManager()
 local itemconfig = Isaac.GetItemConfig()
-local isEph = mod.MMATypes.CHARACTER_EPAPHRAS ~= nil
 local bucketRNG = RNG()
 
 function mod:findEmptyCharges(player)
@@ -32,7 +31,7 @@ function mod:bucketIt(player, emptybones, keepercoin)
     end
     local rng = player:GetCollectibleRNG(mod.MMATypes.COLLECTIBLE_RAIN_BUCKET)
 
-    if isEph and player:GetPlayerType() == mod.MMATypes.CHARACTER_EPAPHRAS then
+    if player:GetPlayerType() == mod.MMATypes.CHARACTER_EPAPHRAS then
         if player:HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT) then
             coinmax = 45
             bombmax = 45
@@ -120,7 +119,7 @@ function mod:onPickupCollide_RB(pickup, collider, low)
             player = player:GetOtherTwin()
         end
         
-        if (player:HasCollectible(mod.MMATypes.COLLECTIBLE_RAIN_BUCKET) or (isEph and player:GetPlayerType() == mod.MMATypes.CHARACTER_EPAPHRAS)) and pickup:GetData().MMA_HasTouchedRB ~= true then
+        if (player:HasCollectible(mod.MMATypes.COLLECTIBLE_RAIN_BUCKET) or (player:GetPlayerType() == mod.MMATypes.CHARACTER_EPAPHRAS)) and pickup:GetData().MMA_HasTouchedRB ~= true then
             local coinmax = 99
             local bombmax = 99
             local keymax = 99
@@ -331,7 +330,7 @@ mod:AddCallback(ModCallbacks.MC_POST_UPDATE, mod.OnUpdate_RB)
 
 function mod:RBOnPlayerUpdate(player)
     local pdata = mod:mmaGetPData(player)
-    if pdata.RB_JustReceived ~= nil and (player:HasCollectible(mod.MMATypes.COLLECTIBLE_RAIN_BUCKET) or (isEph and player:GetPlayerType() == mod.MMATypes.CHARACTER_EPAPHRAS) and pdata.bombsRec3 ~= nil) then
+    if pdata.RB_JustReceived ~= nil and (player:HasCollectible(mod.MMATypes.COLLECTIBLE_RAIN_BUCKET) or (player:GetPlayerType() == mod.MMATypes.CHARACTER_EPAPHRAS) and pdata.bombsRec3 ~= nil) then
         local config = itemconfig:GetCollectible(pdata.RB_JustReceived)
         local bombs = config.AddBombs
         local keys = config.AddKeys
@@ -418,9 +417,7 @@ function mod:ephStatsHandling(player, cache)
         player.MoveSpeed = player.MoveSpeed - 0.1
     end
 end
-if isEph then
-    mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, mod.ephStatsHandling)
-end
+mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE, mod.ephStatsHandling)
 
 function mod:onUpdateEpaphras(player)
     if player:GetPlayerType() ~= mod.MMATypes.CHARACTER_EPAPHRAS then
@@ -467,9 +464,7 @@ function mod:onUpdateEpaphras(player)
         end
     end
 end
-if isEph then
-    mod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, mod.onUpdateEpaphras)
-end
+mod:AddCallback(ModCallbacks.MC_POST_PLAYER_UPDATE, mod.onUpdateEpaphras)
 --account for skeleton key, pyro, and dollar
 
 function mod:initMaxie(player)
@@ -477,16 +472,14 @@ function mod:initMaxie(player)
         player:AddNullCostume(mod.MMATypes.COSTUME_BUCKET_HEAD)
     end
 end
-if isEph then
-    mod:AddCallback(ModCallbacks.MC_POST_PLAYER_INIT, mod.initMaxie)
-end
+mod:AddCallback(ModCallbacks.MC_POST_PLAYER_INIT, mod.initMaxie)
 
 function mod:BossRushImmunity_RB(rng, spawnPosition)
     local room = Game():GetRoom()
     local isMaxie = false
 
     mod:AnyPlayerDo(function(player)
-    if isEph and player:GetPlayerType() == mod.MMATypes.CHARACTER_EPAPHRAS then
+    if player:GetPlayerType() == mod.MMATypes.CHARACTER_EPAPHRAS then
         isMaxie = true
     end
     end)
